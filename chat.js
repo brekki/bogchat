@@ -33,11 +33,18 @@ $(function () {
     $('span').hide()
     return
   }
-  var connection = new WebSocket('ws://198.211.108.39:1337')
+  var connection = new WebSocket('wss://chat.bog.jollo.org:8080')
 
   connection.onopen = function () {
     input.removeAttr('disabled')
     status.text('Choose name:')
+    if (!localStorage.getItem("nick")) {
+      $('#msg').addClass("setnick")
+    }
+    else {
+      myName = localStorage.getItem("nick")
+      connection.send(myName)
+    }
   }
 
   connection.onerror = function (error) {
@@ -85,6 +92,9 @@ $(function () {
 
       if (myName === false) {
         myName = msg
+        localStorage.setItem("nick",msg)
+        
+        $('#msg').removeClass("setnick")
       }
     $('#content').scrollTop(20000)
     }
@@ -101,6 +111,13 @@ $(function () {
     content.append('<p><span class="nick" style="color:' + color + '">' + author + '</span>'
        + ': ' + imgio(message) + '</p>')
   }
+  
+
+    
+  //// Store
+  // localStorage.setItem("lastname", "Smith");
+  // // Retrieve
+  // document.getElementById("result").innerHTML = localStorage.getItem("lastname");
   
   window.onload = function() {
     setTimeout(function(){$('#content').scrollTop(200000)},1000);

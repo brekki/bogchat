@@ -38,6 +38,8 @@ document.addEventListener( 'visibilitychange' , function() {
   }
 }, false )
 
+var connection
+
 $(function () {
   
   "use strict"
@@ -133,7 +135,7 @@ $(function () {
         localStorage.setItem("nick",msg)
         $('#msg').removeClass("setnick")
       }
-    $('#content').scrollTop(20000)
+    $('#content').scrollTop(200000)
     }
   })
   setInterval(function() {

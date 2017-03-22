@@ -1,20 +1,20 @@
 function imgio(input) {
   function checkurl(url) {
-    return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+    return(url.match(/\.(jpeg|jpg|gif|png|bmp|JPEG|JPG|GIF|PNG|BMP)$/) != null);
   }
   var string = input.split(" ")
 
   for (i=0;i<string.length;i++) {
     var word = string[i]
     if (checkurl(word)) {
-      word = `<img src="${word}">`
+      word = `<img draggable="true" onmousedown="showstored(true)" onmouseup="showstored(false)" ondragend="showstored(false)" src="${word}">`
     }
     string[i] = word
   }
   string = string.join(" ")
   
-  var nospaceregex = /\"\>(\s)\<img\ssrc\=/g
-  var nsstring = string.replace(nospaceregex, '"><ns></ns><img src=')
+  var nospaceregex = /\"\>(\s)\<img\s/g
+  var nsstring = string.replace(nospaceregex, '"><ns></ns><img ')
   return nsstring
 }
 
@@ -69,7 +69,7 @@ $(function () {
     input.removeAttr('disabled')
     status.text('Choose name:')
     if (!localStorage.getItem("nick")) {
-      $('#msg').addClass("setnick")
+      $('body').addClass("setnick")
     }
     else {
       myName = localStorage.getItem("nick")
@@ -133,7 +133,7 @@ $(function () {
       if (myName === false) {
         myName = msg
         localStorage.setItem("nick",msg)
-        $('#msg').removeClass("setnick")
+        $('body').removeClass("setnick")
       }
     $('#content').scrollTop(200000)
     }
@@ -151,6 +151,74 @@ $(function () {
     setTimeout(function(){$('#content').scrollTop(200000)},1000);
   }
 })
+
+
+// stored images 
+
+$('#storedbutton').click(function() {
+  propagatestored()
+  $('#storedarea').toggleClass('makeroom')
+  $('#msg input').toggleClass('makeroom')
+})
+
+function showstored(e) {
+  if (e) {
+    $('#storedinput').addClass('visible')
+    $('#storedinput').val('')
+    propagatestored()
+  }
+  else {
+    $('#storedinput').removeClass('visible')
+    if ( $('#storedinput').val() ) {
+      storedpush( $('#storedinput').val())
+    }
+  }
+}
+
+function storedpush(e) {
+  var oldstored = localStorage.getItem("stored")
+  if ( !oldstored) {
+    oldstored = []
+  }
+  else {
+    oldstored = JSON.parse(oldstored)
+  }
+  oldstored.push(e)
+  localStorage.setItem("stored",JSON.stringify(oldstored))
+  propagatestored(e)
+}
+
+function propagatestored(e) {
+
+  if (!this.stored) {
+    this.stored = true
+    var oldstored = localStorage.getItem("stored")
+    if ( !oldstored) {
+      oldstored = []
+      $( "#storedcontainer" ).html('drag images here to use later')
+    }
+    else {
+      $( "#storedcontainer" ).html('')
+    oldstored = JSON.parse(oldstored)
+    }
+    for (var i=(oldstored.length - 1);i>=0;i--) {
+      $( "#storedcontainer" ).append(`<img src="${oldstored[i]}"> &nbsp;`)
+    }
+  }
+  if (e) {
+    $( "#storedcontainer" ).prepend(`<img src="${e}">  &nbsp;`)
+  }
+}
+
+$(document).on('click','#storedcontainer img',function(e) {
+  var neue = e.toElement.currentSrc
+  var oldval = $('#msg input').val()
+  var oldval = `${oldval} ${neue} `
+  $('#input').val(oldval)
+})
+
+
+
 
 // image uploader
 
@@ -257,7 +325,29 @@ new Imgur({
       },3000);
      }
    })
+
+   
+   // 
     
 function fdone(data) {
   connection.send(data.data.link)  
 }
+
+
+   
+
+    function scrollHorizontally(e) {
+        e = window.event || e;
+        var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+        document.getElementById('storedcontainer').scrollLeft -= (delta*40); // Multiplied by 40
+        e.preventDefault();
+    }
+    if (document.getElementById('storedcontainer').addEventListener) {
+        // IE9, Chrome, Safari, Opera
+        document.getElementById('storedcontainer').addEventListener("mousewheel", scrollHorizontally, false);
+        // Firefox
+        document.getElementById('storedcontainer').addEventListener("DOMMouseScroll", scrollHorizontally, false);
+    } else {
+        // IE 6/7/8
+        document.getElementById('storedcontainer').attachEvent("onmousewheel", scrollHorizontally);
+    }

@@ -56,7 +56,12 @@ div {
   border:3px solid magenta;
   margin-top:10px; 
   padding:5px; 
-  width: calc(100vw - 200px)
+  width: calc(100vw - 230px);
+  transition:all .3s ease-in-out;
+}
+
+#input.makeroom {
+  width: calc(100vw - 630px);
 }
 
 #status {
@@ -171,9 +176,85 @@ video {
   z-index:5
 }
 
+#storedbutton {
+  position:fixed;
+  bottom:0px;
+  right:77px;
+  width:30px;
+  height:30px;
+  border:4px outset yellow;
+  background:yellow;
+  background:url(http://i.imgur.com/8lkrNDP.gif);
+  background-size:cover;
+  transition:all .5s ease-in-out;
+  z-index:3;
+}
+
+#storedinput {
+  opacity:0;
+}
+
+#storedinput {
+  display:none;
+  width:390px;
+  height:26px;
+}
+
+#storedcontainer {
+  width:400px;
+  height:50px;
+  background:#fff;
+  z-index:5;
+  overflow-y:hidden;
+  white-space: nowrap;
+  image-rendering: -moz-crisp-edges;         /* Firefox */
+                   image-rendering:   -o-crisp-edges;         /* Opera */
+                   image-rendering: -webkit-optimize-contrast;/* Webkit (non-standard naming) */
+                   image-rendering: crisp-edges;
+                   -ms-interpolation-mode: nearest-neighbor;  /* IE (non-standard property) */
+}
+
+#storedcontainer img {
+  max-height:30px;
+  max-width:30px;
+  
+}
+
+#storedinput.visible {
+  display:block;
+  position:absolute;
+  z-index:6;
+  top:0;
+  left:0;
+}
+
+#storedbutton:active {
+  border:4px inset yellow;
+}
+
+#storedarea {
+  position:absolute;
+      overflow: hidden;
+  bottom:0;
+  right:105px;
+  width:0px;
+  height:30px;
+  transition:all .3s ease-in-out;
+  border:3px inset yellow;
+  background:#ddd;
+  z-index:2;
+}
+
+#storedarea.makeroom {
+  width:400px;
+
+}
+
 #uploadbutton {
   width:30px;
-  background:#ccc;
+  background:url(rocks.gif);
+  pointer-events: none;
+  background-size:cover;
   display:inline;
   height:30px;
   border:4px outset #eee;
@@ -184,7 +265,7 @@ video {
   transition:all 1.3s ease-in-out
 }
 
-.setnick #uploadbutton, .setnick .dropzone input, .setnick #camerabutton {
+body.setnick [id*=button], body.setnick #storedarea {
   opacity:0;
   display:none;
 }
@@ -200,7 +281,7 @@ video {
   opacity:0;
 }
 
-#msg.setnick {
+body.setnick #msg {
   padding:8px;
   animation:1s rainbow linear infinite
 }

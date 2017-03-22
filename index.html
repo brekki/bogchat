@@ -2,20 +2,32 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>bogchat</title>
+<title id="title">bogchat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0"/> 
 <link rel="stylesheet" style="text/css" href="style.css">
 </head>
 <body>
   <div id="logo"><img src="bog.png"></div>
   <div class="line"></div>
+  <div id="space"></div>
   <div id="content"></div>
-  <div id="msg">
+       <div id="videobox" class="hidden">
+     <div id="videoclose"></div>
+       <video id="video" width="400" height="300" autoplay></video></div>
 
+<canvas id="canvas" width="400" height="300" style="display:none"></canvas>
+
+  <div id="msg">
     <span id="status">Connecting...</span>
     <input type="text" id="input" disabled="disabled" />
+    <div class="dropzone"></div>
+    <div id="uploadbutton"></div>
+    <div id="camerabutton"></div>
   </div>
-
+  <script type="text/javascript" src="imgur.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="jcanvas.js"></script>
   <script src="./chat.js"></script>
+
 </body>
 </html>

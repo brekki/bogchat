@@ -24,7 +24,7 @@ function htmlEntities(str) {
 }
 
 // Array with some colors
-var colors = [ 'red', 'green', 'blue', 'magenta', 'purple', 'plum', 'orange' ];
+var colors = [ 'red', 'blue', 'magenta', 'purple', 'coral', 'redorange' ];
 // ... in random order
 colors.sort(function(a,b) { return Math.random() > 0.5; } );
 
@@ -53,6 +53,12 @@ wsServer.on('request', function(request) {
   // client is connecting from your website
   // (http://en.wikipedia.org/wiki/Same_origin_policy)
   var connection = request.accept(null, request.origin); 
+  
+  var json = JSON.stringify({ type:'hi' });
+  for (var i=0; i < clients.length; i++) {
+    clients[i].sendUTF(json);
+  }
+  
   // we need to know client index to remove them on 'close' event
   var index = clients.push(connection) - 1;
   var userName = false;
@@ -113,6 +119,10 @@ wsServer.on('request', function(request) {
            }
             // push back user's color to be reused by another user
             colors.push(userColor);
+            var json = JSON.stringify({ type:'byebye' });
+            for (var i=0; i < clients.length; i++) {
+              clients[i].sendUTF(json);
+            }
         }
     })
 

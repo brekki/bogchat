@@ -21,6 +21,7 @@ function imgio(input) {
 var connection
 var visible
 var unread = 0
+var muted = false
 
 
 document.addEventListener( 'visibilitychange' , function() {
@@ -115,6 +116,14 @@ $(function () {
         $('#content').scrollTop(200000)
         setTimeout(function(){$('#content').scrollTop(200000)},300)
         setTimeout(function(){$('#content').scrollTop(200000)},1000)
+      }
+    } else if ( json.type === "hi" ) {
+      if (!muted) {
+        new Audio('https://bog.jollo.org/enter.mp3').play()
+      }
+    } else if ( json.type === "byebye" ) {
+      if (!muted) {
+        new Audio('https://bog.jollo.org/exit.mp3').play()
       }
     } else if ( json.type === "treehouse" ) {
       

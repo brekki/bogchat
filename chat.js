@@ -21,7 +21,18 @@ function imgio(input) {
 var connection
 var visible
 var unread = 0
-var muted = false
+var muted
+if ( !localStorage.getItem("muted") ) {
+  localStorage.setItem("muted","0")
+  muted = false
+}
+else {
+  var mutedstatus = localStorage.getItem("muted")
+  if ( mutedstatus == "1" ) {
+    $('#mutebutton').addClass("muted")
+    muted = true
+  }
+}
 
 
 document.addEventListener( 'visibilitychange' , function() {
@@ -341,6 +352,25 @@ new Imgur({
 function fdone(data) {
   connection.send(data.data.link)  
 }
+
+
+$(document).on('click','#uploadbutton',function() {
+ $('.dropzone input').trigger('click');
+})
+
+
+$('#mutebutton').click(function() {
+  if ($(this).hasClass("muted")) {
+    $('#mutebutton').removeClass("muted")
+    localStorage.setItem("muted","0")
+    muted = false
+  }
+  else {
+    muted = true
+    $('#mutebutton').addClass("muted")
+    localStorage.setItem("muted","1")
+  }
+})
 
 
    

@@ -13,18 +13,55 @@ body {
   height:1px;
 }
 
+
 #mutebutton {
-    width: 5px;
+    width: 30px;
     display: inline;
     position: relative;
-    z-index: 99999999999999999999999999999999;
-    right: 38px;
-    background: cyan;
+    z-index: 999999999999;
+    right: 0px;
+    background-color: #1d00ff;
+    background-image: url('mute.gif');
+    background-size: 30px 30px;
     height: 30px;
     bottom: 0px;
     position: fixed;
-    border: 4px outset cyan;
+    border: 4px outset #ff9def;
+    transition:all .3s ease-in-out
+}
 
+#mutebutton:active {
+  border: 4px inset #ff9def;
+}
+
+#mutebutton:muted {
+      width: 30px;
+    display: inline;
+    position: relative;
+    z-index: 999999999999;
+    right: 0px;
+    background-color: #510905;
+    background-image: url('mute.gif');
+    background-size: 30px 30px;
+    height: 30px;
+    bottom: 0px;
+    position: fixed;
+    border: 4px outset #990065;
+}
+
+#mutebutton:muted:active {
+  border: 4px inset #990065;
+}
+
+#mutebutton.muted::before {
+    content: 'X';
+    font-family: arial;
+    font-size: 36px;
+    position: absolute;
+    color: maroon;
+    left: 2px;
+    top: -5px;
+    z-index: 9999999999999999;
 }
 
 .nick {
@@ -73,7 +110,7 @@ div {
   border:3px solid magenta;
   margin-top:10px; 
   padding:5px; 
-  width: calc(100vw - 237px);
+  width: calc(100vw - 277px);
   transition:all .3s ease-in-out;
 }
 
@@ -101,7 +138,7 @@ div {
 #camerabutton {
   position:absolute;
   bottom:0px;
-  right:38px;
+  right:76px;
   width:30px;
   height:30px;
   border:4px outset #5f0;
@@ -196,7 +233,7 @@ video {
 #storedbutton {
   position:fixed;
   bottom:0px;
-  right:76px;
+  right:114px;
   width:30px;
   height:30px;
   border:4px outset yellow;
@@ -253,7 +290,7 @@ video {
   position:absolute;
       overflow: hidden;
   bottom:0;
-  right:105px;
+  right:144px;
   width:0px;
   height:30px;
   transition:all .3s ease-in-out;
@@ -263,23 +300,25 @@ video {
 }
 
 #storedarea.makeroom {
-  width:400px;
-
+  width:360px;
 }
 
 #uploadbutton {
   width:30px;
   background:url(rocks.gif);
-  pointer-events: none;
   background-size:cover;
   display:inline;
   height:30px;
   border:4px outset #eee;
   z-index:99;
   position:absolute;
-  right:0px;
+  right:38px;
   bottom:0;
   transition:all 1.3s ease-in-out
+}
+
+#uploadbutton:active {
+  border:4px inset #eee;
 }
 
 body.setnick [id*=button], body.setnick #storedarea {

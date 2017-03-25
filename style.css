@@ -5,6 +5,55 @@ body {
   
 }
 
+#lockbutton {
+  width: 30px;
+  display: inline;
+  position: relative;
+  z-index: 9999999999999;
+  right: 38px;
+  background-color: #77f2d9;
+  background-size: 30px 30px;
+  background-image: url(lock.png);
+  height: 30px;
+  bottom: 0px;
+  position: fixed;
+  border: 4px outset #cefff2;
+}
+
+#lockbutton:active {
+  border: 4px inset #cefff2;
+}
+
+#lockbutton.locked {
+    animation: 1s flicker linear infinite;
+    background: white;
+    background-image: url(lock.png);
+    background-size: 30px 30px;
+    border: 4px inset white;
+}
+
+#uploadbutton.locked {
+  border:4px inset white
+}
+
+  
+@keyframes flicker {
+0% {
+    background: #ff005c;
+}
+30% {
+    background: #efff00;
+    background-image: url(lock.png);
+    background-size: 30px 30px;
+}
+60% {
+    background: #84ffff;
+}
+100% {
+    color: black;
+}
+}
+
 span.jiggle {
   animation:.5s jiggle ease-in-out 1
 }
@@ -141,7 +190,7 @@ div {
   border:3px solid magenta;
   margin-top:10px; 
   padding:5px; 
-  width: calc(100vw - 277px);
+  width: calc(100vw - 314px);
   transition:all .3s ease-in-out;
 }
 
@@ -169,7 +218,7 @@ div {
 #camerabutton {
   position:absolute;
   bottom:0px;
-  right:76px;
+  right:114px;
   width:30px;
   height:30px;
   border:4px outset #5f0;
@@ -264,7 +313,7 @@ video {
 #storedbutton {
   position:fixed;
   bottom:0px;
-  right:114px;
+  right:152px;
   width:30px;
   height:30px;
   border:4px outset yellow;
@@ -343,9 +392,9 @@ video {
   border:4px outset #eee;
   z-index:99;
   position:absolute;
-  right:38px;
+  right:76px;
   bottom:0;
-  transition:all 1.3s ease-in-out
+  transition:all .3s ease-in-out
 }
 
 #uploadbutton:active {

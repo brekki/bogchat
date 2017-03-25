@@ -34,6 +34,8 @@ var connection
 var visible
 var unread = 0
 var muted
+var locked = false
+
 if ( !localStorage.getItem("muted") ) {
   localStorage.setItem("muted","0")
   muted = false
@@ -281,7 +283,15 @@ $(document).on('click','#storedcontainer img',function(e) {
 
 var feedback = function (res) {
   if (res.success === true) {
-     connection.send(JSON.stringify({type: "message", data: res.data.link}))
+     if (locked) {
+      var x = res.data.link
+      var oldval = $('#msg input').val()
+      var oldval = `${oldval} ${x} `
+      $('#input').val(oldval)       
+     }
+     else {
+       connection.send(JSON.stringify({type: "message", data: res.data.link}))
+     }
   }
 }
 new Imgur({
@@ -409,7 +419,18 @@ $('#mutebutton').click(function() {
   }
 })
 
-// fav stuff
+$('#lockbutton').click(function() {
+  if ($(this).hasClass("locked")) {
+    $('#lockbutton').removeClass("locked")
+    $('#uploadbutton').removeClass("locked")
+    locked = false
+  }
+  else {
+       $('#lockbutton').addClass("locked")
+    $('#uploadbutton').addClass("locked")
+    locked = true
+  }
+})
 
 
 

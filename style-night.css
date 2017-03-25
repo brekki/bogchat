@@ -6,6 +6,57 @@ body {
   background:url(stars-bb.gif)
 }
 
+#lockbutton {
+  width: 30px;
+  display: inline;
+  position: relative;
+  z-index: 9999999999999;
+  right: 38px;
+  background-color: #77f2d9;
+  background-size: 30px 30px;
+  background-image: url(lock.png);
+  height: 30px;
+  bottom: 0px;
+  position: fixed;
+  border: 4px outset #cefff2;
+}
+
+#lockbutton:active {
+  border: 4px inset #cefff2;
+}
+
+#lockbutton.locked {
+    animation: 1s flicker linear infinite;
+    background: white;
+    background-image: url(lock.png);
+    background-size: 30px 30px;
+    border: 4px inset white;
+}
+
+#uploadbutton.locked {
+  border:4px inset white
+}
+
+  
+@keyframes flicker {
+0% {
+    background: #ff005c;
+}
+30% {
+    background: #efff00;
+    background-image: url(lock.png);
+    background-size: 30px 30px;
+}
+60% {
+    background: #84ffff;
+}
+100% {
+    color: black;
+}
+}
+
+
+
 span.jiggle {
   animation:.6s jiggle ease-in-out 1
 }

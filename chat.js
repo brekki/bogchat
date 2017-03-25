@@ -18,7 +18,7 @@ function imgio(input) {
   for (i=0;i<string.length;i++) {
     var word = string[i]
     if (checkurl(word)) {
-      word = `<img draggable="true" onmousedown="showstored(true)" onmouseup="showstored(false)" ondragend="showstored(false)" src="${word}">`
+      word = `<img draggable="true" onmousedown="showstored(true)" ondrag="dragready()" onmouseup="showstored(false)" ondragend="showstored(false)" src="${word}">`
     }
 
     string[i] = word
@@ -35,6 +35,23 @@ var visible
 var unread = 0
 var muted
 var locked = false
+var dragpop = false
+
+function dragready() {
+  dragcount = true
+}
+
+function dragpopup() {
+  if (dragcount) {
+     if (!$('#storedarea').hasClass('makeroom')) {
+      dragpop = true
+      dragcount = false
+      propagatestored()
+      $('#storedarea').toggleClass('makeroom')
+      $('#msg input').toggleClass('makeroom')
+    }
+  }
+}
 
 if ( !localStorage.getItem("muted") ) {
   localStorage.setItem("muted","0")
@@ -179,7 +196,13 @@ $(function () {
         connection.send(JSON.stringify({type: "nick", data: msg}))
       }
       else {
-        connection.send(JSON.stringify({type: "message", data: msg}))
+        var f = msg.trim()
+        //if () {
+        //  //
+        //}
+        //else {
+        connection.send(JSON.stringify({type: "message", data: f}))
+        //}
       }
     $('#content').scrollTop(200000)
     }
@@ -220,6 +243,8 @@ $('#storedbutton').click(function() {
   $('#msg input').toggleClass('makeroom')
 })
 
+
+
 function showstored(e) {
   if (e) {
     $('#storedinput').addClass('visible')
@@ -227,9 +252,17 @@ function showstored(e) {
     propagatestored()
   }
   else {
+    dragcount = false
     $('#storedinput').removeClass('visible')
     if ( $('#storedinput').val() ) {
       storedpush( $('#storedinput').val())
+    }
+    if (dragpop) {
+      setTimeout(function() {
+        dragpop = false
+        $('#storedarea').removeClass('makeroom')
+        $('#msg input').removeClass('makeroom')      
+      },300)
     }
   }
 }

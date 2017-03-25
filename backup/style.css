@@ -2,53 +2,17 @@ body {
   font-family:arial;
   overflow:hidden;
   font-size:16px;
-  color:#e1ff00;
-  background:url(stars-bb.gif)
-}
-
-span.jiggle {
-  animation:.6s jiggle ease-in-out 1
-}
-
-@keyframes jiggle {
-  0% {color:magenta;
-    text-shadow:0px 0px 4px red}
-  20% {color:yellow;
-  text-shadow:0px 0px 2px yellow}
-  50% {color:lime;
-  text-shadow:0px 0px 2px lime}
-  100% {color:cyan;
-  text-shadow:0px 0px 2px teal}
-}
-
-p img {
-  cursor:pointer
-}
-
-p {
-  transition:background .3s ease-in-out
-}
-/*
-p.faved {
-  animation:10s faved ease-in-out forwards
-}
-
-@keyframes faved {
-  0% {background: rgba(175,0,255,.19)}
-  100% {background: rgba(175,0,255,0);}
-}
-*/
-img {
-  filter:saturate(120%) hue-rotate(2deg)
+  
 }
 
 .line {
-  background:magenta;
-  width:0px;
+  background:black;
+  width:100vw;
   position:fixed;
   top:59px;
-  height:0px;
+  height:1px;
 }
+
 
 #mutebutton {
     width: 30px;
@@ -70,7 +34,7 @@ img {
   border: 4px inset #ff9def;
 }
 
-#mutebutton.muted {
+#mutebutton:muted {
       width: 30px;
     display: inline;
     position: relative;
@@ -85,7 +49,7 @@ img {
     border: 4px outset #990065;
 }
 
-#mutebutton.muted:active {
+#mutebutton:muted:active {
   border: 4px inset #990065;
 }
 
@@ -114,7 +78,7 @@ img {
   left:0;
   height:55px;
   width:196px;
-  /*background:url('nightbog.gif')*/
+  background:url('bog.png')
 }
 
 p {
@@ -134,7 +98,7 @@ div {
   position:absolute;
   left:0;
   bottom:50px;
-  border:5px solid #7600ff
+  border:5px solid yellow
 }
 
 * {
@@ -143,13 +107,11 @@ div {
 
 #input {
   border-radius:2px; 
-  border:3px solid #c800ff;
+  border:3px solid magenta;
   margin-top:10px; 
   padding:5px; 
-  background:black;
   width: calc(100vw - 277px);
   transition:all .3s ease-in-out;
-  color:#e1ff00
 }
 
 #input.makeroom {
@@ -161,7 +123,6 @@ div {
   display:block; 
   float:left; 
   margin-top:15px;
-  color:coral
 }
 
 #msg {
@@ -294,11 +255,9 @@ video {
 }
 
 #storedcontainer {
-
   width:400px;
   height:50px;
   background:#fff;
-    background:black;
   z-index:5;
   overflow-y:hidden;
   white-space: nowrap;
@@ -358,6 +317,9 @@ video {
   transition:all 1.3s ease-in-out
 }
 
+#uploadbutton:active {
+  border:4px inset #eee;
+}
 
 body.setnick [id*=button], body.setnick #storedarea {
   opacity:0;
@@ -394,5 +356,4 @@ img {
   max-width:400px;
   max-height:400px;
 }
-
 

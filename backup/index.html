@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title id="title">bogchat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0"/> 
+<script>
+
+function getStylesheet() {
+  var currentTime = new Date().getHours();
+  if (0 <= currentTime&&currentTime < 6) {
+   document.write("<link rel='stylesheet' href='style-night.css' type='text/css'>");
+  }
+  if (6 <= currentTime&&currentTime < 22) {
+   document.write("<link rel='stylesheet' href='style.css' type='text/css'>");
+  }
+  if (22 <= currentTime&&currentTime <= 24) {
+   document.write("<link rel='stylesheet' href='style-night.css' type='text/css'>");
+  }
+}
+
+getStylesheet();
+
+</script>
+</head>
+<body>
+  <div id="logo"></div>
+  <div class="line"></div>
+  <div id="space"></div>
+  <div id="content"></div>
+       <div id="videobox" class="hidden">
+     <div id="videoclose"></div>
+       <video id="video" width="400" height="300" autoplay></video></div>
+
+<canvas id="canvas" width="400" height="300" style="display:none"></canvas>
+
+  <div id="msg">
+    <span id="status">Connecting...</span>
+    <input type="text" id="input" disabled="disabled" />
+    <div class="dropzone"></div>
+    <div id="storedbutton"></div>
+    <div id="storedarea">
+    <div id="storedcontainer"></div>
+    <input id="storedinput" type="text"></div></div>
+    <div id="uploadbutton"></div>
+    <div id="camerabutton"></div>
+    <div id="mutebutton"></div>
+    
+  </div>
+  <script type="text/javascript" src="imgur.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"
+  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+  crossorigin="anonymous"></script>
+  <script src="jcanvas.js"></script>
+  <script src="./chat.js"></script>
+
+</body>
+</html>

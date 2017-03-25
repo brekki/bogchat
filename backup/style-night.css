@@ -6,48 +6,16 @@ body {
   background:url(stars-bb.gif)
 }
 
-span.jiggle {
-  animation:.6s jiggle ease-in-out 1
-}
-
-@keyframes jiggle {
-  0% {color:magenta;
-    text-shadow:0px 0px 4px red}
-  20% {color:yellow;
-  text-shadow:0px 0px 2px yellow}
-  50% {color:lime;
-  text-shadow:0px 0px 2px lime}
-  100% {color:cyan;
-  text-shadow:0px 0px 2px teal}
-}
-
-p img {
-  cursor:pointer
-}
-
-p {
-  transition:background .3s ease-in-out
-}
-/*
-p.faved {
-  animation:10s faved ease-in-out forwards
-}
-
-@keyframes faved {
-  0% {background: rgba(175,0,255,.19)}
-  100% {background: rgba(175,0,255,0);}
-}
-*/
 img {
   filter:saturate(120%) hue-rotate(2deg)
 }
 
 .line {
   background:magenta;
-  width:0px;
+  width:100vw;
   position:fixed;
   top:59px;
-  height:0px;
+  height:1px;
 }
 
 #mutebutton {
@@ -114,7 +82,7 @@ img {
   left:0;
   height:55px;
   width:196px;
-  /*background:url('nightbog.gif')*/
+  background:url('nightbog.gif')
 }
 
 p {

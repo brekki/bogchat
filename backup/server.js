@@ -2,12 +2,10 @@
 "use strict";
 
 // Optional. You will see this name in eg. 'ps' or 'top' command
-process.title = 'node-chat-staging';
+process.title = 'node-chat';
 
 // Port where we'll run the websocket server
 var webSocketsServerPort = 1337;
-// prod
-//var webSocketsServerPort = 1337;
 
 // websocket and http servers
 var webSocketServer = require('websocket').server;
@@ -19,17 +17,6 @@ var history = [ ];
 // list of currently connected clients (users)
 var clients = [ ];
 
-var increment = 0;
-
-function isJSON(str) {
-  try {
-      JSON.parse(str);
-  } catch (e) {
-      return false;
-  }
-  return true;
-}
-
 
 function htmlEntities(str) {
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -37,7 +24,9 @@ function htmlEntities(str) {
 }
 
 // Array with some colors
-
+var colors = [ 'red', 'blue', 'magenta', 'purple', 'coral', 'redorange' ];
+// ... in random order
+colors.sort(function(a,b) { return Math.random() > 0.5; } );
 
 
 var server = http.createServer(function(request, response) {
@@ -59,10 +48,6 @@ var wsServer = new webSocketServer({
 
 wsServer.on('request', function(request) {
   console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
-  
-  var colors = [ 'red', 'blue', 'magenta', 'purple', 'coral', 'orangered' ];
-  // ... in random order
-  colors.sort(function(a,b) { return Math.random() > 0.5; } );
 
   // accept connection - you should check 'request.origin' to make sure that
   // client is connecting from your website
@@ -91,61 +76,33 @@ wsServer.on('request', function(request) {
     if (message.type === 'utf8') { // accept only text
       if (userName === false) { // first message sent by user is their name
         // remember user name
-        if ( isJSON(message.utf8Data)) {
-        var parsed = JSON.parse(message.utf8Data)
-          if (parsed.type == "nick" ) {
-            userName = htmlEntities(parsed.data);
-            // get random color and send it back to the user
-            userColor = colors[0];
-            connection.sendUTF(JSON.stringify({ type:'color', data: userColor }));
-            console.log((new Date()) + ' User is known as: ' + userName
-                  + ' with ' + userColor + ' color.');
-        }
-      }
-      } else {
-        if (isJSON(message.utf8Data) ){
-        var parsed = JSON.parse(message.utf8Data)
-        console.log("messagereceived")
-        
-        if (parsed.type == "message" ) {
-          console.log("message " + parsed.data)
+        userName = htmlEntities(message.utf8Data);
+        // get random color and send it back to the user
+        userColor = colors.shift();
+        connection.sendUTF(JSON.stringify({ type:'color', data: userColor }));
+        console.log((new Date()) + ' User is known as: ' + userName
+              + ' with ' + userColor + ' color.');
 
-        increment++
-        // log and broadcast the message
-          console.log((new Date()) + ' Received Message from '
-                + userName + ': ' + parsed.data);
-          
-          // we want to keep history of all sent messages
-          var obj = {
-            time: (new Date()).getTime(),
-            text: htmlEntities(parsed.data),
-            author: userName,
-            color: userColor,
-            id: increment
-          };
-          history.push(obj);
-          history = history.slice(-100);
+      } else { // log and broadcast the message
+        console.log((new Date()) + ' Received Message from '
+              + userName + ': ' + message.utf8Data);
         
-          // broadcast message to all connected clients
-          var json = JSON.stringify({ type:'message', data: obj });
-          for (var i=0; i < clients.length; i++) {
-            clients[i].sendUTF(json);
-          }
-        }
-        else if (parsed.type == "fav" ) {
-          if ( !isNaN(parsed.data) ) {
-            if (parsed.data <= increment && parsed.data > 0 ) {
-               for (var i=0; i < clients.length; i++) {
-                 clients[i].sendUTF(JSON.stringify({type:'fav', data: parsed.data}));
-              }             
-            }
-          }
+        // we want to keep history of all sent messages
+        var obj = {
+          time: (new Date()).getTime(),
+          text: htmlEntities(message.utf8Data),
+          author: userName,
+          color: userColor
+        };
+        history.push(obj);
+        history = history.slice(-100);
 
+        // broadcast message to all connected clients
+        var json = JSON.stringify({ type:'message', data: obj });
+        for (var i=0; i < clients.length; i++) {
+          clients[i].sendUTF(json);
         }
       }
-      }
-    } else {
-      // do something with favs, treehouse, other stuff.. these can be objects i guess
     }
   });
 

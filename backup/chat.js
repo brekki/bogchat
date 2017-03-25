@@ -1,17 +1,6 @@
-String.prototype.hashCode = function() {
-  var hash = 0, i, chr
-  if (this.length === 0) return hash
-  for (i = 0; i < this.length; i++) {
-    chr   = this.charCodeAt(i)
-    hash  = ((hash << 5) - hash) + chr
-    hash |= 0
-  }
-  return hash
-}
-
 function imgio(input) {
   function checkurl(url) {
-    return(url.match(/\.(jpeg|jpg|gif|png|bmp|JPEG|JPG|GIF|PNG|BMP)$/) != null)
+    return(url.match(/\.(jpeg|jpg|gif|png|bmp|JPEG|JPG|GIF|PNG|BMP)$/) != null);
   }
   var string = input.split(" ")
 
@@ -20,12 +9,11 @@ function imgio(input) {
     if (checkurl(word)) {
       word = `<img draggable="true" onmousedown="showstored(true)" onmouseup="showstored(false)" ondragend="showstored(false)" src="${word}">`
     }
-
     string[i] = word
   }
   string = string.join(" ")
   
-  var nospaceregex = /\"\>(\s+)\<img\s/g
+  var nospaceregex = /\"\>(\s)\<img\s/g
   var nsstring = string.replace(nospaceregex, '"><ns></ns><img ')
   return nsstring
 }
@@ -83,8 +71,6 @@ $(function () {
     $('span').hide()
     return
   }
-
-  //prod
   connection = new WebSocket('wss://chat.bog.jollo.org')
 
   
@@ -99,7 +85,7 @@ $(function () {
     }
     else {
       myName = localStorage.getItem("nick")
-      connection.send(JSON.stringify({type: "nick", data: myName}))
+      connection.send(myName)
     }
   }
 
@@ -120,10 +106,9 @@ $(function () {
       status.text(myName + ': ').css('color', myColor)
       input.removeAttr('disabled').focus()
     } else if (json.type === 'history') { 
-      console.log
       for (var i=0; i < json.data.length; i++) {
         addMessage(json.data[i].author, imgio(json.data[i].text),
-               json.data[i].color, json.data[i].id)
+               json.data[i].color, new Date(json.data[i].time))
       }
       $('#content').scrollTop(200000)
     } else if (json.type === 'message') {
@@ -134,7 +119,7 @@ $(function () {
       }
       input.removeAttr('disabled')
       addMessage(json.data.author, json.data.text,
-        json.data.color, json.data.id)
+        json.data.color, new Date(json.data.time))
       if ( ($('#content').height() - $('#content p:last-of-type').offset().top) < -500 ) {
         // console.log("avoid scrolldown")
       }
@@ -153,12 +138,7 @@ $(function () {
       }
     } else if ( json.type === "treehouse" ) {
       
-    } else if ( json.type === "fav" ) {
-      $('p[data-id="' + json.data + '"] span').addClass("jiggle")
-      setTimeout(function(){$('p[data-id="' + json.data + '"] span').removeClass("jiggle")},300)
-     
-    }
-    else {
+    } else {
       console.log('vbadjson: ', json)
     }
   }
@@ -168,16 +148,12 @@ $(function () {
       if (!msg) {
         return
       }
-      
+      connection.send(msg)
       $(this).val('') 
       if (myName === false) {
         myName = msg
         localStorage.setItem("nick",msg)
         $('body').removeClass("setnick")
-        connection.send(JSON.stringify({type: "nick", data: msg}))
-      }
-      else {
-        connection.send(JSON.stringify({type: "message", data: msg}))
       }
     $('#content').scrollTop(200000)
     }
@@ -188,26 +164,13 @@ $(function () {
       input.attr('disabled', 'disabled').val('badcomm')
     }
   }, 3000)
-  function addMessage(author, message, color, id) {
-    content.append(`<p data-id="${id}"><span class="nick" style="color:${color}">${author}</span>: ${imgio(message)}</p>`)
+  function addMessage(author, message, color, dt) {
+    content.append(`<p><span class="nick" style="color:${color}">${author}</span>: ${imgio(message)}</p>`)
   }
   window.onload = function() {
     setTimeout(function(){$('#content').scrollTop(200000)},1000);
   }
-  
-  
-  $(document).on('click','p img',function(e) {
-    var i = $(this).parent()
-    connection.send(JSON.stringify({type: "fav", data: i[0].dataset.id}))
-    $(this).parent().addClass("faved")
-  })
-  
-  
 })
-
-function favrequest(e) {
-  console.log(e)
-}
 
 
 // stored images 
@@ -281,7 +244,7 @@ $(document).on('click','#storedcontainer img',function(e) {
 
 var feedback = function (res) {
   if (res.success === true) {
-     connection.send(JSON.stringify({type: "message", data: res.data.link}))
+     connection.send(res.data.link)
   }
 }
 new Imgur({
@@ -387,7 +350,7 @@ new Imgur({
    // 
     
 function fdone(data) {
-   connection.send(JSON.stringify({type: "message", data: data.data.link}))
+  connection.send(data.data.link)  
 }
 
 
@@ -409,27 +372,21 @@ $('#mutebutton').click(function() {
   }
 })
 
-// fav stuff
-
-
-
-
-
 
    
 
-function scrollHorizontally(e) {
-    e = window.event || e;
-    var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-    document.getElementById('storedcontainer').scrollLeft -= (delta*40); // Multiplied by 40
-    e.preventDefault();
-}
-if (document.getElementById('storedcontainer').addEventListener) {
-    // IE9, Chrome, Safari, Opera
-    document.getElementById('storedcontainer').addEventListener("mousewheel", scrollHorizontally, false);
-    // Firefox
-    document.getElementById('storedcontainer').addEventListener("DOMMouseScroll", scrollHorizontally, false);
-} else {
-    // IE 6/7/8
-    document.getElementById('storedcontainer').attachEvent("onmousewheel", scrollHorizontally);
-}
+    function scrollHorizontally(e) {
+        e = window.event || e;
+        var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+        document.getElementById('storedcontainer').scrollLeft -= (delta*40); // Multiplied by 40
+        e.preventDefault();
+    }
+    if (document.getElementById('storedcontainer').addEventListener) {
+        // IE9, Chrome, Safari, Opera
+        document.getElementById('storedcontainer').addEventListener("mousewheel", scrollHorizontally, false);
+        // Firefox
+        document.getElementById('storedcontainer').addEventListener("DOMMouseScroll", scrollHorizontally, false);
+    } else {
+        // IE 6/7/8
+        document.getElementById('storedcontainer').attachEvent("onmousewheel", scrollHorizontally);
+    }

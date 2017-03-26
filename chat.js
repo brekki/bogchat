@@ -9,6 +9,7 @@ String.prototype.hashCode = function() {
   return hash
 }
 
+
 function imgio(input) {
   function checkurl(url) {
     return(url.match(/\.(jpeg|jpg|gif|png|bmp|JPEG|JPG|GIF|PNG|BMP)$/) != null)
@@ -18,6 +19,7 @@ function imgio(input) {
   for (i=0;i<string.length;i++) {
     var word = string[i]
     if (checkurl(word)) {
+
       word = `<img draggable="true" onmousedown="showstored(true)" ondrag="dragready()" onmouseup="showstored(false)" ondragend="showstored(false)" src="${word}">`
     }
 
@@ -36,6 +38,7 @@ var unread = 0
 var muted
 var locked = false
 var dragpop = false
+
 
 function dragready() {
   dragcount = true
@@ -70,7 +73,7 @@ document.addEventListener( 'visibilitychange' , function() {
 
   if (document.hidden) {
     visible = false
-    console.log("false")
+    //console.log("false")
   }
   else {
     // clear tab messages and reset
@@ -82,6 +85,32 @@ document.addEventListener( 'visibilitychange' , function() {
 }, false )
 
 var connection
+
+function bogscript(a,b) {
+  // a = action
+  // b = optional data
+  console.log(`action: ${a}, context: ${b}`)
+
+  // fav last image
+  if ( a == "fav") {
+    if (!b) {
+      //
+      // get last image posted
+      var lastimgdataid = $("#content").find("img:last").parent().attr("data-id")
+      favpost(lastimgdataid)
+    }
+    else {
+      // todo.. e.g. custom force fav post like last text post
+      var lastimgdataid = $("#content").find("img:last").parent().attr("data-id")
+      favpost(lastimgdataid)
+    }
+  }
+  else if ( a == "nightmode") {
+    $('link[rel=stylesheet]').remove()
+    $('head').append('<link rel="stylesheet" href="style-night.css" type="text/css">')
+  }
+  
+}
 
 $(function () {
   
@@ -196,13 +225,18 @@ $(function () {
         connection.send(JSON.stringify({type: "nick", data: msg}))
       }
       else {
-        var f = msg.trim()
-        //if () {
-        //  //
-        //}
-        //else {
-        connection.send(JSON.stringify({type: "message", data: f}))
-        //}
+        var x = msg
+        var b = msg.trim()
+        if ( b.substr(0,1) == "/") {
+          b = b.substr(1,b.length - 1)
+          b = b.split(" ")
+          var g = b.shift()
+          b = b.join(" ")
+          bogscript(g,b)
+        }
+        else {
+        connection.send(JSON.stringify({type: "message", data: x}))
+        }
       }
     $('#content').scrollTop(200000)
     }
@@ -223,7 +257,7 @@ $(function () {
   
   $(document).on('click','p img',function(e) {
     var i = $(this).parent()
-    connection.send(JSON.stringify({type: "fav", data: i[0].dataset.id}))
+    favpost(i[0].dataset.id)
     $(this).parent().addClass("faved")
   })
   
@@ -467,7 +501,9 @@ $('#lockbutton').click(function() {
 
 
 
-
+function favpost(id) {
+  connection.send(JSON.stringify({type: "fav", data: id}))
+}
 
 
    

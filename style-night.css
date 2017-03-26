@@ -198,7 +198,7 @@ div {
   margin-top:10px; 
   padding:5px; 
   background:black;
-  width: calc(100vw - 277px);
+  width: calc(100vw - 314px);
   transition:all .3s ease-in-out;
   color:#e1ff00
 }
@@ -228,7 +228,7 @@ div {
 #camerabutton {
   position:absolute;
   bottom:0px;
-  right:76px;
+  right:114px;
   width:30px;
   height:30px;
   border:4px outset #5f0;
@@ -323,7 +323,7 @@ video {
 #storedbutton {
   position:fixed;
   bottom:0px;
-  right:114px;
+  right:152px;
   width:30px;
   height:30px;
   border:4px outset yellow;
@@ -404,9 +404,9 @@ video {
   border:4px outset #eee;
   z-index:99;
   position:absolute;
-  right:38px;
+  right:76px;
   bottom:0;
-  transition:all 1.3s ease-in-out
+  transition:all .3s ease-in-out
 }
 
 

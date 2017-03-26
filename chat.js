@@ -109,6 +109,8 @@ function bogscript(a,b) {
     $('link[rel=stylesheet]').remove()
     $('head').append('<link rel="stylesheet" href="style-night.css" type="text/css">')
   }
+  // 
+  // todo: clear, mute, unmute, mutelist, help, whois, ack, me
   
 }
 

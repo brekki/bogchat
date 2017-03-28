@@ -9,18 +9,31 @@ String.prototype.hashCode = function() {
   return hash
 }
 
+var userlist = []
+
+function uniquepush(item,oldarray) {
+  if ( oldarray.indexOf(item) === -1 ) {
+    oldarray.push(item)
+  }
+  return oldarray
+}
 
 function imgio(input) {
-  function checkurl(url) {
+  function checkimgurl(url) {
     return(url.match(/\.(jpeg|jpg|gif|png|bmp|JPEG|JPG|GIF|PNG|BMP)$/) != null)
+  }
+  function checklinkurl(url) {
+    return (url.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/) != null)
   }
   var string = input.split(" ")
 
   for (i=0;i<string.length;i++) {
     var word = string[i]
-    if (checkurl(word)) {
-
+    if (checkimgurl(word)) {
       word = `<img draggable="true" onmousedown="showstored(true)" ondrag="dragready()" onmouseup="showstored(false)" ondragend="showstored(false)" src="${word}">`
+    }
+    else if (checklinkurl(word)) {
+      word = `<a target="_blank" href="${word}">${word}</a>`
     }
 
     string[i] = word
@@ -29,12 +42,23 @@ function imgio(input) {
   
   var nospaceregex = /\"\>(\s+)\<img\s/g
   var nsstring = string.replace(nospaceregex, '"><ns></ns><img ')
-  return nsstring
+  var forcespaceregex = /\s?\{([0-9].{1,2})\}\s/gim
+  var match = forcespaceregex.exec(nsstring)
+  if (match) {
+    var num = match[1]
+    var forcespaceregex = /\s?\[([0-9].{1,2})\]\s/gim
+    var esstring = nsstring.replace(forcespaceregex, '<ns style="width:' + num + 'px; display:inline-block"></ns>')
+    return esstring
+  }
+  else {
+    return nsstring
+  }
 }
 
 var connection
 var visible
 var unread = 0
+var mentionstar = ""
 var muted
 var locked = false
 var dragpop = false
@@ -51,7 +75,7 @@ function dragpopup() {
       dragcount = false
       propagatestored()
       $('#storedarea').toggleClass('makeroom')
-      $('#msg input').toggleClass('makeroom')
+      $('#msg #input').toggleClass('makeroom')
     }
   }
 }
@@ -79,6 +103,7 @@ document.addEventListener( 'visibilitychange' , function() {
     // clear tab messages and reset
     console.log("true")
     unread = 0
+    mentionstar = ""
     visible = true
     $('#title').html('bogchat')
   }
@@ -101,18 +126,31 @@ function bogscript(a,b) {
     }
     else {
       // todo.. e.g. custom force fav post like last text post
-      var lastimgdataid = $("#content").find("img:last").parent().attr("data-id")
-      favpost(lastimgdataid)
+      var nick = $("#content").find('span:contains("' + b[0] + '"):last').parent().attr("data-id")
+      if (nick) {
+        favpost(nick)
+      }
     }
   }
   else if ( a == "nightmode") {
     $('link[rel=stylesheet]').remove()
     $('head').append('<link rel="stylesheet" href="style-night.css" type="text/css">')
   }
+  else if ( a == "clear" ) {
+    $('#content').html('')
+  }
+
   // 
-  // todo: clear, mute, unmute, mutelist, help, whois, ack, me
+  // todo: me
   
 }
+
+var ibhistory = [""]
+var ibtemp = ""
+var ibstate = 1
+var tabready = true
+var tabcount = 0
+var myName
 
 $(function () {
   
@@ -123,7 +161,7 @@ $(function () {
   var status = $('#status')
 
   var myColor = false
-  var myName = false
+  myName = false
 
   window.WebSocket = window.WebSocket || window.MozWebSocket
 
@@ -172,7 +210,7 @@ $(function () {
     } else if (json.type === 'history') { 
       console.log
       for (var i=0; i < json.data.length; i++) {
-        addMessage(json.data[i].author, imgio(json.data[i].text),
+        addMessage(json.data[i].author, json.data[i].text,
                json.data[i].color, json.data[i].id)
       }
       $('#content').scrollTop(200000)
@@ -180,7 +218,10 @@ $(function () {
       
       if (visible === false) {
         unread++
-        $('#title').html(`(${unread}) bogchat`)
+        if ( json.data.text.includes(myName)) {
+          mentionstar = "*"
+        }
+        $('#title').html(`${mentionstar}(${unread}) bogchat`)
       }
       input.removeAttr('disabled')
       addMessage(json.data.author, json.data.text,
@@ -213,8 +254,31 @@ $(function () {
     }
   }
   input.keydown(function(e) {
-    if (e.keyCode === 13) {
-      var msg = $(this).val()
+    // enter
+    var msg = $(this).val()
+    
+    if ( e.keyCode != 9 ) {
+      tabready = false
+      tabcount = 0
+    }
+    
+    if ( e.keyCode === 9 ) {
+      // in progress.. autocomplete nicks for fast faving
+      e.preventDefault()
+      var tabscan
+      if (tabready === false) {
+        var spaces = msg.split(" ")
+        var lastword = spaces[spaces.length - 1]
+        tabready = lastword
+        tabcount = 0
+      }
+      userlist.sort()
+      console.log("> " + tabready)
+      tabcount++
+      
+    }
+    else if (e.keyCode === 13) {
+
       if (!msg) {
         return
       }
@@ -227,6 +291,10 @@ $(function () {
         connection.send(JSON.stringify({type: "nick", data: msg}))
       }
       else {
+        ibtemp = ""
+        ibhistory.push(msg)
+        ibstate = ibhistory.length
+
         var x = msg
         var b = msg.trim()
         if ( b.substr(0,1) == "/") {
@@ -237,10 +305,48 @@ $(function () {
           bogscript(g,b)
         }
         else {
-        connection.send(JSON.stringify({type: "message", data: x}))
+          connection.send(JSON.stringify({type: "message", data: x}))
         }
       }
     $('#content').scrollTop(200000)
+    }
+    // up
+    else if (e.keyCode === 38) {
+      if (ibstate <= 0) {
+        $('#msg #input').val("")
+      }
+      else if ( ibstate == (ibhistory.length)) {
+
+        if (msg == undefined) {
+          msg = ""
+        }
+        ibtemp = msg //value thats in the input box now
+
+        
+        ibstate--
+        $('#msg #input').val(ibhistory[ibstate])
+      }
+      else {
+        ibstate--
+        $('#msg #input').val(ibhistory[ibstate])
+      }
+    }
+    // down
+    else if (e.keyCode === 40) {
+      if (  ibstate >= (ibhistory.length)) {
+        return // value already in box
+      } 
+      else {
+        ibstate++
+        
+        if (ibstate == (ibhistory.length)) {
+
+           $('#msg #input').val(ibtemp)
+        }
+        else {
+           $('#msg #input').val(ibhistory[ibstate])
+        }
+      }      
     }
   })
   setInterval(function() {
@@ -250,7 +356,9 @@ $(function () {
     }
   }, 3000)
   function addMessage(author, message, color, id) {
+    userlist = uniquepush(author,userlist)
     content.append(`<p data-id="${id}"><span class="nick" style="color:${color}">${author}</span>: ${imgio(message)}</p>`)
+
   }
   window.onload = function() {
     setTimeout(function(){$('#content').scrollTop(200000)},1000);
@@ -276,7 +384,7 @@ function favrequest(e) {
 $('#storedbutton').click(function() {
   propagatestored()
   $('#storedarea').toggleClass('makeroom')
-  $('#msg input').toggleClass('makeroom')
+  $('#msg #input').toggleClass('makeroom')
 })
 
 
@@ -297,7 +405,7 @@ function showstored(e) {
       setTimeout(function() {
         dragpop = false
         $('#storedarea').removeClass('makeroom')
-        $('#msg input').removeClass('makeroom')      
+        $('#msg #input').removeClass('makeroom')      
       },300)
     }
   }
@@ -340,7 +448,7 @@ function propagatestored(e) {
 
 $(document).on('click','#storedcontainer img',function(e) {
   var neue = e.toElement.currentSrc
-  var oldval = $('#msg input').val()
+  var oldval = $('#msg #input').val()
   var oldval = `${oldval} ${neue} `
   $('#input').val(oldval)
 })
@@ -354,7 +462,7 @@ var feedback = function (res) {
   if (res.success === true) {
      if (locked) {
       var x = res.data.link
-      var oldval = $('#msg input').val()
+      var oldval = $('#msg #input').val()
       var oldval = `${oldval} ${x} `
       $('#input').val(oldval)       
      }
@@ -363,115 +471,131 @@ var feedback = function (res) {
      }
   }
 }
-new Imgur({
-  clientid: 'a91768c3de50774',
-  callback: feedback
-})
 
 
 // webcam uploader
 
 
-    var videoopen = false
-    var video = document.getElementById('video');
-    var localstream
-    // Get access to the camera!
-    function cameraopen(){
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          // Not adding `{ audio: true }` since we only want video now
-          navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-            video.src = window.URL.createObjectURL(stream)
-            localstream = stream
-            video.play()
-          })
-      }
+var videoopen = false
+var video = document.getElementById('video');
+var localstream
+// Get access to the camera!
+function cameraopen(){
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    // Not adding `{ audio: true }` since we only want video now
+    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+    video.src = window.URL.createObjectURL(stream)
+    localstream = stream
+    video.play()
+  })
+}
 
-      else if (navigator.getUserMedia) { 
-          navigator.getUserMedia({ video: true }, function(stream) {
-              video.src = stream;
-              localstream = stream
-              video.play();
-          }, errBack);
-      } 
-      else if (navigator.webkitGetUserMedia) { 
-          navigator.webkitGetUserMedia({ video: true }, function(stream){
-              video.src = window.webkitURL.createObjectURL(stream);
-              localstream = stream
-              video.play();
-          }, errBack);
-      } 
-      else if(navigator.mozGetUserMedia) { 
-          navigator.mozGetUserMedia({ video: true }, function(stream){
-              video.src = window.URL.createObjectURL(stream);
-              localstream = stream
-              video.play();
-          }, errBack);
-      }
-    }
+else if (navigator.getUserMedia) { 
+  navigator.getUserMedia({ video: true }, function(stream) {
+    video.src = stream;
+    localstream = stream
+    video.play();
+  }, errBack);
+} 
+else if (navigator.webkitGetUserMedia) { 
+  navigator.webkitGetUserMedia({ video: true }, function(stream){
+    video.src = window.webkitURL.createObjectURL(stream);
+    localstream = stream
+    video.play();
+  }, errBack);
+} 
+else if(navigator.mozGetUserMedia) { 
+  navigator.mozGetUserMedia({ video: true }, function(stream){
+      video.src = window.URL.createObjectURL(stream);
+      localstream = stream
+      video.play();
+    }, errBack);
+  }
+}
 
-    // Elements for taking the snapshot
-    var canvas = document.getElementById('canvas');
-    var context = canvas.getContext('2d');
-    var video = document.getElementById('video');
-    
-    function webcamtoimgur(uri) {
-    var clientId = "a91768c3de50774";               
-    $.ajax({
-    url: "https://api.imgur.com/3/upload",
-    type: "POST",
-    datatype: "json",
-    data: {
-    'image': uri,
-    'type': 'base64'
+// Elements for taking the snapshot
+var canvas = document.getElementById('canvas');
+var context = canvas.getContext('2d');
+var video = document.getElementById('video');
+
+function webcamtoimgur(uri) {
+  var clientId = "a91768c3de50774";               
+  $.ajax({
+      url: "https://api.imgur.com/3/upload",
+      type: "POST",
+      datatype: "json",
+      data: {
+      'image': uri,
+      'type': 'base64'
     },
     success: fdone,//calling function which displays url
     error: function(){console.log("failed")},
     beforeSend: function (xhr) {
-    xhr.setRequestHeader("Authorization", "Client-ID " + clientId);
+      xhr.setRequestHeader("Authorization", "Client-ID " + clientId);
     }
-    })
+  })
+}
+
+function imagefiletoimgur(uri) {
+  var clientId = "a91768c3de50774";               
+  $.ajax({
+      url: "https://api.imgur.com/3/upload",
+      type: "POST",
+      datatype: "json",
+      data: {
+      'image': uri,
+      'type': 'base64'
+    },
+    success: feedback,//calling function which displays url
+    error: function(){console.log("failed")},
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader("Authorization", "Client-ID " + clientId);
     }
+  })
+}
 
-   $('#videoclose').click(function() {
-     localstream.getVideoTracks()[0].stop()
-     videoopen = false
-     $('#videobox').addClass('hidden')
-     $('#camerabutton').removeClass('howto')
-   })
-   
-   $('#camerabutton').click(function() {
-   if (!videoopen) {
-      $('#camerabutton').addClass('howto')
-      $('#videobox').removeClass('hidden')
-      videoopen = true
-      cameraopen()
-      $('#camerabutton').prop("disabled", true)
-      setTimeout(function(){
-      $('#camerabutton').prop("disabled", false);
-      },1200);
-     }
-     else {
-     	context.drawImage(video, 0, 0, 400, 300)
-      var image = $('#canvas').getCanvasImage()
-      var uri = image.substring(22)
-      webcamtoimgur(uri)
-      $('#camerabutton').prop("disabled", true)
-      setTimeout(function(){
-      $('#camerabutton').prop("disabled", false);
-      },3000);
-     }
-   })
+$('#videoclose').click(function() {
+  localstream.getVideoTracks()[0].stop()
+  videoopen = false
+  $('#videobox').addClass('hidden')
+  $('#camerabutton').removeClass('howto')
+})
 
-   
-   // 
+$('#camerabutton').click(function() {
+  if (!videoopen) {
+    $('#camerabutton').addClass('howto')
+    $('#videobox').removeClass('hidden')
+    videoopen = true
+    cameraopen()
+    $('#camerabutton').prop("disabled", true)
+    setTimeout(function(){
+    $('#camerabutton').prop("disabled", false);
+    },1200);
+  }
+  else {
+    context.drawImage(video, 0, 0, 400, 300)
+    var image = $('#canvas').getCanvasImage()
+    var uri = image.substring(22)
+    webcamtoimgur(uri)
+    $('#camerabutton').prop("disabled", true)
+    setTimeout(function(){
+    $('#camerabutton').prop("disabled", false);
+    },3000);
+  }
+})
+
+// bash-like input box
+
+
+
     
 function fdone(data) {
-   connection.send(JSON.stringify({type: "message", data: data.data.link}))
+  connection.send(JSON.stringify({type: "message", data: data.data.link}))
 }
 
 
 $(document).on('click','#uploadbutton',function() {
- $('.dropzone input').trigger('click');
+  $('#fileinput').trigger('click');
 })
 
 
@@ -502,13 +626,27 @@ $('#lockbutton').click(function() {
 })
 
 
-
 function favpost(id) {
   connection.send(JSON.stringify({type: "fav", data: id}))
 }
 
+function pushfile() {
 
-   
+  var file    = document.getElementById("fileinput").files[0];
+  var reader  = new FileReader();
+
+  reader.addEventListener("load", function () {
+    var base = reader.result
+    var firstcomma = base.indexOf(",");
+    var base = base.substring((firstcomma + 1),(base.length))
+    imagefiletoimgur(base)
+  }, false);
+
+  if (file) {
+    reader.readAsDataURL(file)
+  }
+}
+
 
 function scrollHorizontally(e) {
     e = window.event || e;

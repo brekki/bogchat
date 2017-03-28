@@ -5,6 +5,10 @@ body {
   
 }
 
+#fileinput {
+  display:none
+}
+
 #lockbutton {
   width: 30px;
   display: inline;
@@ -19,6 +23,7 @@ body {
   position: fixed;
   border: 4px outset #cefff2;
 }
+
 
 #lockbutton:active {
   border: 4px inset #cefff2;
@@ -180,6 +185,7 @@ div {
 #content {
   overflow-y:scroll;
   height:calc(100vh - 50px);
+  overflow-x:hidden;
   width:calc(100vw - 10px);
   position:absolute;
   left:0;

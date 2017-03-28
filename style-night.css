@@ -6,6 +6,10 @@ body {
   background:url(stars-bb.gif)
 }
 
+#fileinput {
+  display:none
+}
+
 #lockbutton {
   width: 30px;
   display: inline;
@@ -180,6 +184,7 @@ div {
 
 #content {
   overflow-y:scroll;
+  overflow-x:hidden;
   height:calc(100vh - 50px);
   width:calc(100vw - 10px);
   position:absolute;
@@ -210,6 +215,8 @@ div {
 #status {
   width:88px; 
   display:block; 
+  padding-top: 1px;
+  padding-left: 6px;
   float:left; 
   margin-top:15px;
   color:coral

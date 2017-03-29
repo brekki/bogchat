@@ -5,6 +5,7 @@
 process.title = 'node-chat-staging';
 
 // Port where we'll run the websocket server
+//var webSocketsServerPort = 1337;
 var webSocketsServerPort = 1337;
 // prod
 //var webSocketsServerPort = 1337;
@@ -12,12 +13,27 @@ var webSocketsServerPort = 1337;
 // websocket and http servers
 var webSocketServer = require('websocket').server;
 var http = require('http');
+var localStorage
+
+if (typeof localStorage === "undefined" || localStorage === null) {
+  var LocalStorage = require('node-localstorage').LocalStorage;
+  localStorage = new LocalStorage('./scratch');
+}
+
+var history = [ ]
+
+if (localStorage.getItem('history') ) {
+  history = JSON.parse(localStorage.getItem('history'))
+}
+
+
+
 
 
 // latest 100 messages
-var history = [ ];
+
 // list of currently connected clients (users)
-var clients = [ ];
+var clients = [ ]
 
 var increment = 0;
 
@@ -116,18 +132,22 @@ wsServer.on('request', function(request) {
                 + userName + ': ' + parsed.data);
           
           // we want to keep history of all sent messages
+          var thistime = (new Date()).getTime()
+          var thismessage = htmlEntities(parsed.data)
           var obj = {
-            time: (new Date()).getTime(),
-            text: htmlEntities(parsed.data),
+            time: thistime,
+            text: thismessage,
             author: userName,
             color: userColor,
             id: increment
           };
           history.push(obj);
           history = history.slice(-100);
-        
+          localStorage.setItem('history', JSON.stringify(history))
+
+
           // broadcast message to all connected clients
-          var json = JSON.stringify({ type:'message', data: obj });
+          var json = JSON.stringify({ type:'message', data: obj })
           for (var i=0; i < clients.length; i++) {
             clients[i].sendUTF(json);
           }

@@ -2,7 +2,16 @@ body {
   font-family:arial;
   overflow:hidden;
   font-size:16px;
-  
+  margin:0;
+}
+
+#container {
+  width:100vw;
+  height:calc(100vh - 50px);
+  background:white;
+  /*background-image:url(http://i.imgur.com/57lpUPW.png);*/
+  margin:0;
+  perspective:220px;
 }
 
 #fileinput {
@@ -30,11 +39,11 @@ body {
 }
 
 #lockbutton.locked {
-    animation: 1s flicker linear infinite alternate;
-    background: #77f2d9;
-    background-image: url(lock.png);
-    background-size: 30px 30px;
-    border: 4px inset white;
+  animation: 1s flicker linear infinite alternate;
+  background: #77f2d9;
+  background-image: url(lock.png);
+  background-size: 30px 30px;
+  border: 4px inset white;
 }
 
 #uploadbutton.locked {
@@ -183,14 +192,21 @@ div {
 }
 
 #content {
-  overflow-y:scroll;
-  height:calc(100vh - 50px);
-  overflow-x:hidden;
-  width:calc(100vw - 10px);
-  position:absolute;
-  left:0;
-  bottom:50px;
-  border:5px solid yellow
+overflow-y: scroll;
+    background: white;
+    height: calc(100% + 0px);
+    overflow-x: hidden;
+    width: calc(100vw - 10px);
+    position: absolute;
+    left: 0;
+    bottom: 0px;
+    border: 5px solid yellow;
+    transition: all .5s ease-in-out;
+}
+
+#content.starfox {
+    transform: translateZ(-45px) rotateX(-4deg);
+    opacity:.4
 }
 
 * {
@@ -201,9 +217,11 @@ div {
   border-radius:2px; 
   border:3px solid magenta;
   margin-top:10px; 
-  padding:5px; 
+  padding:5px;
   width: calc(100vw - 314px);
   transition:all .3s ease-in-out;
+
+
 }
 
 #input.makeroom {
@@ -213,9 +231,47 @@ div {
 #status {
   width:88px; 
   display:block; 
+  padding-top: 1px;
+  padding-left: 6px;
   float:left; 
   margin-top:15px;
+  transition:.2s all ease-in-out
 }
+
+body.terminal #input {
+  width: calc(100vw - 18px);
+  margin-top: 0px;
+  height:25px;
+  font-size:24px;
+}
+
+
+
+body.terminal #input.dark {
+  background:black;
+  color:#00ff45
+}
+
+body.terminal #input.makeroom {
+   width: calc(100vw - 400px);
+}
+
+body.terminal div[id*=button] {
+  display:none!important
+}
+
+body.terminal #storedarea {
+  right:0;
+  border:none
+}
+
+body.terminal #status {
+  width:0;
+  overflow:hidden;
+  padding:0;
+  margin:0;
+}
+
 
 #msg {
   position:fixed;

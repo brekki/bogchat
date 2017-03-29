@@ -46,7 +46,7 @@ function imgio(input) {
   var match = forcespaceregex.exec(nsstring)
   if (match) {
     var num = match[1]
-    var forcespaceregex = /\s?\[([0-9].{1,2})\]\s/gim
+    var forcespaceregex = /\s?\{([0-9].{1,2})\}\s/gim
     var esstring = nsstring.replace(forcespaceregex, '<ns style="width:' + num + 'px; display:inline-block"></ns>')
     return esstring
   }
@@ -62,6 +62,39 @@ var mentionstar = ""
 var muted
 var locked = false
 var dragpop = false
+var terminalmode = false
+var joelmode = false
+var joelnormallaunch = false
+
+function toggleterminalmode() {
+  if (terminalmode) {
+    terminalmode = false
+    $('body').removeClass("terminal")
+  }
+  else {
+    terminalmode = true
+    $('body').addClass("terminal")
+  }
+}
+
+function togglejoelmode() {
+  if (!terminalmode) {
+    terminalmode = true
+    joelmode = true
+    $('body').addClass("terminal")
+    $('#msg #input').addClass("dark")
+  }
+  else {
+    if (joelmode) {
+      joelmode = false
+      $('#msg #input').removeClass("dark")
+    }
+    else {
+      joelmode = true
+      $('#msg #input').addClass("dark")
+    }
+  }
+}
 
 
 function dragready() {
@@ -126,8 +159,10 @@ function bogscript(a,b) {
     }
     else {
       // todo.. e.g. custom force fav post like last text post
-      var nick = $("#content").find('span:contains("' + b[0] + '"):last').parent().attr("data-id")
+      var bb = b.split(" ")
+      var nick = $("#content").find('span:contains("' + bb[0] + '"):last').parent().attr("data-id")
       if (nick) {
+        console.log(nick + " " + bb[0])
         favpost(nick)
       }
     }
@@ -138,6 +173,33 @@ function bogscript(a,b) {
   }
   else if ( a == "clear" ) {
     $('#content').html('')
+  }
+  else if ( a == "term") {
+    toggleterminalmode()
+  }
+  else if ( a == "joel" ) {
+    if (joelnormallaunch) {
+      joelnormallaunch = false
+      joelmode = false
+      $('#msg #input').removeClass("dark")
+      terminalmode = false
+      $('body').removeClass("terminal")
+    }
+    else if (!joelmode && !terminalmode) {
+      joelnormallaunch = true
+      togglejoelmode()
+    }
+    else {
+      togglejoelmode()
+    }
+  }
+  else if ( a == "msg" ) {
+    if (b) {
+      connection.send(JSON.stringify({type: "message", data: b}))
+    }
+  }
+  else if ( a == "starfox" || a == "/" ) {
+    $('#content').toggleClass("starfox")
   }
 
   // 
@@ -174,6 +236,7 @@ $(function () {
 
   //prod
   connection = new WebSocket('wss://chat.bog.jollo.org')
+ // connection = new WebSocket('ws://chat.bog.jollo.org:1338')
 
   
   connection.onclose = function () {
@@ -294,18 +357,28 @@ $(function () {
         ibtemp = ""
         ibhistory.push(msg)
         ibstate = ibhistory.length
-
         var x = msg
         var b = msg.trim()
-        if ( b.substr(0,1) == "/") {
-          b = b.substr(1,b.length - 1)
+        if ( joelmode ) {
+          if ( b.substr(0,1) == "/") {
+            b = b.substr(1,b.length - 1)
+          }
           b = b.split(" ")
           var g = b.shift()
           b = b.join(" ")
-          bogscript(g,b)
+          bogscript(g,b) 
         }
         else {
-          connection.send(JSON.stringify({type: "message", data: x}))
+          if ( b.substr(0,1) == "/") {
+            b = b.substr(1,b.length - 1)
+            b = b.split(" ")
+            var g = b.shift()
+            b = b.join(" ")
+            bogscript(g,b)
+          }
+          else {
+            connection.send(JSON.stringify({type: "message", data: x}))
+          }
         }
       }
     $('#content').scrollTop(200000)

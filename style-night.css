@@ -3,11 +3,19 @@ body {
   overflow:hidden;
   font-size:16px;
   color:#e1ff00;
-  background:url(stars-bb.gif)
+  background:url(stars-bb.gif);
+  margin:0;
 }
 
 #fileinput {
   display:none
+}
+
+#container {
+  width:100vw;
+  height:calc(100vh - 50px);
+  margin:0;
+  perspective:220px;
 }
 
 #lockbutton {
@@ -185,12 +193,18 @@ div {
 #content {
   overflow-y:scroll;
   overflow-x:hidden;
-  height:calc(100vh - 50px);
-  width:calc(100vw - 10px);
-  position:absolute;
-  left:0;
-  bottom:50px;
-  border:5px solid #7600ff
+    height: calc(100% + 0px);
+    width: calc(100vw - 10px);
+    position: absolute;
+    left: 0;
+    bottom: 0px;
+  border:5px solid #7600ff;
+    transition:all .5s ease-in-out;
+}
+
+
+#content.starfox {
+    transform: translateZ(-45px) rotateX(-4deg);
 }
 
 * {
@@ -199,11 +213,11 @@ div {
 
 #input {
   border-radius:2px; 
-  border:3px solid #c800ff;
-  margin-top:10px; 
-  padding:5px; 
-  background:black;
+  border:3px solid magenta;
   width: calc(100vw - 314px);
+  margin-top:10px; 
+  padding:5px;
+  background:black;
   transition:all .3s ease-in-out;
   color:#e1ff00
 }
@@ -221,6 +235,41 @@ div {
   margin-top:15px;
   color:coral
 }
+
+body.terminal #input {
+  width: calc(100vw - 18px);
+  margin-top: 0px;
+  height:25px;
+  font-size:24px;
+}
+
+
+
+body.terminal #input.dark {
+background: rgb(60, 107, 105);
+    color: #96ffc1;
+}
+
+body.terminal #input.makeroom {
+   width: calc(100vw - 400px);
+}
+
+body.terminal div[id*=button] {
+  display:none!important
+}
+
+body.terminal #storedarea {
+  right:0;
+  border:none
+}
+
+body.terminal #status {
+  width:0;
+  overflow:hidden;
+  padding:0;
+  margin:0;
+}
+
 
 #msg {
   position:fixed;

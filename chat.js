@@ -9,7 +9,7 @@ String.prototype.hashCode = function() {
   return hash
 }
 
-var userlist = []
+var userlist = [ ]
 
 function uniquepush(item,oldarray) {
   if ( oldarray.indexOf(item) === -1 ) {
@@ -18,7 +18,26 @@ function uniquepush(item,oldarray) {
   return oldarray
 }
 
-function imgio(input) {
+function storefavitems(id) {
+  // if its already set then unset it
+  function pushfavbundle(item) {
+    var favbundle = [ ]
+    if ( localStorage.getItem("favbundle") ) {
+      favbundle = JSON.parse(localStorage.getItem("favbundle"))
+    }
+    favbundle = uniquepush(item,favbundle)
+    localStorage.setItem("favbundle", JSON.stringify(favbundle))
+  }
+  if ( $('p[data-id="' + id + '"]').length > 0 ) {
+    if ( $('p[data-id="' + id + '"]').find("img").length > 0 ) {
+      for ( i=0;i<($('p[data-id="' + id + '"]').find("img").length);i++) {
+        pushfavbundle($('p[data-id="' + id + '"]').find("img")[i].src)
+      }
+    }
+  }
+}
+
+function richtext(input) {
   function checkimgurl(url) {
     return(url.match(/\.(jpeg|jpg|gif|png|bmp|JPEG|JPG|GIF|PNG|BMP)$/) != null)
   }
@@ -26,7 +45,6 @@ function imgio(input) {
     return (url.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/) != null)
   }
   var string = input.split(" ")
-
   for (i=0;i<string.length;i++) {
     var word = string[i]
     if (checkimgurl(word)) {
@@ -35,11 +53,9 @@ function imgio(input) {
     else if (checklinkurl(word)) {
       word = `<a target="_blank" href="${word}">${word}</a>`
     }
-
     string[i] = word
   }
   string = string.join(" ")
-  
   var nospaceregex = /\"\>(\s+)\<img\s/g
   var nsstring = string.replace(nospaceregex, '"><ns></ns><img ')
   var forcespaceregex = /\s?\{([0-9].{1,2})\}\s/gim
@@ -96,7 +112,6 @@ function togglejoelmode() {
   }
 }
 
-
 function dragready() {
   dragcount = true
 }
@@ -125,24 +140,17 @@ else {
   }
 }
 
-
-document.addEventListener( 'visibilitychange' , function() {
-
+document.addEventListener('visibilitychange',function() {
   if (document.hidden) {
     visible = false
-    //console.log("false")
   }
   else {
-    // clear tab messages and reset
-    console.log("true")
     unread = 0
     mentionstar = ""
     visible = true
     $('#title').html('bogchat')
   }
 }, false )
-
-var connection
 
 function bogscript(a,b) {
   // a = action
@@ -162,7 +170,7 @@ function bogscript(a,b) {
       var bb = b.split(" ")
       var nick = $("#content").find('span:contains("' + bb[0] + '"):last').parent().attr("data-id")
       if (nick) {
-        console.log(nick + " " + bb[0])
+        //console.log(nick + " " + bb[0])
         favpost(nick)
       }
     }
@@ -208,13 +216,16 @@ function bogscript(a,b) {
 }
 
 var ibhistory = [""]
+var signal = [ ]
 var ibtemp = ""
 var ibstate = 1
 var tabready = true
 var tabcount = 0
-var myName
+var myname
 
-$(function () {
+function startwebsocket() {
+  
+
   
   "use strict"
   
@@ -222,8 +233,8 @@ $(function () {
   var input = $('#input')
   var status = $('#status')
 
-  var myColor = false
-  myName = false
+  var mycolor = false
+  myname = false
 
   window.WebSocket = window.WebSocket || window.MozWebSocket
 
@@ -233,24 +244,26 @@ $(function () {
     $('span').hide()
     return
   }
-
   //prod
   connection = new WebSocket('wss://chat.bog.jollo.org')
- // connection = new WebSocket('ws://chat.bog.jollo.org:1338')
 
-  
   connection.onclose = function () {
     console.log("close event received")
   }
   connection.onopen = function () {
+    $('#input').removeClass("weaksignal")
+    signal = [ ]
+    setTimeout(function(){$('#content').scrollTop(200000)},1000)
+    setTimeout(function(){$('#content').scrollTop(200000)},2000)
     input.removeAttr('disabled')
-    status.text('Choose name:')
+    input.val("")
+    status.text('choose name:')
     if (!localStorage.getItem("nick")) {
       $('body').addClass("setnick")
     }
     else {
-      myName = localStorage.getItem("nick")
-      connection.send(JSON.stringify({type: "nick", data: myName}))
+      myname = localStorage.getItem("nick")
+      connection.send(JSON.stringify({type: "nick", data: myname}))
     }
   }
 
@@ -258,7 +271,6 @@ $(function () {
     content.html($('<p>', { text: 'serverr' } ))
   }
   
-
   connection.onmessage = function (message) {
     try {
       var json = JSON.parse(message.data)
@@ -267,8 +279,8 @@ $(function () {
       return
     }
     if (json.type === 'color') {
-      myColor = json.data
-      status.text(myName + ': ').css('color', myColor)
+      mycolor = json.data
+      status.text(myname + ': ').css('color', mycolor)
       input.removeAttr('disabled').focus()
     } else if (json.type === 'history') { 
       console.log
@@ -281,7 +293,7 @@ $(function () {
       
       if (visible === false) {
         unread++
-        if ( json.data.text.includes(myName)) {
+        if ( json.data.text.includes(myname)) {
           mentionstar = "*"
         }
         $('#title').html(`${mentionstar}(${unread}) bogchat`)
@@ -310,156 +322,183 @@ $(function () {
     } else if ( json.type === "fav" ) {
       $('p[data-id="' + json.data + '"] span').addClass("jiggle")
       setTimeout(function(){$('p[data-id="' + json.data + '"] span').removeClass("jiggle")},300)
-     
+    } else if ( json.type === "pong" ) {
+      // remove ping from signal [ ]
+      // json.data
+      signal.pop()
+      signal.pop()
     }
     else {
       console.log('vbadjson: ', json)
     }
   }
-  input.keydown(function(e) {
-    // enter
-    var msg = $(this).val()
-    
-    if ( e.keyCode != 9 ) {
-      tabready = false
+  
+  var testsignalstrength = setInterval(function() {
+    if (signal.length < 8) { 
+      signal.push("ping")
+      connection.send(JSON.stringify({type: "ping", data: 0}))
+    } 
+  }, 2000)
+  
+  var viewsignalstrength = setInterval(function() {
+
+    if (signal.length > 3 ) {
+      $('#input').addClass("weaksignal")
+    }
+    else {
+      if ($('#input').hasClass("weaksignal")) {
+        $('#input').removeClass("weaksignal")
+      }
+    }
+  }, 2000)
+  
+  var trybadcomm = setInterval(function() {
+    if (connection.readyState !== 1) {
+      status.text('error..')
+      input.attr('disabled', 'disabled').val('badcomm')
+      connection.close()
+      reconnectbadcomm()
+    }
+  }, 4000)
+  
+  function reconnectbadcomm() {
+
+    clearInterval(trybadcomm)
+    input.attr('disabled', 'disabled').val('reconnecting..')
+    setTimeout(function(){ startwebsocket()},2000) 
+  }
+  
+}
+startwebsocket()
+
+$('#input').keydown(function(e) {
+
+  var msg = $(this).val()
+  
+  if ( e.keyCode != 9 ) {
+    tabready = false
+    tabcount = 0
+  }
+  
+  if ( e.keyCode === 9 ) {
+    e.preventDefault()
+    var tabscan
+    if (tabready === false) {
+      var spaces = msg.split(" ")
+      var lastword = spaces[spaces.length - 1]
+      tabready = lastword
       tabcount = 0
     }
-    
-    if ( e.keyCode === 9 ) {
-      // in progress.. autocomplete nicks for fast faving
-      e.preventDefault()
-      var tabscan
-      if (tabready === false) {
-        var spaces = msg.split(" ")
-        var lastword = spaces[spaces.length - 1]
-        tabready = lastword
-        tabcount = 0
-      }
-      userlist.sort()
-      console.log("> " + tabready)
-      tabcount++
-      
-    }
-    else if (e.keyCode === 13) {
+    userlist.sort()
+    console.log("> " + tabready)
+    tabcount++
+  }
+  else if (e.keyCode === 13) {
 
-      if (!msg) {
-        return
-      }
-      
-      $(this).val('') 
-      if (myName === false) {
-        myName = msg
-        localStorage.setItem("nick",msg)
-        $('body').removeClass("setnick")
-        connection.send(JSON.stringify({type: "nick", data: msg}))
+    if (!msg) {
+      return
+    }
+    
+    $(this).val('') 
+    if (myname === false) {
+      myname = msg
+      localStorage.setItem("nick",msg)
+      $('body').removeClass("setnick")
+      connection.send(JSON.stringify({type: "nick", data: msg}))
+    }
+    else {
+      ibtemp = ""
+      ibhistory.push(msg)
+      ibstate = ibhistory.length
+      var x = msg
+      var b = msg.trim()
+      if ( joelmode ) {
+        if ( b.substr(0,1) == "/") {
+          b = b.substr(1,b.length - 1)
+        }
+        b = b.split(" ")
+        var g = b.shift()
+        b = b.join(" ")
+        bogscript(g,b) 
       }
       else {
-        ibtemp = ""
-        ibhistory.push(msg)
-        ibstate = ibhistory.length
-        var x = msg
-        var b = msg.trim()
-        if ( joelmode ) {
-          if ( b.substr(0,1) == "/") {
-            b = b.substr(1,b.length - 1)
-          }
+        if ( b.substr(0,1) == "/") {
+          b = b.substr(1,b.length - 1)
           b = b.split(" ")
           var g = b.shift()
           b = b.join(" ")
-          bogscript(g,b) 
+          bogscript(g,b)
         }
         else {
-          if ( b.substr(0,1) == "/") {
-            b = b.substr(1,b.length - 1)
-            b = b.split(" ")
-            var g = b.shift()
-            b = b.join(" ")
-            bogscript(g,b)
-          }
-          else {
-            connection.send(JSON.stringify({type: "message", data: x}))
-          }
+          connection.send(JSON.stringify({type: "message", data: x}))
         }
       }
-    $('#content').scrollTop(200000)
     }
-    // up
-    else if (e.keyCode === 38) {
-      if (ibstate <= 0) {
-        $('#msg #input').val("")
+  $('#content').scrollTop(200000)
+  }
+  else if (e.keyCode === 38) {
+    if (ibstate <= 0) {
+      $('#msg #input').val("")
+    }
+    else if ( ibstate == (ibhistory.length)) {
+
+      if (msg == undefined) {
+        msg = ""
       }
-      else if ( ibstate == (ibhistory.length)) {
-
-        if (msg == undefined) {
-          msg = ""
-        }
-        ibtemp = msg //value thats in the input box now
-
-        
-        ibstate--
-        $('#msg #input').val(ibhistory[ibstate])
+      ibtemp = msg //value thats in the input box now
+      ibstate--
+      $('#msg #input').val(ibhistory[ibstate])
+    }
+    else {
+      ibstate--
+      $('#msg #input').val(ibhistory[ibstate])
+    }
+  }
+  else if (e.keyCode === 40) {
+    if (  ibstate >= (ibhistory.length)) {
+      return // value already in box
+    } 
+    else {
+      ibstate++
+      if (ibstate == (ibhistory.length)) {
+         $('#msg #input').val(ibtemp)
       }
       else {
-        ibstate--
-        $('#msg #input').val(ibhistory[ibstate])
+         $('#msg #input').val(ibhistory[ibstate])
       }
-    }
-    // down
-    else if (e.keyCode === 40) {
-      if (  ibstate >= (ibhistory.length)) {
-        return // value already in box
-      } 
-      else {
-        ibstate++
-        
-        if (ibstate == (ibhistory.length)) {
-
-           $('#msg #input').val(ibtemp)
-        }
-        else {
-           $('#msg #input').val(ibhistory[ibstate])
-        }
-      }      
-    }
-  })
-  setInterval(function() {
-    if (connection.readyState !== 1) {
-      status.text('Error')
-      input.attr('disabled', 'disabled').val('badcomm')
-    }
-  }, 3000)
-  function addMessage(author, message, color, id) {
-    userlist = uniquepush(author,userlist)
-    content.append(`<p data-id="${id}"><span class="nick" style="color:${color}">${author}</span>: ${imgio(message)}</p>`)
-
+    }      
   }
-  window.onload = function() {
-    setTimeout(function(){$('#content').scrollTop(200000)},1000);
-  }
-  
-  
-  $(document).on('click','p img',function(e) {
-    var i = $(this).parent()
-    favpost(i[0].dataset.id)
-    $(this).parent().addClass("faved")
-  })
-  
-  
 })
 
 function favrequest(e) {
   console.log(e)
 }
 
+function addMessage(author, message, color, id) {
+  userlist = uniquepush(author,userlist)
+  $('#content').append(`<p data-id="${id}"><span class="nick" style="color:${color}">${author}</span>: ${richtext(message)}</p>`)
+}
 
+$(document).on('click','p img',function(e) {
+  var i = $(this).parent()
+  favpost(i[0].dataset.id)
+  $(this).parent().addClass("faved")
+})
+
+$(document).on('click','span.nick',function(e) {
+  var i = $(this).parent()
+  favpost(i[0].dataset.id)
+  $(this).parent().addClass("faved")
+})
+  
 // stored images 
+
 
 $('#storedbutton').click(function() {
   propagatestored()
   $('#storedarea').toggleClass('makeroom')
   $('#msg #input').toggleClass('makeroom')
 })
-
 
 
 function showstored(e) {
@@ -545,17 +584,12 @@ var feedback = function (res) {
   }
 }
 
-
-// webcam uploader
-
-
 var videoopen = false
 var video = document.getElementById('video');
 var localstream
-// Get access to the camera!
+
 function cameraopen(){
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    // Not adding `{ audio: true }` since we only want video now
     navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
     video.src = window.URL.createObjectURL(stream)
     localstream = stream
@@ -565,31 +599,31 @@ function cameraopen(){
 
 else if (navigator.getUserMedia) { 
   navigator.getUserMedia({ video: true }, function(stream) {
-    video.src = stream;
+    video.src = stream
     localstream = stream
-    video.play();
-  }, errBack);
+    video.play()
+  }, errBack)
 } 
 else if (navigator.webkitGetUserMedia) { 
   navigator.webkitGetUserMedia({ video: true }, function(stream){
     video.src = window.webkitURL.createObjectURL(stream);
     localstream = stream
-    video.play();
-  }, errBack);
+    video.play()
+  }, errBack)
 } 
 else if(navigator.mozGetUserMedia) { 
   navigator.mozGetUserMedia({ video: true }, function(stream){
-      video.src = window.URL.createObjectURL(stream);
+      video.src = window.URL.createObjectURL(stream)
       localstream = stream
-      video.play();
-    }, errBack);
+      video.play()
+    }, errBack)
   }
 }
 
-// Elements for taking the snapshot
-var canvas = document.getElementById('canvas');
-var context = canvas.getContext('2d');
-var video = document.getElementById('video');
+
+var canvas = document.getElementById('canvas')
+var context = canvas.getContext('2d')
+var video = document.getElementById('video')
 
 function webcamtoimgur(uri) {
   var clientId = "a91768c3de50774";               
@@ -601,7 +635,7 @@ function webcamtoimgur(uri) {
       'image': uri,
       'type': 'base64'
     },
-    success: fdone,//calling function which displays url
+    success: fdone,
     error: function(){console.log("failed")},
     beforeSend: function (xhr) {
       xhr.setRequestHeader("Authorization", "Client-ID " + clientId);
@@ -657,20 +691,14 @@ $('#camerabutton').click(function() {
   }
 })
 
-// bash-like input box
 
-
-
-    
 function fdone(data) {
   connection.send(JSON.stringify({type: "message", data: data.data.link}))
 }
 
-
 $(document).on('click','#uploadbutton',function() {
   $('#fileinput').trigger('click');
 })
-
 
 $('#mutebutton').click(function() {
   if ($(this).hasClass("muted")) {
@@ -692,7 +720,7 @@ $('#lockbutton').click(function() {
     locked = false
   }
   else {
-       $('#lockbutton').addClass("locked")
+    $('#lockbutton').addClass("locked")
     $('#uploadbutton').addClass("locked")
     locked = true
   }
@@ -700,17 +728,17 @@ $('#lockbutton').click(function() {
 
 
 function favpost(id) {
+  storefavitems(id)
   connection.send(JSON.stringify({type: "fav", data: id}))
 }
 
 function pushfile() {
-
   var file    = document.getElementById("fileinput").files[0];
-  var reader  = new FileReader();
+  var reader  = new FileReader()
 
   reader.addEventListener("load", function () {
     var base = reader.result
-    var firstcomma = base.indexOf(",");
+    var firstcomma = base.indexOf(",")
     var base = base.substring((firstcomma + 1),(base.length))
     imagefiletoimgur(base)
   }, false);
@@ -720,19 +748,20 @@ function pushfile() {
   }
 }
 
-
 function scrollHorizontally(e) {
-    e = window.event || e;
-    var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-    document.getElementById('storedcontainer').scrollLeft -= (delta*40); // Multiplied by 40
-    e.preventDefault();
+  e = window.event || e
+  var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)))
+  document.getElementById('storedcontainer').scrollLeft -= (delta*40)
+  e.preventDefault()
 }
 if (document.getElementById('storedcontainer').addEventListener) {
-    // IE9, Chrome, Safari, Opera
-    document.getElementById('storedcontainer').addEventListener("mousewheel", scrollHorizontally, false);
-    // Firefox
-    document.getElementById('storedcontainer').addEventListener("DOMMouseScroll", scrollHorizontally, false);
+  document.getElementById('storedcontainer').addEventListener("mousewheel", scrollHorizontally, false)
+  document.getElementById('storedcontainer').addEventListener("DOMMouseScroll", scrollHorizontally, false)
 } else {
-    // IE 6/7/8
-    document.getElementById('storedcontainer').attachEvent("onmousewheel", scrollHorizontally);
+  document.getElementById('storedcontainer').attachEvent("onmousewheel", scrollHorizontally)
+}
+
+window.onload = function() {
+
+  setTimeout(function(){$('#content').scrollTop(200000)},3000)
 }

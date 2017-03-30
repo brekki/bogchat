@@ -5,6 +5,10 @@ body {
   margin:0;
 }
 
+span.nick {
+  cursor:pointer
+}
+
 #container {
   width:100vw;
   height:calc(100vh - 50px);
@@ -12,6 +16,10 @@ body {
   /*background-image:url(http://i.imgur.com/57lpUPW.png);*/
   margin:0;
   perspective:220px;
+      position: absolute;
+          bottom: 50px;
+
+
 }
 
 #fileinput {
@@ -505,3 +513,68 @@ img {
   max-height:400px;
 }
 
+#input.weaksignal {
+  border: 3px dashed lime!important;
+}
+/* */
+
+.bubble {
+  position: absolute;
+  left: 132px;
+  z-index: 999;
+  bottom: 32px;
+  width: 100px;
+  height: 100px;
+  border-radius: 100px;
+}
+
+.pinkbubble {
+  background: rgba(255, 0, 0, .03);
+  box-shadow: inset 5px 0px 35px rgba(255,0,255,.4), inset 0 0 8px rgba(255,100,255,1), inset 0 0 3px rgba(255,200,255,1), 0px 5px 10px rgba(122,0,0,.3);
+}
+
+.bubble::after {
+  content: '';
+  background: white;
+  width: 15px;
+  height: 15px;
+  left: 16px;
+  top: 15px;
+  position: absolute;
+  border-radius: 100px;
+  transform: scaleX(.8) rotateX(20deg);
+}
+
+.bubble::before {
+  content: '';
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  border-radius: 100px;
+  left: 5px;
+  transform: scaleY(.85);
+  top: -6px;
+}
+
+.pinkbubble::before {
+  background: linear-gradient(rgba(255,100,255,.3),rgba(0,0,0,0));
+  box-shadow: inset 0px 5px 10px rgba(255,100,255,.3);
+}
+
+/* */
+
+@media screen and (max-width: 599px) {
+  #status { 
+    display:none!important
+  }
+  #msg #input {
+    width: calc(100vw - 214px);
+    height:20px;
+    border-radius:0;
+    font-size:19px;
+  }
+  #videobox {
+    right:-50px
+  }
+  
+}

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title id="title">bogchat</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0"/> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/> 
 <script>
 
 function getStylesheet() {
@@ -29,6 +29,7 @@ getStylesheet()
   <div class="line"></div>
   <div id="space"></div>
   <div id="container">
+  <div class="pinkbubble bubble" style="display:none"></div>
   <div id="content"></div>
   </div>
        <div id="videobox" class="hidden">
@@ -38,7 +39,7 @@ getStylesheet()
 <canvas id="canvas" width="400" height="300" style="display:none"></canvas>
 
   <div id="msg">
-    <span id="status">Connecting...</span>
+    <span id="status">connecting...</span>
     <input type="text" id="input" disabled="disabled" />
     <div id="storedbutton" ondragenter="dragpopup()"></div>
     <div id="storedarea">

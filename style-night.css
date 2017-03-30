@@ -12,10 +12,12 @@ body {
 }
 
 #container {
-  width:100vw;
-  height:calc(100vh - 50px);
-  margin:0;
-  perspective:220px;
+    width: 100vw;
+    height: calc(100vh - 50px);
+    margin: 0;
+    bottom: 50px;
+    perspective: 220px;
+    position: absolute;
 }
 
 #lockbutton {
@@ -188,6 +190,10 @@ div {
   width:500px; 
   margin-left:auto; 
   margin-right:auto;
+}
+
+span.nick {
+  cursor:pointer
 }
 
 #content {
@@ -494,7 +500,9 @@ body.setnick #msg {
   20%{background:white}
   100%{background:cyan}
 }
-
+#input.weaksignal {
+  border: 3px dashed lime!important;
+}
 img {
   height:auto;
   width:auto;
@@ -503,3 +511,18 @@ img {
 }
 
 
+@media screen and (max-width: 599px) {
+  #status { 
+    display:none!important
+  }
+  #msg #input {
+    width: calc(100vw - 214px);
+    height:20px;
+    border-radius:0;
+    font-size:19px;
+  }
+  #videobox {
+    right:-50px
+  }
+  
+}

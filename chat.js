@@ -1,3 +1,11 @@
+function rand(min, max) {
+    return Math.random() * (max - min) + min
+}
+
+function randint(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
 String.prototype.hashCode = function() {
   var hash = 0, i, chr
   if (this.length === 0) return hash
@@ -81,6 +89,7 @@ var dragpop = false
 var terminalmode = false
 var joelmode = false
 var joelnormallaunch = false
+var dragcount = false
 
 function toggleterminalmode() {
   if (terminalmode) {
@@ -333,24 +342,7 @@ function startwebsocket() {
     }
   }
   
-  var testsignalstrength = setInterval(function() {
-    if (signal.length < 8) { 
-      signal.push("ping")
-      connection.send(JSON.stringify({type: "ping", data: 0}))
-    } 
-  }, 2000)
-  
-  var viewsignalstrength = setInterval(function() {
 
-    if (signal.length > 3 ) {
-      $('#input').addClass("weaksignal")
-    }
-    else {
-      if ($('#input').hasClass("weaksignal")) {
-        $('#input').removeClass("weaksignal")
-      }
-    }
-  }, 2000)
   
   var trybadcomm = setInterval(function() {
     if (connection.readyState !== 1) {
@@ -371,7 +363,31 @@ function startwebsocket() {
 }
 startwebsocket()
 
+var testsignalstrength = setInterval(function() {
+  if (connection.readyState == 1) {
+    if (signal.length < 8) { 
+      signal.push("ping")
+      connection.send(JSON.stringify({type: "ping", data: 0}))
+    } 
+  }
+}, 2000)
+
+var viewsignalstrength = setInterval(function() {
+  if (signal.length > 3 ) {
+    $('#input').addClass("weaksignal")
+  }
+  else {
+    if ($('#input').hasClass("weaksignal")) {
+      $('#input').removeClass("weaksignal")
+    }
+  }
+}, 2000)
+
 $('#input').keydown(function(e) {
+
+//  if ( e.keyCode == 70 ) {
+//    newbubble()
+//  }
 
   var msg = $(this).val()
   
@@ -476,7 +492,7 @@ function favrequest(e) {
 
 function addMessage(author, message, color, id) {
   userlist = uniquepush(author,userlist)
-  $('#content').append(`<p data-id="${id}"><span class="nick" style="color:${color}">${author}</span>: ${richtext(message)}</p>`)
+  $('#content').append(`<p data-id="${id}"><span class="nick" style="color:${color}">${author.substr(0,16)}</span>: ${richtext(message)}</p>`)
 }
 
 $(document).on('click','p img',function(e) {
@@ -748,20 +764,72 @@ function pushfile() {
   }
 }
 
-function scrollHorizontally(e) {
+function scrollhorizontally(e) {
   e = window.event || e
   var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)))
   document.getElementById('storedcontainer').scrollLeft -= (delta*40)
   e.preventDefault()
 }
+
 if (document.getElementById('storedcontainer').addEventListener) {
-  document.getElementById('storedcontainer').addEventListener("mousewheel", scrollHorizontally, false)
-  document.getElementById('storedcontainer').addEventListener("DOMMouseScroll", scrollHorizontally, false)
+  document.getElementById('storedcontainer').addEventListener("mousewheel", scrollhorizontally, false)
+  document.getElementById('storedcontainer').addEventListener("DOMMouseScroll", scrollhorizontally, false)
 } else {
-  document.getElementById('storedcontainer').attachEvent("onmousewheel", scrollHorizontally)
+  document.getElementById('storedcontainer').attachEvent("onmousewheel", scrollhorizontally)
 }
 
-window.onload = function() {
+//
+// bubble machine
 
+// var bubblemachinerunning = false
+// var bubbles = [ ]
+// 
+// function newbubble() {
+//   
+//   function bubble() {
+//     this.type = "bubble"
+//     this.life = "alive"
+//     this.context = null
+//     this.id = bubbles.length
+//     this.x = randint(-50,(window.innerWidth - 50))
+//     // this.y = randint(-200,-100)
+//     this.y = randint(0,100)
+//     this.opacity = 1
+//     this.scale = 1
+//     this.deg = randint(0,359)
+//     // color
+//   }
+//   
+//   var bubble = new bubble()
+//   bubbles.push(bubble)
+//   
+//   $('#container').append(`<div data-bubble="${bubble.id}" style="opacity:${bubble.opacity};  left:${bubble.x}px; bottom:${bubble.y}px" class="bubble pinkbubble"></div>`)
+//   
+//   if (!bubblemachinerunning) {
+//     bubblemachinerunning = true
+//     bubblemachine()
+//   }
+// }
+// 
+// function bubblemachine() {
+//   
+//   for (i=0;i<bubbles.length;i++) {
+//     var bubble = bubbles[i]
+//     console.log(bubble)
+//   }
+//   
+//   bubblemachinerunning = false
+//   
+// }
+// 
+// 
+
+//
+
+
+
+
+
+window.onload = function() {
   setTimeout(function(){$('#content').scrollTop(200000)},3000)
 }

@@ -193,11 +193,6 @@ p {
   margin: 12px 8px;
 }
 
-div {
-  width:500px; 
-  margin-left:auto; 
-  margin-right:auto;
-}
 
 #content {
 overflow-y: scroll;
@@ -228,8 +223,131 @@ overflow-y: scroll;
   padding:5px;
   width: calc(100vw - 314px);
   transition:all .3s ease-in-out;
+  margin-left:88px;
+}
+
+body.draw.terminal #input {
+  padding-top:2px;
+  margin-left:0px;
+}
+
+body.draw #input {
+  padding-top:215px;
+}
+
+body.draw.terminal #content {
+  bottom:0px;
+}
+
+body.draw #content {
+  bottom: 212px;
+}
+
+body.draw #msg::before {
+content: '';
+    left: 543px;
+    background: #f8e4fb;
+    opacity: 1;
+    display: block;
+    width: 2px;
+    height: calc(100% - 16px);
+    top: 13px;
+    position: absolute;
+    z-index: 1;
+    pointer-events: auto;
+}
+
+body.draw #msg::after {
+  opacity:1;
+    content: '';
+    background: #ffeed8;
+    height: 2px;
+    width: calc(100% - 304px);
+    position: absolute;
+    bottom: 31px;
+    z-index: 99999999999999999999999999999999999999999999999999999999;
+    left: 91px;
+}
+
+#msg::after {
+  transition:opacity .8s ease-out;
+   opacity:0;
+    content: '';
+    background: #ffeed8;
+    height: 2px;
+    width: calc(100% - 304px);
+    position: absolute;
+    bottom: 11px;
+    z-index: 99999999999999999999999999999999999999999999999999999999;
+    left: 91px; 
+}
 
 
+
+
+
+body.draw #status {
+  opacity:0
+}
+
+body.draw #drawingboard {
+  opacity:1;
+  pointer-events:auto;
+}
+
+body.draw.terminal #drawingboard {
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+#drawingboard input[type="range"] {
+  width:65px;
+}
+
+#drawingboard {
+    opacity:0;
+    pointer-events:none;
+    width: 452px;
+    height: 205px!important;
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    z-index: 999999999999999;
+    transition:opacity .4s ease-out
+}
+
+#drawingboard .drawing-board-canvas-wrapper {
+	border: none;
+	margin: 0;
+  position: absolute;
+  left: 81px;
+    width: 389px;
+    height: 195px;
+  top: 8px;
+}
+
+body.draw #input {
+  border: 3px solid #7cffe5;
+}
+
+body.terminal.draw #input {
+  border: 3px magenta #7cffe5;
+}
+
+
+body.draw.terminal #msg::before {
+  content: '';
+  left: 480px;
+    background: #f8e4fb;
+  opacity:0;
+  display: block;
+  width: 2px;
+  /* border: 5px dashed magenta; */
+  height: 100%;
+  top: 10px;
+  position: absolute;
+  z-index: 1;
+  pointer-events:auto;
 }
 
 #input.makeroom {
@@ -238,42 +356,46 @@ overflow-y: scroll;
 
 #status {
   width:88px; 
-  display:block; 
+  display:inline-block; 
   padding-top: 1px;
+  overflow:hidden;
   padding-left: 6px;
-  float:left; 
+  position:absolute;
   margin-top:15px;
-  transition:.2s all ease-in-out
+  color:coral;
+  opacity:1;
+  transition:all .3s ease-out
 }
 
-body.terminal #input {
+body.terminal #input, body.draw.terminal #input {
   width: calc(100vw - 18px);
   margin-top: 0px;
+  margin-left:0px;
   height:25px;
   font-size:24px;
 }
 
 
 
-body.terminal #input.dark {
+body.terminal #input.dark, body.draw.terminal #input.dark {
   background:black;
   color:#00ff45
 }
 
-body.terminal #input.makeroom {
+body.terminal #input.makeroom, body.terminal.draw #input.makeroom {
    width: calc(100vw - 400px);
 }
 
-body.terminal div[id*=button] {
+body.terminal div[id*=button], body.draw.terminal div[id*=button] {
   display:none!important
 }
 
-body.terminal #storedarea {
+body.terminal #storedarea, body.draw.terminal #storedarea {
   right:0;
   border:none
 }
 
-body.terminal #status {
+body.terminal #status, body.draw.terminal #status {
   width:0;
   overflow:hidden;
   padding:0;
@@ -288,7 +410,8 @@ body.terminal #status {
   width:100%;
   border:2px solid magenta;
   display:inline;
-  transition:.4s all ease-in-out
+  transition:.4s all ease-in-out;
+  background:white;
 }
 
 #camerabutton {

@@ -5,7 +5,7 @@ process.title = 'node-chat-staging';
 var mysql = require('mysql');
 var pool  = mysql.createPool({
   host     : 'localhost',
-  user     : '',
+  user     : 'admin',
   password : '',
   database : 'bogchat'
 });

@@ -1,28 +1,17 @@
 .bubble {
   position: absolute;
-  filter: hue-rotate(319deg) brightness(100%) saturate(200%);
   left: 132px;
   z-index: 999;
-  bottom: 0px;
+  bottom: 32px;
   width: 100px;
   height: 100px;
   border-radius: 100px;
-  perspective: 80px;
-}
-
-.favbubble {
-  position:absolute;
-  filter:saturate(210%);
-  left:132px;
-  bottom:0px;
-  perspective:80px;
-  width:200px;
-  height:200px;
+  perspective:80px
 }
 
 .pinkbubble {
   background: rgba(255, 0, 0, .03);
-  box-shadow: inset 3px 2px 18px rgb(255, 0, 253), inset 2px -3px 12px 0px rgba(122, 255, 0, 0.83), inset 0 0 0px rgb(255, 255, 255), 0px 5px 10px rgba(122, 0, 79, 0.3);
+  box-shadow: inset 5px 0px 35px rgba(255,0,255,.4), inset 0 0 8px rgba(255,100,255,1), inset 0 0 3px rgba(255,200,255,1), 0px 5px 10px rgba(122,0,0,.3);
 }
 
 .bubble::after {
@@ -49,6 +38,6 @@
 }
 
 .pinkbubble::before {
-  background: linear-gradient(rgba(122, 100, 255, 0.3),rgba(0,0,0,0));
-  box-shadow: inset -7px 5px 10px 1px rgba(0, 255, 127, 0.23);
+  background: linear-gradient(rgba(255,100,255,.3),rgba(0,0,0,0));
+  box-shadow: inset 0px 5px 10px rgba(255,100,255,.3);
 }

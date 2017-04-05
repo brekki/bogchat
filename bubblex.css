@@ -1,0 +1,43 @@
+.bubble {
+  position: absolute;
+  left: 132px;
+  z-index: 999;
+  bottom: 32px;
+  width: 100px;
+  height: 100px;
+  border-radius: 100px;
+  perspective:80px
+}
+
+.pinkbubble {
+    background: rgba(255, 0, 0, .03);
+    box-shadow: inset 5px 0px 35px rgba(255, 0, 124, 0.44), inset 1px -8px 12px 0px rgba(251, 246, 229, 0.83), inset 0 0 3px rgb(255, 255, 255), 0px 5px 10px rgba(122, 0, 79, 0.3);
+}
+
+.bubble::after {
+    content: '';
+    background: white;
+    width: 30px;
+    height: 30px;
+    left: 9px;
+    top: 11px;
+    position: absolute;
+    border-radius: 100px;
+    transform: scale(.7) rotateY(-25deg) rotateX(383deg);
+}
+
+.bubble::before {
+  content: '';
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  border-radius: 100px;
+  left: 5px;
+  transform: scaleY(.85);
+  top: -6px;
+}
+
+.pinkbubble::before {
+    background: linear-gradient(rgba(122, 100, 255, 0.3),rgba(0,0,0,0));
+    box-shadow: inset -16px -11px 20px rgba(160, 255, 255, 0.45);
+    }

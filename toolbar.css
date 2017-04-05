@@ -1,0 +1,41 @@
+.drawing-board-control-drawingmode-pencil-button {
+    background: url(./img/pencil.png);
+    width: 30px;
+    height: 30px;
+    background-color: lightgoldenrodyellow;
+    background-size: 30px 30px;
+    border: 2px outset lightgrey;
+}
+
+.drawing-board-control-drawingmode-pencil-button.active {
+    background-color: #fffff6;
+    border: 2px inset lightgrey;
+    }
+
+.drawing-board-control-drawingmode-eraser-button {
+    background: url(./img/eraser.png);
+    width: 30px;
+    height: 30px;
+    background-color: lightgoldenrodyellow;
+    background-size: 30px 30px;
+    border: 2px outset lightgrey;
+}
+
+.drawing-board-control-drawingmode-eraser-button.active {
+    background-color: #fffff6;
+    border: 2px inset lightgrey;
+    }
+    
+.drawing-board-control-drawingmode-filler-button {
+    background: url(./img/fillbucket.png);
+    width: 30px;
+    height: 30px;
+    background-color: lightgoldenrodyellow;
+    background-size: 30px 30px;
+    border: 2px outset lightgrey;
+}
+
+.drawing-board-control-drawingmode-filler-button.active {
+     background-color: #fffff6;
+    border: 2px inset lightgrey; 
+}

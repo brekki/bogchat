@@ -186,11 +186,6 @@ p {
   margin: 12px 8px;
 }
 
-div {
-  width:500px; 
-  margin-left:auto; 
-  margin-right:auto;
-}
 
 span.nick {
   cursor:pointer
@@ -222,55 +217,216 @@ span.nick {
   border:3px solid magenta;
   width: calc(100vw - 314px);
   margin-top:10px; 
+  height:15px;
   padding:5px;
+  margin-left:88px;
   background:black;
   transition:all .3s ease-in-out;
   color:#e1ff00
 }
 
+body.draw.terminal #input {
+  padding-top:2px;
+  margin-left:0px;
+}
+
+body.draw #input {
+  padding-top:215px;
+}
+
+
+
+
+#msg::before {
+  content: '';
+  left: 480px;
+  background: #00ff97;
+  opacity:0;
+  display: block;
+  width: 2px;
+  height: 100%;
+  top: 10px;
+  position: absolute;
+  z-index: 999999999999999999999999999999;
+  pointer-events:none;
+  transition:all .4s ease-out
+}
+
+body.draw.terminal #content {
+  bottom:0px;
+}
+
+body.draw #content {
+  bottom: 212px;
+}
+
+body.draw.terminal #drawingboard {
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+
+body.draw #msg::before {
+content: '';
+    left: 543px;
+    background: rgba(255, 108, 0, 0.38);
+    opacity: 1;
+    display: block;
+    width: 2px;
+    height: calc(100% - 16px);
+    top: 13px;
+    position: absolute;
+    z-index: 1;
+    pointer-events: auto;
+}
+
+body.draw.terminal #msg::before {
+  content: '';
+  left: 480px;
+    background: #f8e4fb;
+  opacity:0;
+  display: block;
+  width: 2px;
+  /* border: 5px dashed magenta; */
+  height: 100%;
+  top: 10px;
+  position: absolute;
+  z-index: 1;
+  pointer-events:auto;
+}
+
+body.draw #msg::after {
+  opacity:1;
+    content: '';
+        background: rgba(202, 255, 0, 0.44);
+    height: 2px;
+    width: calc(100% - 304px);
+    position: absolute;
+    bottom: 31px;
+    z-index: 99999999999999999999999999999999999999999999999999999999;
+    left: 91px;
+    pointer-events: none;
+}
+
+body.draw.terminal #msg::after {
+  pointer-events: none;
+  opacity:0;
+    content: '';
+    background: rgba(255,0,150,.5);
+    height: 2px;
+    width: calc(100% - 304px);
+    position: absolute;
+    bottom: 31px;
+    z-index: 99999999999999999999999999999999999999999999999999999999;
+    left: 91px;
+    pointer-events:none
+}
+
+body.draw #input {
+  border: 3px solid rgba(200, 76, 255, 0.25);
+}
+
+body.terminal.draw #input {
+  border: 3px magenta #7cffe5;
+}
+
+#msg::after {
+  transition:opacity .8s ease-out;
+   opacity:0;
+    content: '';
+   background: rgba(226, 255, 0, 0.34);
+    height: 2px;
+    width: calc(100% - 304px);
+    position: absolute;
+    bottom: 11px;
+    z-index: 99999999999999999999999999999999999999999999999999999999;
+    left: 91px; 
+    pointer-events: none;
+}
+
+
+
 #input.makeroom {
   width: calc(100vw - 630px);
 }
 
-#status {
-  width:88px; 
-  display:block; 
-  padding-top: 1px;
-  padding-left: 6px;
-  float:left; 
-  margin-top:15px;
-  color:coral
+body.draw #status {
+  opacity:0
 }
 
-body.terminal #input {
+body.draw #drawingboard {
+  opacity:1;
+  pointer-events:auto;
+}
+
+#drawingboard {
+    opacity:0;
+    pointer-events:none;
+    width: 452px;
+    height: 205px!important;
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    z-index: 999999999999999;
+    transition:opacity .4s ease-out
+}
+
+#drawingboard input[type="range"] {
+  width:65px;
+}
+
+#drawingboard .drawing-board-canvas-wrapper {
+	border: none;
+	margin: 0;
+  position: absolute;
+  left: 81px;
+    width: 389px;
+    height: 195px;
+  top: 8px;
+}
+
+#status {
+  width:88px; 
+  display:inline-block; 
+  padding-top: 1px;
+  overflow:hidden;
+  padding-left: 6px;
+  position:absolute;
+  margin-top:15px;
+  color:coral;
+  opacity:1;
+  transition:all .3s ease-out
+}
+
+body.terminal #input, body.draw.terminal #input {
   width: calc(100vw - 18px);
   margin-top: 0px;
+  margin-left:0px;
   height:25px;
   font-size:24px;
 }
 
-
-
-body.terminal #input.dark {
-background: rgb(60, 107, 105);
-    color: #96ffc1;
+body.terminal #input.dark, body.terminal.draw #input.dark {
+  background: rgb(60, 107, 105);
+  color: #96ffc1;
 }
 
-body.terminal #input.makeroom {
+body.terminal #input.makeroom, body.terminal.draw #input.makeroom {
    width: calc(100vw - 400px);
 }
 
-body.terminal div[id*=button] {
+body.terminal div[id*=button], body.terminal.draw div[id*=button] {
   display:none!important
 }
 
-body.terminal #storedarea {
+body.terminal #storedarea, body.terminal.draw #storedarea {
   right:0;
   border:none
 }
 
-body.terminal #status {
-  width:0;
+body.terminal #status, body.terminal.draw #status {
+  width:1px;
+  opacity:0;
   overflow:hidden;
   padding:0;
   margin:0;
@@ -284,7 +440,8 @@ body.terminal #status {
   width:100%;
   border:2px solid magenta;
   display:inline;
-  transition:.4s all ease-in-out
+  transition:.4s all ease-in-out;
+  background:black
 }
 
 #camerabutton {
@@ -524,5 +681,38 @@ img {
   #videobox {
     right:-50px
   }
-  
+}
+
+.drawing-board-control-navigation-back {
+    background-color: rgba(221, 255, 220, 0.18)!important;
+    border: 3px outset rgba(0, 245, 78, 0.77)!important;
+}
+
+.drawing-board-control-navigation-back.active {
+    background-color: rgba(221, 255, 220, 0.18)!important;
+    border: 3px inset rgba(0, 245, 78, 0.77)!important;
+}
+
+.drawing-board-control-navigation-reset {
+    background-color: rgba(221, 241, 255, 0.39)!important;
+    border: 3px outset rgba(0, 39, 255, 0.91)!important;
+}
+
+.drawing-board-control-drawingmode-pencil-button.active {
+    background-color: rgba(255, 212, 212, 0.26)!important;
+    border: 3px inset #c11fce!important;
+}
+
+.drawing-board-control-drawingmode-pencil-button {
+    background-color: rgba(255, 212, 212, 0.26)!important;
+    border: 3px outset #c11fce!important;
+}
+
+.drawing-board-control-drawingmode-eraser-button {
+    background-color: rgba(255, 221, 221, 0.23)!important;
+    border: 3px outset rgb(171, 125, 125)!important;
+}
+.drawing-board-control-drawingmode-eraser-button.active {
+    background-color: rgba(255, 221, 221, 0.23)!important;
+    border: 3px inset rgb(171, 125, 125)!important;
 }

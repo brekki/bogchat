@@ -1,9 +1,9 @@
 function randfloat(min, max) {
-  return Math.random() * (max - min) + min
+    return Math.random() * (max - min) + min
 }
 
 function randint(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min
+    return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 function xdeg(deg) { return Math.cos(deg*Math.PI/180) }
@@ -18,16 +18,6 @@ String.prototype.hashCode = function() {
     hash |= 0
   }
   return hash
-}
-
-Array.prototype.shuffle = function () {
-  this.forEach(
-    function (v, i, a) {
-      let j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-  );
-  return this;
 }
 
 var userlist = [ ]
@@ -96,8 +86,6 @@ var connection
 var visible
 var unread = 0
 var mentionstar = ""
-var unseenfav = 0
-var unseenfavbundle = ""
 var muted
 var locked = false
 var dragpop = false
@@ -105,7 +93,6 @@ var terminalmode = false
 var joelmode = false
 var joelnormallaunch = false
 var dragcount = false
-var starfoxmode = false
 
 function toggleterminalmode() {
   if (terminalmode) {
@@ -171,8 +158,6 @@ document.addEventListener('visibilitychange',function() {
   }
   else {
     unread = 0
-    unseenfavbundle = ""
-    unseenfav = 0
     mentionstar = ""
     visible = true
     $('#title').html('bogchat')
@@ -237,39 +222,14 @@ function bogscript(a,b) {
   else if ( a == "starfox" || a == "/" ) {
     if ($('#content').hasClass("starfox")) {
       $('#content').removeClass("starfox")
-      starfoxmode = false
       clearbubbles()
     }
     else {
-      starfoxmode = true
       $('#content').addClass("starfox")
       makebubbles()     
     }
     
-  } else if ( a == "draw" ) {
-    if ($('body').hasClass("terminal")) {
-      toggleterminalmode()
-    }
-    $('body').toggleClass("draw")
-
-  } else if ( a == "send" ) {
-      // send if the drawing program is open and not if hidden bc term mode
-    if ( $('body').hasClass("draw") && !$('body').hasClass("terminal")) {
-      var blobber = $('.drawing-board-canvas')[0].toDataURL("image/png")
-      var uri = blobber.substring(22)
-      webcamtoimgur(uri)
-    }
-    
-  } else if ( a == "restart" ) {
-    var input = $('#msg #input')
-    input.removeAttr('disabled')
-    input.val("restarting now...")
-    setTimeout(function() {
-    window.location.href = "https://bog.jollo.org"
-    },2000)
   }
-  
-  
 
   // 
   // todo: me
@@ -357,7 +317,7 @@ function startwebsocket() {
         if ( json.data.text.includes(myname)) {
           mentionstar = "*"
         }
-        $('#title').html(`${mentionstar}(${unseenfavbundle}${unread}) bogchat`)
+        $('#title').html(`${mentionstar}(${unread}) bogchat`)
       }
       input.removeAttr('disabled')
       addMessage(json.data.author, json.data.text,
@@ -381,20 +341,8 @@ function startwebsocket() {
     } else if ( json.type === "treehouse" ) {
       
     } else if ( json.type === "fav" ) {
-      if (visible === false) {
-        if ($('p[data-id="' + json.data + '"] span').html() == myname) {
-          unseenfav++
-          unseenfavbundle = ""
-          if (unseenfav > 0) {
-            unseenfavbundle = "f" + unseenfav + "/"
-          }
-          $('#title').html(`${mentionstar}(${unseenfavbundle}${unread}) bogchat`)
-        }
-      }
-      else {
-        $('p[data-id="' + json.data + '"] span').addClass("jiggle")
-        setTimeout(function(){$('p[data-id="' + json.data + '"] span').removeClass("jiggle")},300)
-      }
+      $('p[data-id="' + json.data + '"] span').addClass("jiggle")
+      setTimeout(function(){$('p[data-id="' + json.data + '"] span').removeClass("jiggle")},300)
     } else if ( json.type === "pong" ) {
       // remove ping from signal [ ]
       // json.data
@@ -407,21 +355,22 @@ function startwebsocket() {
   }
   
 
- var trybadcomm = setInterval(function() {
-   if (connection.readyState !== 1) {
-     status.text('error..')
-     input.attr('disabled', 'disabled').val('badcomm')
-     connection.close()
-     reconnectbadcomm()
-   }
- }, 4000)
- 
- function reconnectbadcomm() {
+  
+  var trybadcomm = setInterval(function() {
+    if (connection.readyState !== 1) {
+      status.text('error..')
+      input.attr('disabled', 'disabled').val('badcomm')
+      connection.close()
+      reconnectbadcomm()
+    }
+  }, 4000)
+  
+  function reconnectbadcomm() {
 
-   clearInterval(trybadcomm)
-   input.attr('disabled', 'disabled').val('reconnecting..')
-   setTimeout(function(){ startwebsocket()},2000) 
- }
+    clearInterval(trybadcomm)
+    input.attr('disabled', 'disabled').val('reconnecting..')
+    setTimeout(function(){ startwebsocket()},2000) 
+  }
   
 }
 startwebsocket()
@@ -560,11 +509,6 @@ $(document).on('click','p img',function(e) {
   var i = $(this).parent()
   favpost(i[0].dataset.id)
   $(this).parent().addClass("faved")
-  //if ($(this)[0].naturalHeight == 205 && $(this)[0].naturalWidth == 452 ) {
-  //  var n = $(this)
-  //  n.addClass('blobble')
-  //  setTimeout(function(){n.removeClass('blobble')},200)
-  //}
 })
 
 $(document).on('click','span.nick',function(e) {
@@ -744,10 +688,10 @@ function imagefiletoimgur(uri) {
 }
 
 $('#videoclose').click(function() {
+  localstream.getVideoTracks()[0].stop()
   videoopen = false
   $('#videobox').addClass('hidden')
   $('#camerabutton').removeClass('howto')
-  localstream.getVideoTracks()[0].stop()
 })
 
 $('#camerabutton').click(function() {
@@ -830,12 +774,6 @@ function pushfile() {
   }
 }
 
-
-$(document).on("click",'.favbubble',function() {
-  var i = $('#msg #input').val() + " "
-  $('#msg #input').val(i + $(this).attr("data-src"))
-})
-
 function scrollhorizontally(e) {
   e = window.event || e
   var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)))
@@ -855,30 +793,26 @@ var clearingbubbles = false
 var bubblemachinerunning = false
 var bubblecount = 0
 var bubbles = [ ]
-var favbubble = [ ]
 
 function newbubble() {
   
   function bubble() {
     
-    if (favbubble.length > 0 && randint(0,3) == 3) {
-      this.type = "favbubble"
+    if (favbubble.length > 0 && randint(0,5) == 5) {
+      this.type = "bubble"
       this.context = favbubble.pop()
-      this.traj = randfloat(0.9,1.3)
-      this.y = randint(-260,-200)
-          this.opacity = .88
     }
     else {
-      this.type = "bubble"
+      this.type = "favbubble"
       this.context = null
-      this.traj = randfloat(1.5,3)
-      this.y = randint(-130,-100)
-          this.opacity = 1
     }
     this.life = "alive"
     this.id = bubblecount++
     this.x = randint(-50,(window.innerWidth - 50))
+    this.y = randint(-150,-110)
+    this.opacity = 1
     this.scale = .4
+    this.traj = randfloat(1.5,3)
     this.count = 0
     this.deg = randint(45,135)
   }
@@ -887,10 +821,10 @@ function newbubble() {
   bubbles.push(bubble)
   
   if (bubble.type == "bubble") {
-    $('#container').append(`<div data-bubble="${bubble.id}" style="opacity:${bubble.opacity}; left:${bubble.x}px; bottom:${bubble.y}px" class="bubble pinkbubble"></div>`)
+    $('#container').append(`<div data-bubble="${bubble.id}" style="opacity:${bubble.opacity};  left:${bubble.x}px; bottom:${bubble.y}px" class="bubble pinkbubble"></div>`)
   }
   else if ( bubble.type == "favbubble") {
-    $('#container').append(`<div data-src="${bubble.context}" data-bubble="${bubble.id}" style="background-image:url(${bubble.context}); opacity:${bubble.opacity}; left:${bubble.x}px; bottom:${bubble.y}px" class="favbubble"></div>`)    
+    $('#container').append(`<div data-src="${bubble.context}" data-bubble="${bubble.id}" style="opacity:${bubble.opacity};  left:${bubble.x}px; bottom:${bubble.y}px" class="favbubble"></div>`)    
   }
   
   if (!bubblemachinerunning) {
@@ -903,19 +837,12 @@ function makebubbles() {
   function bubblecycle() {
     if (makingbubbles) {
       newbubble()
-      if (randint(1,2) == 1) {
-        newbubble()
-      }
       setTimeout(function(){
         bubblecycle()
       },1000)
     }
   }
   if (!makingbubbles) {
-    favbubble = [ ]
-    if ( localStorage.getItem("favbundle") ) {
-      favbubble = JSON.parse(localStorage.getItem("favbundle")).shuffle()
-    }
     makingbubbles = true
     bubblecycle()
   }
@@ -954,7 +881,7 @@ function bubblemachine() {
       }
     }
     // random pop
-    if (randint(1,600) == 1 && bubble.type == "bubble") {
+    if (randint(1,400) == 1) {
        popbubble(i,bubble.id)  
     }
     else {
@@ -971,6 +898,12 @@ function bubblemachine() {
   }
 
 }
+ 
+ 
+
+
+
+
 
 
 

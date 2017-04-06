@@ -1,6 +1,6 @@
 # bogchat
 
-![screenshot by dvvidw](http://i.imgur.com/TDHPoS5.gif)
+![bogchat](http://i.imgur.com/EA5gaME.png)
 ---
     $ npm install websocket node-localstorage mysql
     $ apt-get install mysql-server

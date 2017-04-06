@@ -13,7 +13,7 @@ body {
 
 html.night body {
   color: #e1ff00;
-  background: url(stars-bb.gif);
+  background: url(./image/stars-bb.gif);
 }
 
 p {
@@ -67,7 +67,7 @@ html.night span.jiggle {
 }
 
 html.day #logo {
-  background: url('bog.png')
+  background: url(./image/bog.png)
 }
 
 .line {
@@ -176,7 +176,7 @@ html.night #msg {
   height: 2px;
   width: calc(100% - 304px);
   position: absolute;
-  bottom: 11px;
+  bottom: 5px;
   z-index: 999999;
   left: 91px;
   pointer-events: none;
@@ -192,7 +192,7 @@ html.night #msg::after {
 
 #msg::before {
   content: '';
-  left: 480px;
+  left: 543px;
   background: #00ff97;
   opacity: 0;
   display: block;
@@ -242,7 +242,7 @@ html.night #input {
   z-index: 999999999999;
   right: 0px;
   background-color: #1d00ff;
-  background-image: url('mute.gif');
+  background-image: url(./image/mute.gif);
   background-size: 30px 30px;
   height: 30px;
   bottom: 0px;
@@ -262,7 +262,7 @@ html.night #input {
   z-index: 999999999999;
   right: 0px;
   background-color: #510905;
-  background-image: url('mute.gif');
+  background-image: url(./image/mute.gif);
   background-size: 30px 30px;
   height: 30px;
   bottom: 0px;
@@ -293,7 +293,7 @@ html.night #input {
   right: 38px;
   background-color: #77f2d9;
   background-size: 30px 30px;
-  background-image: url(lock.png);
+  background-image: url(./image/lock.png);
   height: 30px;
   bottom: 0px;
   position: fixed;
@@ -305,7 +305,7 @@ html.night #input {
 }
 
 #lockbutton.locked {
-  background-image: url(lock.png);
+  background-image: url(./image/lock.png);
   background-size: 30px 30px;
   border: 4px inset white;
 }
@@ -322,7 +322,7 @@ html.night #lockbutton.locked {
 
 #uploadbutton {
   width: 30px;
-  background: url(rocks.gif);
+  background: url(./image/rocks.gif);
   background-size: cover;
   display: inline;
   height: 30px;
@@ -350,7 +350,7 @@ html.night #lockbutton.locked {
   height: 30px;
   border: 4px outset #5f0;
   background: yellow;
-  background: url(camera.gif);
+  background: url(./image/camera.gif);
   transition: all .5s ease-in-out;
   z-index:99999;
 }
@@ -491,7 +491,7 @@ html.night #storedcontainer {
   width: 30px;
   z-index: 99999;
   background: #f2c9ff;
-  background-image: url(trash.png);
+  background-image: url(./image/trash.png);
   background-size: 30px;
   height: 30px;
   border: 4px outset #f9ebf8;
@@ -511,12 +511,12 @@ html.night #storedcontainer {
 @keyframes trashlockblink {
   0% {
     background-color: #f24aff;
-    background-image: url(trash.png);
+    background-image: url(./image/trash.png);
     background-size: 30px;
   }
   100% {
     background-color: #ff6464;
-    background-image: url(trash.png);
+    background-image: url(./image/trash.png);
     background-size: 30px;
   }
 }
@@ -721,7 +721,7 @@ body.terminal #input, body.draw.terminal #input {
 
 body.draw.terminal #msg::before {
   content: '';
-  left: 480px;
+  left: 543px;
   background: #f8e4fb;
   opacity: 0;
   display: block;
@@ -811,22 +811,22 @@ body.draw.terminal #content {
 @keyframes flicker {
   0% {
     background: #77f2d9;
-    background-image: url(lock.png);
+    background-image: url(./image/lock.png);
     background-size: 30px 30px;
   }
   50% {
     background: #77f2d9;
-    background-image: url(lock.png);
+    background-image: url(./image/lock.png);
     background-size: 30px 30px;
   }
   60% {
     background: #47b2b9;
-    background-image: url(lock.png);
+    background-image: url(./image/lock.png);
     background-size: 30px 30px;
   }
   100% {
     background: #47b2b9;
-    background-image: url(lock.png);
+    background-image: url(./image/lock.png);
     background-size: 30px 30px;
   }
 }
@@ -837,7 +837,7 @@ body.draw.terminal #content {
   }
   30% {
     background: #efff00;
-    background-image: url(lock.png);
+    background-image: url(./image/lock.png);
     background-size: 30px 30px;
   }
   60% {

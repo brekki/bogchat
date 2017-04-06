@@ -106,6 +106,7 @@ var joelmode = false
 var joelnormallaunch = false
 var dragcount = false
 var starfoxmode = false
+var readytoremovestored = false
 
 function toggleterminalmode() {
   if (terminalmode) {
@@ -202,10 +203,17 @@ function bogscript(a,b) {
       }
     }
   }
-  else if ( a == "nightmode") {
-    $('link[rel=stylesheet]').remove()
-    $('head').append('<link rel="stylesheet" href="style-night.css" type="text/css">')
-    $('head').append('<link rel="stylesheet" href="bubbles.css" type="text/css">')
+  else if ( a == "nightmode" ) {
+    if ($('html').hasClass('day')) {
+      $('html').removeClass('day')
+    }
+    $('html').addClass('night')
+  }
+  else if ( a == "daymode" ) {
+    if ($('html').hasClass('night')) {
+      $('html').removeClass('night')
+    }
+    $('html').addClass('day')
   }
   else if ( a == "clear" ) {
     $('#content').html('')
@@ -580,7 +588,19 @@ $('#storedbutton').click(function() {
   propagatestored()
   $('#storedarea').toggleClass('makeroom')
   $('#msg #input').toggleClass('makeroom')
+  $('#trashlock').toggleClass('visible')
+  $('#storedarea').removeClass("snip")
+  $('#trashlock').removeClass('active')
 })
+
+
+
+$('#trashlock').click(function(){
+  $(this).toggleClass("active") 
+  $('#storedarea').toggleClass("snip")
+  readytoremovestored = $(this).hasClass("active") ? true : false
+})
+
 
 
 function showstored(e) {
@@ -628,23 +648,43 @@ function propagatestored(e) {
       $( "#storedcontainer" ).html('drag images here to use later')
     }
     else {
-      $( "#storedcontainer" ).html('')
-    oldstored = JSON.parse(oldstored)
+      $("#storedcontainer").html('')
+      oldstored = JSON.parse(oldstored)
     }
     for (var i=(oldstored.length - 1);i>=0;i--) {
-      $( "#storedcontainer" ).append(`<img src="${oldstored[i]}"> &nbsp;`)
+      $( "#storedcontainer" ).append(`<img src="${oldstored[i]}"> `)
     }
   }
   if (e) {
-    $( "#storedcontainer" ).prepend(`<img src="${e}">  &nbsp;`)
+    $( "#storedcontainer" ).prepend(`<img src="${e}"> `)
   }
 }
 
 $(document).on('click','#storedcontainer img',function(e) {
   var neue = e.toElement.currentSrc
-  var oldval = $('#msg #input').val()
-  var oldval = `${oldval} ${neue} `
-  $('#input').val(oldval)
+  
+  if (readytoremovestored) {
+    $(this).remove()
+    // find item in stored array and remove it
+
+    var oldstored = localStorage.getItem("stored")
+    if ( !oldstored) {
+      oldstored = []
+    }
+    else {
+      oldstored = JSON.parse(oldstored)
+    }
+    if (oldstored.indexOf(neue) > -1) {
+      console.log("match found")
+      oldstored.splice(oldstored.indexOf(neue), 1)
+      localStorage.setItem("stored", JSON.stringify(oldstored))
+    }
+  }
+  else {
+    var oldval = $('#msg #input').val()
+    var oldval = `${oldval} ${neue} `
+    $('#input').val(oldval)
+  }
 })
 
 

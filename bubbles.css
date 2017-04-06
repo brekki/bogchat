@@ -52,3 +52,45 @@
   background: linear-gradient(rgba(122, 100, 255, 0.3),rgba(0,0,0,0));
   box-shadow: inset -7px 5px 10px 1px rgba(0, 255, 127, 0.23);
 }
+
+html.night .drawing-board-control-navigation-back {
+    background-color: rgba(221, 255, 220, 0.18)!important;
+    border: 3px outset rgba(0, 245, 78, 0.77)!important;
+}
+
+html.night .drawing-board-control-navigation-back.active {
+    background-color: rgba(221, 255, 220, 0.18)!important;
+    border: 3px inset rgba(0, 245, 78, 0.77)!important;
+}
+
+html.night .drawing-board-control-navigation-reset {
+    background-color: rgba(221, 241, 255, 0.39)!important;
+    border: 3px outset rgba(0, 39, 255, 0.91)!important;
+}
+
+html.night .drawing-board-control-drawingmode-pencil-button.active {
+    background-color: rgba(255, 212, 212, 0.26)!important;
+    border: 3px inset #c11fce!important;
+}
+
+html.night .drawing-board-control-drawingmode-pencil-button {
+    background-color: rgba(255, 212, 212, 0.26)!important;
+    border: 3px outset #c11fce!important;
+}
+
+html.night .drawing-board-control-drawingmode-eraser-button {
+    background-color: rgba(255, 221, 221, 0.23)!important;
+    border: 3px outset rgb(171, 125, 125)!important;
+}
+html.night .drawing-board-control-drawingmode-eraser-button.active {
+    background-color: rgba(255, 221, 221, 0.23)!important;
+    border: 3px inset rgb(171, 125, 125)!important;
+}
+html.night .drawing-board-control-drawingmode-filler-button {
+    background-color: #4b3654!important;
+    border: 3px outset #534b58!important;
+}
+html.night .drawing-board-control-drawingmode-eraser-button.active {
+    background-color: #4b3654!important;
+    border: 3px inset #534b58!important;
+}

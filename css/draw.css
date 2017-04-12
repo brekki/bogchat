@@ -123,6 +123,106 @@ cursor: pointer;
 
 /* */
 
+/* drawing-specific */
+
+body.draw #content {
+  bottom: 212px;
+}
+
+body.draw #drawingboard {
+  opacity: 1;
+  pointer-events: auto;
+  
+}
+
+body.draw #status {
+  opacity: 0
+}
+
+body.draw #input {
+  padding-top: 215px;
+}
+
+html.day body.draw #input {
+  border: 3px solid #7cffe5;
+}
+
+html.night body.draw #input {
+  border: 3px solid rgba(200, 76, 255, 0.25);
+}
+
+body.draw #msg::before {
+  content: '';
+  left: 543px;
+  opacity: 1;
+  display: block;
+  width: 2px;
+  height: calc(100% - 16px);
+  top: 13px;
+  position: absolute;
+  z-index: 1;
+  pointer-events: auto;
+}
+
+body.draw #msg::after {
+  opacity: 1;
+  content: '';
+  height: 2px;
+  width: calc(100% - 304px);
+  position: absolute;
+  bottom: 31px;
+  z-index: 999999;
+  left: 91px;
+  pointer-events: none;
+}
+
+html.day body.draw #msg::before {
+  content: '';
+  background: #f8e4fb;
+}
+
+html.night body.draw #msg::before {
+  content: '';
+  background: rgba(255, 108, 0, 0.38);
+}
+
+html.day body.draw #msg::after {
+  background: #ffeed8;
+}
+
+html.night body.draw #msg::after {
+  background: rgba(202, 255, 0, 0.44);
+}
+
+#drawingboard {
+  opacity: 0;
+  pointer-events: none;
+  width: 452px;
+  height: 205px!important;
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  z-index: 999999999999999;
+  transition: all .4s ease-out
+  transform: scale(1)
+}
+
+#drawingboard .drawing-board-canvas-wrapper {
+  border: none;
+  margin: 0;
+  position: absolute;
+  left: 81px;
+  width: 389px;
+  height: 195px;
+  top: 8px;
+}
+
+#drawingboard input[type="range"] {
+  width: 65px;
+}
+
+/* */
+
 img.blobble {
   animation:1s blobbles linear infinite
 }

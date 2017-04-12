@@ -43,7 +43,7 @@ function addMessage(author, message, color, id) {
 
 function addDrumtrack(author, data, image, backgroundcolor, color, id) {
   userlist = uniquepush(author, userlist)
-  $('#content').append(`<p data-id="${id}"><span class="nick" style="color:${color}">${author.substr(0,16)}</span>: <span style="background:${color}; background-image:url(${image}); background-size:350px 130px; display:inline-block; border: 8px groove #eaeaea; height:130px; width:350px" data-warble="${data}"><span class="inlineplay"></span><span class="inlinepush"></span></span> </p>`)
+  $('#content').append(`<p data-id="${id}"><span class="nick" style="color:${color}">${author.substr(0,16)}</span>: <span class="pgx" style="background:${color}; background-image:url(${image}); background-size:350px 130px; display:inline-block; border: 8px groove #eaeaea; height:130px; width:350px" data-warble="${data}"><span class="inlineplay"></span><span class="inlinepush"></span></span> </p>`)
 }
 
 function uniquepush(item, oldarray) {

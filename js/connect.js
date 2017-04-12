@@ -117,6 +117,10 @@ function startwebsocket() {
         var backgroundcolor = data.color
         addDrumtrack(json.data.author, json.data.text, image, backgroundcolor, json.data.color, json.data.id)
       }
+                $('#content').scrollTop(200000)
+          setTimeout(function() {
+            $('#content').scrollTop(200000)
+          }, 300)
       
     } else if (json.type === "fav") {
       if (visible === false) {

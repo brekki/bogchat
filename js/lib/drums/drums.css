@@ -1,0 +1,31 @@
+.seq-ui .seq-row span {
+    border: 1px solid magenta;
+    height: 29px;
+    width: 29px;
+    display: inline-block;
+}
+
+.seq-ui .seq-row span:hover {
+    box-shadow: inset 0px 0px 0px 25px rgba(255,0,255,.3)
+}
+
+.seq-ui .channel {
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: middle;
+  background:black
+}
+
+.seq-ui .seq-row span.seq-playhead {
+  box-shadow:inset 0px 0px 0px 25px rgba(200,0,255,.3)
+}
+
+.seq-ui .seq-row {
+  font-size: 0;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.seq-ui .seq-row span.seq-note {
+  background:rgba(0,255,130,1)
+}

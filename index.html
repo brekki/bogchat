@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="seq-ui">
 <head>
 <meta charset="utf-8">
 <title id="title">bogchat</title>
@@ -10,6 +10,7 @@
 <link rel='stylesheet' href='./css/bogchat.css' type='text/css'>
 <link rel='stylesheet' href='./css/bubbles.css' type='text/css'>
 <link rel='stylesheet' href='./css/toolbox.css' type='text/css'>
+<link rel='stylesheet' href='./css/drums.css' type='text/css'>
 
 </head>
 <body>
@@ -20,6 +21,7 @@
   
   <div id="container">
     <div id="content"></div>
+    <div id="help" class="flyaway hidden"></div>
   </div>
   
   <div id="videobox" class="hidden">
@@ -32,6 +34,16 @@
   <div id="msg">
   
     <div id="drawingboard"></div>
+    <div id="drummachineboard">
+      <div id="app" class="">
+        <div id="fullstop"></div>
+
+        <div class="app-region" id="r-top"></div>
+        <div class="app-region" id="r-mid"></div>
+        <div class="app-region" id="r-bottom"></div>
+        <div class="app-region" id="r-footer"></div>
+      </div>
+    </div>
     <span id="status">connecting...</span>
     <input type="text" id="input" disabled="disabled" />
     <div id="storedbutton" ondragenter="dragpopup()"></div>
@@ -49,7 +61,12 @@
   </div>
   
   <input id="fileinput" accept="image/*" type="file" onchange="pushfile()">
+  
+  <script src="./js/lib/handlebars/handlebars.min.js"></script>
+  <script src="./js/lib/lodash/lodash.min.js"></script>
+  <script src="./js/lib/backbone/backbone-min.js"></script>
   <script src="./js/lib/jcanvas/jcanvas.js"></script>
+  
   <script src="./js/lib/drawingboard/simpleundo.js"></script>
   <script src="./js/lib/drawingboard/util.js"></script>
   <script src="./js/lib/drawingboard/board.js"></script>
@@ -70,6 +87,7 @@
   <script src="./js/mode.js"></script>
   <script src="./js/draw.js"></script>
   <script src="./js/bubbles.js"></script>
+  <script src="./js/drums.js"></script>
 
 
 </body>

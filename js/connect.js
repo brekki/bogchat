@@ -62,7 +62,17 @@ function startwebsocket() {
     } else if (json.type === 'history') {
       console.log
       for (var i = 0; i < json.data.length; i++) {
-        addMessage(json.data[i].author, json.data[i].text, json.data[i].color, json.data[i].id)
+        if (json.data[i].drum) {
+          if (isJSON(atob(json.data[i].text))) {
+            var data = JSON.parse(atob(json.data[i].text))
+            var image = data.image
+            var backgroundcolor = data.color
+            addDrumtrack(json.data[i].author, json.data[i].text, image, backgroundcolor, json.data[i].color, json.data[i].id)
+          }
+        }
+        else {
+          addMessage(json.data[i].author, json.data[i].text, json.data[i].color, json.data[i].id)
+        }
       }
       $('#content').scrollTop(200000)
     } else if (json.type === 'message') {
@@ -75,17 +85,20 @@ function startwebsocket() {
       }
       input.removeAttr('disabled')
       addMessage(json.data.author, json.data.text, json.data.color, json.data.id)
-      if (($('#content').height() - $('#content p:last-of-type').offset().top) < -500) {
-        // console.log("avoid scrolldown")
-      } else {
-        $('#content').scrollTop(200000)
-        setTimeout(function() {
+      setTimeout(function() {
+        if ( ($('#content p:last-of-type').offset().top - $('#content').height()) > 100 ) {
+          // console.log("avoid scrolldown")
+        } 
+        else {
           $('#content').scrollTop(200000)
-        }, 300)
-        setTimeout(function() {
-          $('#content').scrollTop(200000)
-        }, 1000)
-      }
+          setTimeout(function() {
+            $('#content').scrollTop(200000)
+          }, 300)
+          setTimeout(function() {
+            $('#content').scrollTop(200000)
+          }, 1000)
+        }
+      },100)
     } else if (json.type === "hi") {
       if (!muted) {
         new Audio('https://bog.jollo.org/au/enter.mp3').play()
@@ -94,7 +107,18 @@ function startwebsocket() {
       if (!muted) {
         new Audio('https://bog.jollo.org/au/exit.mp3').play()
       }
-    } else if (json.type === "treehouse") {} else if (json.type === "fav") {
+    } else if (json.type === "treehouse") {
+      
+    } else if (json.type === "drum" ) {
+    
+      if (isJSON(atob(json.data.text))) {
+        var data = JSON.parse(atob(json.data.text))
+        var image = data.image
+        var backgroundcolor = data.color
+        addDrumtrack(json.data.author, json.data.text, image, backgroundcolor, json.data.color, json.data.id)
+      }
+      
+    } else if (json.type === "fav") {
       if (visible === false) {
         if ($('p[data-id="' + json.data + '"] span').html() == myname) {
           unseenfav++

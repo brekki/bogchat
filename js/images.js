@@ -1,3 +1,21 @@
+function coverarttoimgur(uri) {
+  var clientId = "a91768c3de50774";               
+  $.ajax({
+      url: "https://api.imgur.com/3/upload",
+      type: "POST",
+      datatype: "json",
+      data: {
+      'image': uri,
+      'type': 'base64'
+    },
+    success: uploadtrackfull,
+    error: function(){console.log("failed")},
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader("Authorization", "Client-ID " + clientId);
+    }
+  })
+}
+
 function webcamtoimgur(uri) {
   var clientId = "a91768c3de50774";               
   $.ajax({

@@ -17,6 +17,9 @@ var userlist = [ ]
 ,   ibstate = 1
 ,   tabready = true
 ,   tabcount = 0
+,   lastuserlistarraymatch = 0
+,   userlistarraymatch = [ ]
+,   messagessplitspaces
 
 if (!localStorage.getItem("muted")) {
   localStorage.setItem("muted", "0")
@@ -36,6 +39,11 @@ function favrequest(e) {
 function addMessage(author, message, color, id) {
   userlist = uniquepush(author, userlist)
   $('#content').append(`<p data-id="${id}"><span class="nick" style="color:${color}">${author.substr(0,16)}</span>: ${richtext(message)}</p>`)
+}
+
+function addDrumtrack(author, data, image, backgroundcolor, color, id) {
+  userlist = uniquepush(author, userlist)
+  $('#content').append(`<p data-id="${id}"><span class="nick" style="color:${color}">${author.substr(0,16)}</span>: <span style="background:${color}; background-image:url(${image}); background-size:350px 130px; display:inline-block; border: 8px groove #eaeaea; height:130px; width:350px" data-warble="${data}"><span class="inlineplay"></span><span class="inlinepush"></span></span> </p>`)
 }
 
 function uniquepush(item, oldarray) {
@@ -65,9 +73,7 @@ function storefavitems(id) {
 }
 
 function richtext(input) {
-  function checkimgurl(url) {
-    return (url.match(/\.(jpeg|jpg|gif|png|bmp|JPEG|JPG|GIF|PNG|BMP)$/) != null)
-  }
+
 
   function checklinkurl(url) {
     return (url.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/) != null)
@@ -95,6 +101,29 @@ function richtext(input) {
   } else {
     return nsstring
   }
+}
+
+function togglemute() {
+  if ($('#mutebutton').hasClass("muted")) {
+    $('#mutebutton').removeClass("muted")
+    localStorage.setItem("muted", "0")
+    muted = false
+  } else {
+    muted = true
+    $('#mutebutton').addClass("muted")
+    localStorage.setItem("muted", "1")
+  }
+}
+
+function storedtoggle() {
+  propagatestored()
+  $('#storedarea').toggleClass('makeroom')
+  $('#msg #input').toggleClass('makeroom')
+  $('html').toggleClass('makeroom')
+  $('#r-footer.app-region.active').toggleClass('makeroom')
+  $('#trashlock').toggleClass('visible')
+  $('#storedarea').removeClass("snip")
+  $('#trashlock').removeClass('active')
 }
 
 function toggleterminalmode() {
@@ -214,26 +243,74 @@ function pushfile() {
     reader.readAsDataURL(file)
   }
 }
+
+var lastword = null
+var matchedword = null
 // keyboard input binders
+
+
+$('body').keydown(function(e) {
+  if (e.keyCode === 27) {
+    
+    $('#input').focus()
+    $('#input').select()
+    if ($('#content').hasClass("starfox")) {
+      $('#content').removeClass("starfox")
+      starfoxmode = false
+      clearbubbles()
+    }
+  }
+});
+
 $('#input').keydown(function(e) {
   var msg = $(this).val()
   if (e.keyCode != 9) {
     tabready = false
-    tabcount = 0
   }
   if (e.keyCode === 9) {
     e.preventDefault()
-    var tabscan
-    if (tabready === false) {
-      var spaces = msg.split(" ")
-      var lastword = spaces[spaces.length - 1]
-      tabready = lastword
-      tabcount = 0
+    
+    
+    if (!tabready) {
+      messagessplitspaces = msg.split(" ")
+      lastword = messagessplitspaces[messagessplitspaces.length - 1]
+      matchedword = null
+      userlistarraymatch = [ ]
+      if (lastword.length > 0) {
+        for (i=0;i<userlist.length;i++) {
+          if (userlist[i].toLowerCase().startsWith(lastword.toLowerCase())) {
+            userlistarraymatch.push(userlist[i])
+          }
+        }
+        tabready = true
+        lastuserlistarraymatch = 0
+      }
     }
-    userlist.sort()
-    console.log("> " + tabready)
-    tabcount++
-  } else if (e.keyCode === 13) {
+    if (tabready) {
+      if (userlistarraymatch.length == 0) {
+        return
+      }
+      else {
+        matchedword = userlistarraymatch[lastuserlistarraymatch]
+        messagessplitspaces[messagessplitspaces.length - 1] = matchedword
+        var neuemsg = messagessplitspaces.join(" ")
+        $(this).val(neuemsg)
+        
+        lastuserlistarraymatch++
+        if (lastuserlistarraymatch >= userlistarraymatch.length) {
+          lastuserlistarraymatch=0
+        }
+      }
+      
+    }
+
+
+    
+    console.log("> " + matchedword + " " + lastword + " " + lastuserlistarraymatch + " " + userlist.length)
+
+  }
+  
+  if (e.keyCode === 13) {
     if (!msg) {
       return
     }
@@ -275,7 +352,20 @@ $('#input').keydown(function(e) {
         }
       }
     }
-    $('#content').scrollTop(200000)
+    setTimeout(function() {
+      if ( ($('#content p:last-of-type').offset().top - $('#content').height()) > 100 ) {
+        // console.log("avoid scrolldown")
+      } 
+      else {
+        $('#content').scrollTop(200000)
+        setTimeout(function() {
+          $('#content').scrollTop(200000)
+        }, 300)
+        setTimeout(function() {
+          $('#content').scrollTop(200000)
+        }, 1000)
+      }
+    },100)
   } else if (e.keyCode === 38) {
     if (ibstate <= 0) {
       $('#msg #input').val("")
@@ -358,15 +448,7 @@ $(document).on("click", '.favbubble', function() {
   })
   // button events
 $('#mutebutton').click(function() {
-  if ($(this).hasClass("muted")) {
-    $('#mutebutton').removeClass("muted")
-    localStorage.setItem("muted", "0")
-    muted = false
-  } else {
-    muted = true
-    $('#mutebutton').addClass("muted")
-    localStorage.setItem("muted", "1")
-  }
+  togglemute()
 })
 $('#lockbutton').click(function() {
   if ($(this).hasClass("locked")) {
@@ -380,12 +462,7 @@ $('#lockbutton').click(function() {
   }
 })
 $('#storedbutton').click(function() {
-  propagatestored()
-  $('#storedarea').toggleClass('makeroom')
-  $('#msg #input').toggleClass('makeroom')
-  $('#trashlock').toggleClass('visible')
-  $('#storedarea').removeClass("snip")
-  $('#trashlock').removeClass('active')
+  storedtoggle()
 })
 $('#trashlock').click(function() {
   $(this).toggleClass("active")

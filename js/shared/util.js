@@ -9,6 +9,34 @@ function randint(min, max) {
 function xdeg(deg) { return Math.cos(deg*Math.PI/180) }
 function ydeg(deg) { return Math.sin(deg*Math.PI/180) }
 
+if (!String.prototype.startsWith) {
+  String.prototype.startsWith = function(searchString, position) {
+    position = position || 0
+    return this.indexOf(searchString, position) === position
+  }
+}
+
+function checkimgurl(url) {
+  return (url.match(/https?:\/\/.+\.(jpeg|jpg|gif|png|bmp|JPEG|JPG|GIF|PNG|BMP)$/) != null)
+}
+
+function isJSON(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
+function randcolor() {
+  function c() {
+    var hex = Math.floor(Math.random()*256).toString(16);
+    return ("0"+String(hex)).substr(-2); // pad with zero
+  }
+  return "#"+c()+c()+c();
+}
+
 String.prototype.hashCode = function() {
   var hash = 0, i, chr
   if (this.length === 0) return hash

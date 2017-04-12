@@ -76,11 +76,49 @@ function bogscript(a,b) {
     if ($('body').hasClass("terminal")) {
       toggleterminalmode()
     }
+    
+    if ( $('body').hasClass("babydraw")) {
+      $('button.coverart').removeClass('active')
+      $('body').removeClass("babydraw")
+      $('body').removeClass("draw")
+    }    
+    
+    if ($('body').hasClass("drum")) {
+      $('body').removeClass('drum')
+    }
+    
     $('body').toggleClass("draw")
+
+  } else if ( a == "drums" || a == "drum" ) {
+
+    if ( $('body').hasClass("babydraw")) {
+      $('button.coverart').removeClass('active')
+      $('body').removeClass("babydraw")
+      $('body').removeClass("draw")
+    }    
+  
+    if ($('body').hasClass("terminal")) {
+      toggleterminalmode()
+    }
+    if ($('body').hasClass("draw")) {
+      $('body').removeClass('draw')
+    }
+    $('body').toggleClass("drum")
 
   } else if ( a == "send" ) {
       // send if the drawing program is open and not if hidden bc term mode
-    if ( $('body').hasClass("draw") && !$('body').hasClass("terminal")) {
+      
+    if ( $('body').hasClass("drum") && !$('body').hasClass("terminal")) {
+      if ( $('body').hasClass("babydraw")) {
+        $('button.coverart').removeClass('active')
+        $('body').removeClass("babydraw")
+        $('body').removeClass("draw")
+      }   
+      // need to objectify drum object.. first see if it has an image ---
+      uploadtrack($('#includecoverart').prop('checked'))
+    }
+      
+    else if ( $('body').hasClass("draw") && !$('body').hasClass("terminal")) {
       var blobber = $('.drawing-board-canvas')[0].toDataURL("image/png")
       var uri = blobber.substring(22)
       webcamtoimgur(uri)
@@ -95,9 +133,16 @@ function bogscript(a,b) {
     },2000)
   }
   
-  
+  else if ( a == "mute" ) {
+    togglemute()
+  }
+  else if ( a == "scrap") {
+    storedtoggle()
+  }
+  else if ( a == "upload" ) {
+    $('#fileinput').trigger('click');
+  }
 
-  // 
-  // todo: me
+
   
 }

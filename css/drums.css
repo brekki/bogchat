@@ -1,0 +1,323 @@
+body.drum #drummachineboard {
+  opacity:1;
+  pointer-events:auto
+}
+
+button.tapecollection {
+      width: 35px;
+    height: 35px;
+    background: url(./image/tapes.png);
+    background-size: cover;
+    border: 2px outset lime;
+}
+button.tapecollection.active {
+    border: 2px inset lime;
+}
+
+body.draw.babydraw #drawingboard {
+  transform: scale(.5);
+  left: -80px;
+  top: 53px;
+}
+
+body.babydraw.draw #msg::before {
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+#drawingboard {
+  transform:scale(1)
+}
+
+button.coverart {
+      width: 35px;
+    height: 35px;
+    background: url(./image/coverart.png);
+    background-size: cover;
+    border: 2px outset yellow;
+}
+
+button.coverart.active {
+  border: 2px inset yellow;
+}
+
+body.babydraw .drawing-board-canvas {
+    border: 3px solid #969bdc;
+}
+
+#coverartready {
+  position: absolute;
+    top: 97px;
+    left: 28px;
+    height: 30px;
+    display: inline;
+    width: 30px;
+    border: 2px inset #e5e5e5;
+    background: #abffd5;
+}
+
+#includecoverart {
+  
+    position: absolute;
+    top: 89px;
+    left: -2px;
+
+}
+
+
+
+#drummachineboard {
+  opacity:0;
+  pointer-events:none;
+  transition:all .3s ease-out
+}
+
+#r-top {
+  position:absolute;
+  top:0;
+  left:6px;
+  width: 80px;
+}
+
+#r-mid {
+  position: absolute;
+  left: 90px;
+  top: 0px;
+}
+
+body.babydraw  .drawing-board-canvas {
+  z-index:99999999
+}
+
+.inlineplay {
+        position: absolute;
+      display: inline;
+      width: 45px;
+      height: 45px;
+      background: url(./image/inlineplay.png);
+      background-size:cover;
+      z-index: 9999999;
+}
+
+.inlinepush {
+        display: inline;
+      position: absolute;
+      width: 45px;
+      height: 45px;
+      background: url(./image/inlinepush.png);
+      background-size:cover;
+      z-index: 999999999;
+      left: 100px;
+}
+
+.warble {
+  width:350px;
+  height:130px;
+  
+}
+
+
+#r-footer {
+    width: calc(100vw - 305px);
+    transition: all .23s ease-out;
+    max-width: 1088px;
+    height: 0px;
+    z-index: 999;
+    position: absolute;
+    background-image: linear-gradient(#232323,#ffffff);
+    box-shadow: inset 5px 5px 50px rgba(0,0,0,.4);
+    background-size: 43px;
+    left: 90px;
+    bottom: -205px;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+#app {
+  opacity:1;
+  transition:all .2s ease-out
+}
+
+#r-bottom, #r-top, #r-mid {
+  transition: all .4s ease-out
+}
+
+#app.play #r-bottom, #app.play #r-top, #app.play #r-mid  {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#fullstop {
+  opacity:0;
+  pointer-events:none;
+  transition: all .4s ease-out;
+  position:absolute;
+  top:0;
+  left:0;
+  width:90px;
+  height:90px;
+  background-image: url(./image/inlinestop.png);
+  background-size: cover;
+  
+}
+
+#app.play #fullstop {
+  pointer-events:all;
+  opacity:1
+}
+
+html.night #r-footer {
+    background-image: linear-gradient(rgba(67, 67, 101, 0.94),#000000);
+}
+
+#r-footer.active {
+    height: 102px;
+    pointer-events:all;
+}
+
+#r-footer ul {
+    margin-bottom: 0px;
+    margin-top: 0px;
+    padding-left: 0px;
+    position: absolute;
+    display: inline-flex;
+    flex-direction: column-reverse;
+    flex-wrap: wrap;
+    bottom: 0;
+    height: 89px;
+}
+
+#r-footer li {
+    width: 52px;
+    height: 13px;
+    border: 2px solid #0fff64;
+    overflow: hidden;
+    background: yellow;
+    image-rendering: pixelated; 
+}
+
+
+#r-footer li a {
+    font-size: 20px;
+    line-height: 0;
+    margin-top: 9px;
+    margin-left: 1px;
+    position: absolute;
+    font-family: arial;
+    color: transparent;
+    text-decoration: none;
+}
+
+.inlineplay.playing {
+    background-image: url(./image/inlinestop.png);
+    background-size: cover;
+}
+
+#r-footer.app-region.active {
+  width:calc(100vw - 303px)!important;
+  filter: saturate(150%);
+}
+
+html.makeroom #r-footer.app-region.active {
+    width: calc(100vw - 621px)!important;
+}
+
+.transport-play, .transport-stop {
+  width:28px;
+  height:28px;
+  cursor:pointer
+}
+
+html.night .transport-tempo {
+  background: black;
+    border: 2px solid cyan;
+    color: magenta;
+    font-size: 15px;
+    font-weight: bold;
+    width: 50px;
+}
+
+html.night .transport-play {
+  background: black;
+    border: 2px outset magenta;
+    color: magenta;
+}
+
+html.night .transport-play:active {
+  background: black;
+    border: 2px inset magenta;
+    color: magenta;
+}
+
+html.night .transport-stop {
+  background: black;
+    border: 2px outset magenta;
+    color: magenta;
+}
+
+html.night .transport-stop:active {
+  background: black;
+    border: 2px inset magenta;
+    color: magenta;
+}
+
+.transport-tempo {
+  display:block;
+  margin-top:4px;
+}
+
+.seq-ui .seq-row span {
+    border: 1px solid #bdc2ff;
+    transition:width .5s ease-out;
+    height: 27px;
+    width: calc((100vw - 367px) / 64);
+    max-width:66px;
+    display: inline-block;
+}
+
+html.night.seq-ui .seq-row span {
+    border: none;
+    border-right: 1px solid rgba(0,255,255,.3);
+    border-top: 2px dashed rgba(0,255,255,.23);
+}
+
+html.makeroom .seq-row span {
+  width: calc((100vw - 682px) / 64)
+}
+
+.seq-ui .seq-row span:hover {
+    box-shadow: inset 0px 0px 0px 25px rgba(255,0,255,.3)
+}
+
+html.night body.drum #msg::after {
+    background: rgba(171, 0, 255, 0.47)!important;
+}
+
+.seq-ui .channel {
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: middle;
+  background:white
+}
+
+html.night.seq-ui .channel {
+  background:black
+}
+
+.seq-ui .seq-row span.seq-playhead {
+  box-shadow:inset 0px 0px 0px 25px rgba(200,0,255,.1)
+}
+
+html.night.seq-ui .seq-row span.seq-playhead {
+  box-shadow:inset 0px 0px 0px 25px rgba(200,0,255,.3)
+}
+
+.seq-ui .seq-row {
+  font-size: 0;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.seq-ui .seq-row span.seq-note {
+  background: rgb(0, 255, 196);
+}

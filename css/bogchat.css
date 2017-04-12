@@ -97,6 +97,40 @@ html.day #container {
   background: white;
 }
 
+/* help */
+
+#help.flyaway {
+    opacity: 0;
+    transform: rotateY(13deg) rotate(-70deg) rotateX(-55deg) translateX(55px) TranslateZ(100px) translateY(-132px) scale(.6);
+}
+
+#help {
+    transition: all .52s ease-out;
+    white-space: pre;
+    font-family: inconsolata, monospace;
+    border: 2px solid magenta;
+    /* padding: 15px 0 0 15px; */
+    position: absolute;
+    border:5px groove #eee;
+    right: 0;
+    /* width: 450px; */
+    /* height: 300px; */
+    font-size: 15px;
+    line-height: 18px;
+    /* width: 450px; */
+    /* height: 300px; */
+    /* padding: 14px 18px 14px 14px; */
+    top: 15px;
+    border-radius: 5px;
+    padding:14px 18px 14px 14px;
+    /* top: 0; */
+    right: 30px;
+    z-index: 999999999;
+    background:white
+}
+
+/* chat */
+
 #content {
   overflow-y: scroll;
   height: calc(100% + 0px);
@@ -489,7 +523,7 @@ html.night #storedcontainer {
   position: absolute;
   right: 192px;
   width: 30px;
-  z-index: 99999;
+  z-index: 99999999999999999999;
   background: #f2c9ff;
   background-image: url(./image/trash.png);
   background-size: 30px;
@@ -521,6 +555,12 @@ html.night #storedcontainer {
   }
 }
 
+@keyframes zoggle {
+
+  0% { transform: rotateZ(27deg) rotateX(-33deg) rotateY(0deg) scale(.4) translateZ(10px); }
+  100% { transform: rotateZ(27deg) rotateX(-33deg) rotateY(360deg) scale(.4) translateZ(10px); }
+  
+}
 
 /*videobox*/
 
@@ -567,6 +607,42 @@ video {
   top: 0;
 }
 
+/* drum-specific */
+
+body.drum #content {
+  bottom:212px;
+}
+
+body.drum #status {
+  opacity: 0
+}
+
+body.drum #input {
+  padding-top: 215px;
+  border: 3px solid #4fe6b4
+}
+
+body.drum #msg::after {
+  opacity: 1;
+  content: '';
+  height: 2px;
+  width: calc(100% - 304px);
+  position: absolute;
+  bottom: 31px;
+  z-index: 999999;
+  left: 91px;
+  pointer-events: none;
+}
+
+#drummachineboard {
+    position: absolute;
+    left: 0px;
+    top: 13px;
+}
+
+body.drum #status, body.draw #status {
+  pointer-events:none
+}
 
 /* drawing-specific */
 
@@ -577,6 +653,7 @@ body.draw #content {
 body.draw #drawingboard {
   opacity: 1;
   pointer-events: auto;
+  
 }
 
 body.draw #status {
@@ -638,6 +715,8 @@ html.night body.draw #msg::after {
   background: rgba(202, 255, 0, 0.44);
 }
 
+
+
 #drawingboard {
   opacity: 0;
   pointer-events: none;
@@ -647,7 +726,7 @@ html.night body.draw #msg::after {
   top: 5px;
   left: 10px;
   z-index: 999999999999999;
-  transition: opacity .4s ease-out
+  transition: all .4s ease-out
 }
 
 #drawingboard .drawing-board-canvas-wrapper {
@@ -864,5 +943,13 @@ body.draw.terminal #content {
   }
   #videobox {
     right: -50px
+  }
+  p img {
+    max-width:75vw
+  }
+  html.day #msg::after, html.night #msg::after {
+    content:''!important;
+    opacity:0!important;
+    pointer-events:none!important
   }
 }

@@ -191,8 +191,21 @@ body.setnick [id*=button], body.setnick #storedarea {
   bottom: 0;
   left: 0;
   width: 100%;
-  border: 2px solid magenta;
+
   display: inline;
+  perspective:120px; 
+
+}
+
+
+
+
+
+
+
+#msg {
+
+  border: 2px solid magenta;
   transition: .4s all ease-in-out;
 }
 
@@ -281,7 +294,7 @@ html.night #input {
   background-size: 30px 30px;
   height: 30px;
   bottom: 0px;
-  position: fixed;
+  position: absolute;
   border: 4px outset #ff9def;
   transition: all .3s ease-in-out
 }
@@ -301,7 +314,7 @@ html.night #input {
   background-size: 30px 30px;
   height: 30px;
   bottom: 0px;
-  position: fixed;
+  position: absolute;
   border: 4px outset #990065;
 }
 
@@ -331,7 +344,7 @@ html.night #input {
   background-image: url(./image/lock.png);
   height: 30px;
   bottom: 0px;
-  position: fixed;
+  position: absolute;
   border: 4px outset #cefff2;
 }
 
@@ -363,7 +376,7 @@ html.night #lockbutton.locked {
   height: 30px;
   border: 4px outset #eee;
   z-index: 99;
-  position: fixed;
+  position: absolute;
   right: 76px;
   bottom: 0;
   transition: all .3s ease-in-out
@@ -378,7 +391,7 @@ html.night #lockbutton.locked {
 }
 
 #camerabutton {
-  position: fixed;
+  position: absolute;
   bottom: 0px;
   right: 114px;
   width: 30px;
@@ -424,7 +437,7 @@ html.night #lockbutton.locked {
 }
 
 #storedbutton {
-  position: fixed;
+  position: absolute;
   bottom: 0px;
   right: 152px;
   width: 30px;
@@ -661,7 +674,7 @@ body.terminal #storedarea, body.terminal.draw #storedarea, body.terminal.drum #s
 }
 
 body.terminal #input, body.draw.terminal #input, body.drum.terminal #input {
-  width: calc(100vw - 18px);
+  width: calc(100vw - 16px);
   margin-top: 0px;
   margin-left: 0px;
   height: 25px;

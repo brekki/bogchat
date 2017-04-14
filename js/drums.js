@@ -1,3 +1,5 @@
+
+
 var _currentPatternSequenceRaw;
 var currentPattern = null
 var tempPattern = null
@@ -50,6 +52,7 @@ function uploadtrackfull(data) {
     type: 'drummachine',
     version: 1,
     name: 'drumtrack',
+    pak: livepak,
     author: myname,
     image: image,
     color: color,
@@ -112,6 +115,12 @@ function handletape(command, data) {
     } else {
       return
     }
+    if (!context.pak) {
+      var pak = "default"
+    }
+    else {
+      var pak = context.pak
+    }
     if (context.bordercolor) {
       if (context.bordercolor.length == 7) {
         var bordercolor = context.bordercolor
@@ -137,14 +146,18 @@ function handletape(command, data) {
       dispatcher.trigger(dispatcher.EventKeys.SEQUENCER_SET_TEMPO, tempo);
       dispatcher.trigger(dispatcher.EventKeys.TRANSPORT_REQUEST_PLAY)
     } else if (command == "push") {
-      pushnewtape(type, tempo, author, sequence, color, bordercolor, image)
+      pushnewtape(type, tempo, author, sequence, color, bordercolor, image, pak)
     }
   } else {
     return
   }
 }
 
-function pushnewtape(type, tempo, author, sequence, color, bordercolor, image) {
+function pushnewtape(type, tempo, author, sequence, color, bordercolor, image, pak) {
+  
+  if (!pak) {
+    pak = "default"
+  }
   // need to make sure all this information is valid json and valid drum data
   console.log("pushnewtape" + type + tempo + author + sequence + color + bordercolor + image)
   var oldstored = localStorage.getItem("tapedeck")
@@ -164,6 +177,7 @@ function pushnewtape(type, tempo, author, sequence, color, bordercolor, image) {
     this.color = color
     this.bordercolor = bordercolor
     this.name = "drumtrack"
+    this.pak = pak
   }
   oldstored[count] = new tape()
   localStorage.setItem("tapedeck", btoa(JSON.stringify(oldstored)))
@@ -513,10 +527,10 @@ var Transport = (function() {
     <div class="module transport">\
       <button class="transport-play" title="Play">&#9658;</button>\
 			<button class="transport-stop" title="Stop">&#9632;</button>\
-			<input type="number" size="3" min="30" max="250" value="130" class="transport-tempo" /> \
+			<input type="number" size="3" min="30" max="250" value="130" class="transport-tempo" /></input> \
       <button class="coverart"></button>\
       <button class="tapecollection"></button>\
-      <input type="checkbox" id="includecoverart"></div>\
+      <input type="checkbox" id="includecoverart"></input>\
     </div>\
   ');
 
@@ -624,7 +638,7 @@ var PresetList = (function() {
     PRESET_SELECTED: 'preset:selected'
   }
   propagatepresets()
-  console.log(Object.keys(presets).length)
+
   var _template = Handlebars.compile('\
 		<ul class="control presets menu">\
 		{{#each items}}\
@@ -648,6 +662,13 @@ var PresetList = (function() {
       var id = $(e.currentTarget).attr('data-preset-id');
       this.$items.removeClass('active');
       $(e.currentTarget).addClass('active');
+      console.log(presets[id].pak)
+      if (!presets[id].pak) {
+        learnpak("default")
+      }
+      else {
+        learnpak(presets[id].pak)
+      }
       dispatcher.trigger(dispatcher.EventKeys.PRESET_SELECTED, presets[id]);
     }
   });
@@ -684,6 +705,7 @@ var App = {
     dispatcher.on(dispatcher.EventKeys.PRESET_SELECTED, function(preset) {
       dispatcher.trigger(dispatcher.EventKeys.TRANSPORT_CHANGE_TEMPO, preset.tempo);
       dispatcher.trigger(dispatcher.EventKeys.SEQUENCER_SET_PATTERN, preset);
+      
     });
   },
   onLoad: function() {
@@ -700,6 +722,7 @@ var App = {
       }
     };
     dispatcher.trigger(dispatcher.EventKeys.SEQUENCER_SET_PATTERN, pattern);
+    
     //dispatcher.trigger(dispatcher.EventKeys.TRANSPORT_PLAY); 
   },
   init: function() {
@@ -707,11 +730,12 @@ var App = {
     document.addEventListener('visibilitychange', function(e) {
       if (document.hidden) dispatcher.trigger(dispatcher.EventKeys.SEQUENCER_STOP);
     }, false);
-    // 808 or GTFO
     var samples = {},
-      sampleList = ['kick', 'snare', 'openHat', 'closedHat', "conga", "clap", "stick"];
+      sampleList = [
+        'kick', 'snare', 'openHat', 'closedHat', "conga", "clap", "stick", 'ffog15', 'ffogBASS-Synthbazzz', 'ffogBD-dx200-RotterdamGabberKick', 'ffogDR660Anvil', "ffogDR660hiups", "ffogMD16_SD_Killa_3", "ffogVibraphoneHi-MT70"
+      ]
     sampleList.forEach(function(id) {
-      samples[id] = 'https://bog.jollo.org/au/drums/' + id + '.wav';
+      samples[id] = 'https://bog.jollo.org/au/drums/' + id + '.wav'
     });
     Sequencer.init({
       el: $('#r-mid')
@@ -779,3 +803,5 @@ $(document).on('click','.inlineplay',function() {
     handletape("play",e)
   }
 })
+
+/* pak */

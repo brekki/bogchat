@@ -139,6 +139,9 @@ function bogscript(a,b) {
   else if ( a == "scrap") {
     storedtoggle()
   }
+  else if ( a == "trim" ) {
+    $('p img').remove()
+  }
   else if ( a == "upload" ) {
     $('#fileinput').trigger('click');
   }

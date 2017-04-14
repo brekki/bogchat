@@ -67,7 +67,22 @@ function startwebsocket() {
             var data = JSON.parse(atob(json.data[i].text))
             var image = data.image
             var backgroundcolor = data.color
-            addDrumtrack(json.data[i].author, json.data[i].text, image, backgroundcolor, json.data[i].color, json.data[i].id)
+            var ytid = null
+
+            if (data.includeyt) {
+              if (data.includeyt === true ) {
+                if (data.ytsync === false) {
+                  if (data.yturl) {
+                    var thisid = validateyoutubeurl(data.yturl)
+                    if ( thisid[0] === true ) {
+                      ytid = thisid[1]
+                    }
+                  } 
+                }
+              }
+            }
+            
+            addDrumtrack(json.data[i].author, json.data[i].text, image, backgroundcolor, json.data[i].color, json.data[i].id, ytid)
           }
         }
         else {

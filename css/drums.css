@@ -52,9 +52,14 @@ body.drum #status, body.draw #status {
   transition: all .4s ease-out
 }
 
-#app.play #r-bottom, #app.play #r-top, #app.play #r-mid {
+#app.play #r-bottom, #app.play #r-top, #app.play #r-mid, #app.play #pikpak {
   opacity: 0;
   pointer-events: none;
+}
+
+#pikpak {
+  opacity:1;
+  transition:all .4s ease-out
 }
 
 #r-top {
@@ -248,7 +253,7 @@ body.babydraw .drawing-board-canvas {
   background: url(./image/inlinepush.png);
   background-size: cover;
   z-index: 999999999;
-  left: 100px;
+    left: 130px;
 }
 
 .warble {
@@ -365,4 +370,41 @@ html.night #r-footer {
 #r-footer.app-region.active {
   width: calc(100vw - 303px)!important;
   filter: saturate(150%);
+}
+
+/* pak */
+
+#pikpak {
+   border:4px inset #ddd; width:36px; height:34px; overflow:hidden;
+   position:absolute;
+    top: 117px;
+    left: 7px;
+}
+#pikpak:hover {
+  height:68px;overflow:hidden;
+}
+#pikpak input {
+  position:absolute;top:0;left:0;opacity:0;
+}
+#pikpak label {
+  display:none; margin:2px; height:32px; opacity:0.3; 
+  image-rendering:pixelated;
+ 
+}
+#pikpak label[for=line1] {
+  background:url("https://bog.jollo.org/au/drums/default.png") 50% 50%;
+  background-size:32px 32px;
+}
+#pikpak label[for=line2] {
+  background:url("https://bog.jollo.org/au/drums/ffog.png") 50% 50%;
+ background-size:32px 32px;
+}
+#pikpak:hover label{
+  display:block;
+}
+#pikpak label:hover {
+  opacity:0.5;
+}
+#pikpak input:checked + label {
+  opacity:1 !important; display:block;
 }

@@ -67,6 +67,18 @@ function uploadtrackfull(data) {
   }))
 }
 
+function dicepattern(object) {
+  
+  var pattern = {}
+  pattern["sequence"] = {}
+  for (key in object) {
+    pattern.sequence[key] = object[key].join("")
+  }
+  return pattern
+  
+}
+
+
 function handletape(command, data) {
   console.log("data")
   if (isJSON(atob(data))) {
@@ -132,20 +144,16 @@ function handletape(command, data) {
     }
     if (command == "play") {
       console.log("set play")
-      var n = {}
-      console.log(sequence)
-      console.log
-      for (key in sequence) {
-        n[key] = []
-        for (e = 0; e < sequence[key].length; e++) {
-          n[key].push(sequence[key][e])
-        }
-      }
-      console.log(n)
-      currentPattern = n
+      
+      var pattern = {}
+      pattern["sequence"] = sequence
+      
+      dispatcher.trigger(dispatcher.EventKeys.SEQUENCER_SET_PATTERN, pattern);
       dispatcher.trigger(dispatcher.EventKeys.SEQUENCER_SET_TEMPO, tempo);
       dispatcher.trigger(dispatcher.EventKeys.TRANSPORT_REQUEST_PLAY)
-    } else if (command == "push") {
+    } 
+    
+    else if (command == "push") {
       pushnewtape(type, tempo, author, sequence, color, bordercolor, image, pak)
     }
   } else {
@@ -271,7 +279,7 @@ function swaptracks(stop) {
       //console.log(tempPattern)
   }
   if (stop) {
-    currentPattern = tempPattern
+    dispatcher.trigger(dispatcher.EventKeys.SEQUENCER_SET_PATTERN, dicepattern(tempPattern));
     tempPattern = null
     $('.transport-tempo').val(tempTempo)
     dispatcher.trigger(dispatcher.EventKeys.SEQUENCER_SET_TEMPO, tempTempo);
@@ -771,6 +779,10 @@ $(document).on('click','.inlinepush',function() {
   var e = $(this).parent().attr("data-warble")
   handletape("push",e)
   $(this).remove()
+})
+
+$(document).on('click','#binbutton',function() { 
+  bintoggle()
 })
 
 $(document).on('click','#fullstop',function() {

@@ -8,6 +8,7 @@
 <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
   
 <link rel='stylesheet' href='./css/bogchat.css' type='text/css'>
+<link rel='stylesheet' href='./css/bin.css' type='text/css'>
 <link rel='stylesheet' href='./css/bubbles.css' type='text/css'>
 <link rel='stylesheet' href='./css/draw.css' type='text/css'>
 <link rel='stylesheet' href='./css/drums.css' type='text/css'>
@@ -30,7 +31,21 @@
   </div>
   
   <canvas id="canvas" width="400" height="300" style="display:none"></canvas>
+  <div id="bin">
+  <!--
+  hi.. this area is currently being developed.. <br>
+  for now.. you can create storage bins (using an icon to organize which bin is which) <br>
+    and each chat iamge will have a little icon on hover which lets you store images in a storage bin..<br>
+    there will be more to this soon but wanted to roll it out now-->
+    <div id="newbinbutton"></div>
+    <div id="backupbutton"></div>
+    <div id="deletebinbutton"></div>
+    <div id="biggerbinbutton"></div>
+    <div id="binarea">
 
+    </div>
+
+  </div>
     <div id="msg">
       
       <div id="drawingboard"></div>
@@ -60,6 +75,7 @@
       <div id="uploadbutton"></div>
       <div id="camerabutton"></div>
       <div id="lockbutton"></div>
+      <div id="binbutton"></div>
       <div id="mutebutton"></div>
     
     </div>
@@ -83,6 +99,7 @@
   <script src="./js/lib/microevent/microevent.js"></script>
   <script src="./js/shared/util.js"></script>
   
+  <script src="./js/bin.js"></script>
   <script src="./js/chat.js"></script>
   <script src="./js/connect.js"></script>
   <script src="./js/actions.js"></script>

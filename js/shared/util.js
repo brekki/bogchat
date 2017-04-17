@@ -74,3 +74,19 @@ function validateyoutubeurl(url) {
     }
   }
 }
+
+function uniquepush(item, oldarray) {
+  
+  if (oldarray.indexOf(item) === -1) {
+    oldarray.push(item)
+  }
+  
+  return oldarray
+}
+
+$.fn.reverseChildren = function() {
+  return this.each(function(){
+    var $this = $(this);
+    $this.children().each(function(){ $this.prepend(this) });
+  });
+};

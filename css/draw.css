@@ -123,6 +123,9 @@ cursor: pointer;
 
 /* */
 
+
+
+
 /* drawing-specific */
 
 body.draw #content {
@@ -135,9 +138,6 @@ body.draw #drawingboard {
   
 }
 
-body.draw #status {
-  opacity: 0
-}
 
 body.draw #input {
   padding-top: 215px;

@@ -114,6 +114,9 @@ function startwebsocket() {
           }, 1000)
         }
       },100)
+      setTimeout(function() {
+        bin.qwikbin.appendall()},500
+      )
     } else if (json.type === "hi") {
       if (!muted) {
         new Audio('https://bog.jollo.org/au/enter.mp3').play()

@@ -1,4 +1,6 @@
 function bogscript(a,b) {
+  
+
   // a = action
   // b = optional data
   console.log(`action: ${a}, context: ${b}`)
@@ -71,49 +73,55 @@ function bogscript(a,b) {
       $('#content').addClass("starfox")
       makebubbles()     
     }
+  
+  } else if ( a == "img" || a == "bin" ) {
     
-  } else if ( a == "draw" ) {
+    bintoggle()
+    
+    
+  }
+
+
+ 
+  else if ( a == "draw" ) {
     if ($('body').hasClass("terminal")) {
       toggleterminalmode()
     }
     
-    if ( $('body').hasClass("babydraw")) {
-      $('button.coverart').removeClass('active')
-      $('body').removeClass("babydraw")
-      $('body').removeClass("draw")
-    }    
+    hidebabydraw()  
     
     if ($('body').hasClass("drum")) {
       $('body').removeClass('drum')
+    }
+    if ($('body').hasClass("image")) {
+      $('body').removeClass('image')
+      $('#binbutton').removeClass("locked")
     }
     
     $('body').toggleClass("draw")
 
   } else if ( a == "drums" || a == "drum" ) {
 
-    if ( $('body').hasClass("babydraw")) {
-      $('button.coverart').removeClass('active')
-      $('body').removeClass("babydraw")
-      $('body').removeClass("draw")
-    }    
+    hidebabydraw()   
   
     if ($('body').hasClass("terminal")) {
       toggleterminalmode()
     }
     if ($('body').hasClass("draw")) {
       $('body').removeClass('draw')
+    }    
+    if ($('body').hasClass("image")) {
+      $('body').removeClass('image')
+      $('#binbutton').removeClass("locked")
     }
+
     $('body').toggleClass("drum")
 
   } else if ( a == "send" ) {
       // send if the drawing program is open and not if hidden bc term mode
       
     if ( $('body').hasClass("drum") && !$('body').hasClass("terminal")) {
-      if ( $('body').hasClass("babydraw")) {
-        $('button.coverart').removeClass('active')
-        $('body').removeClass("babydraw")
-        $('body').removeClass("draw")
-      }   
+      hidebabydraw()   
       // need to objectify drum object.. first see if it has an image ---
       uploadtrack($('#includecoverart').prop('checked'))
     }

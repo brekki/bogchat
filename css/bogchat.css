@@ -171,6 +171,7 @@ html.day #content.starfox {
   padding-left: 6px;
   position: absolute;
   margin-top: 15px;
+  bottom:6px;
   color: coral;
   opacity: 1;
   transition: all .3s ease-out
@@ -259,10 +260,10 @@ html.night #msg::after {
 #input {
   border-radius: 2px;
   border: 3px solid magenta;
-  width: calc(100vw - 314px);
-  margin-top: 10px;
-  height: 15px;
-  padding: 5px;
+  width: calc(100vw - 352px);
+    margin-top: 8px;
+    height: 15px;
+    padding: 6px;
   margin-left: 88px;
   transition: all .3s ease-in-out;
 }
@@ -293,7 +294,7 @@ html.night #input {
   background-image: url(./image/mute.gif);
   background-size: 30px 30px;
   height: 30px;
-  bottom: 0px;
+  bottom: -2px;
   position: absolute;
   border: 4px outset #ff9def;
   transition: all .3s ease-in-out
@@ -333,17 +334,47 @@ html.night #input {
   z-index: 9999999999999999;
 }
 
-#lockbutton {
+
+#binbutton {
   width: 30px;
   display: inline;
   position: relative;
   z-index: 9999999999999;
   right: 38px;
+  background-color: rgb(233, 204, 255);
+  background-image: url(./image/bin.png);
+  background-size: 29px 29px;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  height: 30px;
+  bottom: -2px;
+  position: absolute;
+  border: 4px outset #f8efff;
+}
+
+#binbutton:active {
+  border: 4px inset #f8efff;
+}
+
+#binbutton.locked {
+  background-image: url(./image/bin.png);
+  background-size: 30px 30px;
+  border: 4px inset #e5cdf9;
+}
+
+
+
+#lockbutton {
+  width: 30px;
+  display: inline;
+  position: relative;
+  z-index: 9999999999999;
+  right: 76px;
   background-color: #77f2d9;
   background-size: 30px 30px;
   background-image: url(./image/lock.png);
   height: 30px;
-  bottom: 0px;
+  bottom: -2px;
   position: absolute;
   border: 4px outset #cefff2;
 }
@@ -377,8 +408,8 @@ html.night #lockbutton.locked {
   border: 4px outset #eee;
   z-index: 99;
   position: absolute;
-  right: 76px;
-  bottom: 0;
+  right: 114px;
+  bottom: -2px;
   transition: all .3s ease-in-out
 }
 
@@ -392,8 +423,8 @@ html.night #lockbutton.locked {
 
 #camerabutton {
   position: absolute;
-  bottom: 0px;
-  right: 114px;
+  bottom: -2px;
+  right: 152px;
   width: 30px;
   height: 30px;
   border: 4px outset #5f0;
@@ -438,8 +469,8 @@ html.night #lockbutton.locked {
 
 #storedbutton {
   position: absolute;
-  bottom: 0px;
-  right: 152px;
+  bottom: -2px;
+  right: 190px;
   width: 30px;
   height: 30px;
   border: 4px outset yellow;
@@ -535,7 +566,7 @@ html.night #storedcontainer {
 
 #trashlock {
   position: absolute;
-  right: 192px;
+  right: 228px;
   width: 30px;
   z-index: 99999999999999999999;
   background: #f2c9ff;
@@ -638,7 +669,7 @@ body.draw.terminal #input, body.drum.terminal #input {
 }
 
 body.terminal #input.makeroom, body.terminal.draw #input.makeroom, body.terminal.drum #input.makeroom {
-  width: calc(100vw - 400px);
+  width: calc(100vw - 438px);
 }
 
 html.day body.terminal.draw #input, html.day body.terminal.drum #input {
@@ -818,8 +849,8 @@ body.draw.terminal #content, body.drum.terminal #content {
     display: none!important
   }
   #msg #input {
-    width: calc(100vw - 214px);
-    height: 20px;
+    width: calc(100vw - 257px);
+    height: 18px;
     border-radius: 0;
     font-size: 19px;
     margin-left: 0px;

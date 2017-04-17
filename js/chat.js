@@ -39,6 +39,7 @@ function favrequest(e) {
 function addMessage(author, message, color, id) {
   userlist = uniquepush(author, userlist)
   $('#content').append(`<p data-id="${id}"><span class="nick" style="color:${color}">${author.substr(0,16)}</span>: ${richtext(message)}</p>`)
+  
 }
 
 function addDrumtrack(author, data, image, backgroundcolor, color, id) {
@@ -46,12 +47,7 @@ function addDrumtrack(author, data, image, backgroundcolor, color, id) {
   $('#content').append(`<p data-id="${id}"><span class="nick" style="color:${color}">${author.substr(0,16)}</span>: <span class="pgx" style="background:${color}; background-image:url(${image}); background-size:350px 130px; display:inline-block; border: 8px groove #eaeaea; height:130px; width:350px" data-warble="${data}"><span class="inlineplay"></span><span class="inlinepush"></span></span> </p>`)
 }
 
-function uniquepush(item, oldarray) {
-  if (oldarray.indexOf(item) === -1) {
-    oldarray.push(item)
-  }
-  return oldarray
-}
+
 
 function storefavitems(id) {
   // if its already set then unset it
@@ -82,7 +78,7 @@ function richtext(input) {
   for (i = 0; i < string.length; i++) {
     var word = string[i]
     if (checkimgurl(word)) {
-      word = `<img draggable="true" onmousedown="showstored(true)" ondrag="dragready()" onmouseup="showstored(false)" ondragend="showstored(false)" src="${word}">`
+      word = `<img class="readyqwikbin" data-src="${word}" draggable="true" onmousedown="showstored(true)" ondrag="dragready()" onmouseup="showstored(false)" ondragend="showstored(false)" src="${word}">`
     } else if (checklinkurl(word)) {
       word = `<a target="_blank" href="${word}">${word}</a>`
     }
@@ -101,6 +97,32 @@ function richtext(input) {
   } else {
     return nsstring
   }
+}
+
+function hidebabydraw() {
+  if ( $('body').hasClass("babydraw")) {
+    $('button.coverart').removeClass('active')
+    $('body').removeClass("babydraw")
+    $('body').removeClass("draw")
+  } 
+}
+
+function bintoggle() {
+      if ($('body').hasClass("terminal")) {
+      toggleterminalmode()
+    }
+    
+    
+    hidebabydraw()  
+    
+    if ($('body').hasClass("drum")) {
+      $('body').removeClass('drum')
+    }
+    if ($('body').hasClass("draw")) {
+      $('body').removeClass('draw')
+    }
+    $('body').toggleClass("image")
+    $('#binbutton').toggleClass("locked")
 }
 
 function togglemute() {
@@ -154,6 +176,12 @@ function togglejoelmode() {
 }
 
 function dragready() {
+  
+  if ( !$('body').hasClass("image") ) {
+    // peekintoqwikbin
+    $('body').addClass("peek")
+  }
+  
   dragcount = true
 }
 
@@ -170,16 +198,39 @@ function dragpopup() {
 }
 
 function showstored(e) {
+  
+  
+  
+  
   if (e) {
     $('#storedinput').addClass('visible')
     $('#storedinput').val('')
+    
+    $('.bininput').addClass('visible')
+    $('.bininput').val('')
+    
+    
     propagatestored()
   } else {
+    $('body').removeClass("peek")
     dragcount = false
     $('#storedinput').removeClass('visible')
+    $('.bininput').removeClass('visible')
     if ($('#storedinput').val()) {
       storedpush($('#storedinput').val())
     }
+    
+    
+    $('.bininput').each(function() {
+      if ( $(this).val() ) {
+        let id = $(this).parent().attr("data-id")
+        let val = $(this).val()
+        bin.insertintobin(val,id)
+        
+      }
+    })
+    
+    
     if (dragpop) {
       setTimeout(function() {
         dragpop = false
@@ -487,4 +538,11 @@ window.onload = function() {
   setTimeout(function() {
     $('#content').scrollTop(200000)
   }, 3000)
+  
 }
+
+$(document).ready(function() {
+  setTimeout(function() {
+    bin.qwikbin.appendall()
+  },2000)
+})

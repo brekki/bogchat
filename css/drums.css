@@ -4,9 +4,7 @@ body.drum #content {
   bottom:212px;
 }
 
-body.drum #status {
-  opacity: 0
-}
+
 
 body.drum #input {
   padding-top: 215px;
@@ -93,7 +91,7 @@ body.drum #status, body.draw #status {
 
 
 html.makeroom #r-footer.app-region.active {
-  width: calc(100vw - 621px)!important;
+  width: calc(100vw - 659x)!important;
 }
 
 /* drum buttons */
@@ -317,11 +315,11 @@ html.night.seq-ui .seq-row span {
 }
 
 html.makeroom .seq-row span {
-  width: calc((100vw - 682px) / 64)
+  width: calc((100vw - 720px) / 64)
 }
 
 html.day.makeroom .seq-row span {
-  width: calc((100vw - 747px) / 64)
+  width: calc((100vw - 785px) / 64)
 }
 
 /* tapedeck */

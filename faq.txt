@@ -1,5 +1,6 @@
 //         :: enter/exit bubble room
 /draw      :: opens the drawing canvas
+/drum      :: opens the drum machine
 /send      :: sends an drawn image to the chat
 /fav       :: favs last image posted to the chat
 /fav nick  :: favs nick's last text in the chat

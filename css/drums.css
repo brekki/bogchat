@@ -38,6 +38,7 @@ body.drum #drummachineboard {
 }
 
 body.drum #status, body.draw #status {
+  opacity:0;
   pointer-events:none
 }
 
@@ -379,7 +380,7 @@ html.night #r-footer {
     left: 7px;
 }
 #pikpak:hover {
-  height:68px;overflow:hidden;
+  height:107px;overflow:hidden;
 }
 #pikpak input {
   position:absolute;top:0;left:0;opacity:0;

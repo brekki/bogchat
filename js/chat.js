@@ -123,6 +123,12 @@ function bintoggle() {
     }
     $('body').toggleClass("image")
     $('#binbutton').toggleClass("locked")
+    
+    $('noscript.pausecache').each(function(){
+      $(this).after($(this).text())
+      $(this).remove()
+    })
+    
 }
 
 function togglemute() {
@@ -512,6 +518,9 @@ $('#lockbutton').click(function() {
     locked = true
   }
 })
+
+
+
 $('#storedbutton').click(function() {
   storedtoggle()
 })
@@ -538,11 +547,9 @@ window.onload = function() {
   setTimeout(function() {
     $('#content').scrollTop(200000)
   }, 3000)
-  
-}
-
-$(document).ready(function() {
+  $(document).ready(function() {
   setTimeout(function() {
     bin.qwikbin.appendall()
   },2000)
 })
+}

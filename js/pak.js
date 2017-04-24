@@ -22,7 +22,8 @@ function pakmenu(pak) {
     var paks = ({
     
       "default": ['kick', 'snare', 'openHat', 'closedHat', "conga", "clap", "stick"],
-      "ffog": ['ffog15', 'ffogBASS-Synthbazzz', 'ffogBD-dx200-RotterdamGabberKick', 'ffogDR660Anvil', "ffogDR660hiups", "ffogMD16_SD_Killa_3", "ffogVibraphoneHi-MT70"]
+      "ffog": ['ffog15', 'ffogBASS-Synthbazzz', 'ffogBD-dx200-RotterdamGabberKick', 'ffogDR660Anvil', "ffogDR660hiups", "ffogMD16_SD_Killa_3", "ffogVibraphoneHi-MT70"],
+      "tj-e": ['tj_e-bd', 'tj_e-bite', 'tj_e-clap', 'tj_e-scratch', 'tj_e-snare', 'tj_e-burp', 'tj_e-meep']
       
     })[e] || []
     

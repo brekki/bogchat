@@ -294,7 +294,7 @@ html.night.seq-ui .seq-row span.seq-playhead {
   border: 1px solid #bdc2ff;
   transition: width .5s ease-out;
   height: 27px;
-  width: calc((100vw - 367px) / 64);
+  width: calc((100vw - 403px) / 64);
   max-width: 66px;
   display: inline-block;
 }
@@ -303,7 +303,7 @@ html.day.seq-ui .seq-row span {
   border: 1px solid #bdc2ff;
   transition: width .5s ease-out;
   height: 27px;
-  width: calc((100vw - 431px) / 64);
+  width: calc((100vw - 466px) / 64);
   max-width: 66px;
   display: inline-block;
 }
@@ -315,11 +315,11 @@ html.night.seq-ui .seq-row span {
 }
 
 html.makeroom .seq-row span {
-  width: calc((100vw - 720px) / 64)
+  width: calc((100vw - 681px) / 64)
 }
 
 html.day.makeroom .seq-row span {
-  width: calc((100vw - 785px) / 64)
+  width: calc((100vw - 745px) / 64)
 }
 
 /* tapedeck */
@@ -397,6 +397,12 @@ html.night #r-footer {
   background:url("https://bog.jollo.org/au/drums/ffog.png") 50% 50%;
  background-size:32px 32px;
 }
+#pikpak label[for=line3] {
+  background:url("https://bog.jollo.org/au/drums/tj-e.png") 50% 50%;
+ background-size:32px 32px;
+}
+
+
 #pikpak:hover label{
   display:block;
 }

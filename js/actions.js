@@ -153,6 +153,9 @@ function bogscript(a,b) {
   else if ( a == "upload" ) {
     $('#fileinput').trigger('click');
   }
+  else if ( a == "jfkjfk" ) {
+    $('body').css('background','url("http://i.imgur.com/wkmQwuq.png")')
+  }
 
 
   

@@ -303,25 +303,19 @@ html.night #input {
 #mutebutton:active {
   border: 4px inset #ff9def;
 }
-
-#mutebutton:muted {
-  width: 30px;
-  display: inline;
-  position: relative;
-  z-index: 999999999999;
-  right: 0px;
+/*
+#mutebutton.muted {
   background-color: #510905;
   background-image: url(./image/mute.gif);
   background-size: 30px 30px;
-  height: 30px;
-  bottom: 0px;
-  position: absolute;
-  border: 4px outset #990065;
+  border: 4px outset #990065
 }
 
-#mutebutton:muted:active {
+
+#mutebutton.muted:active {
   border: 4px inset #990065;
 }
+*/
 
 #mutebutton.muted::before {
   content: 'X';
@@ -333,6 +327,118 @@ html.night #input {
   top: -5px;
   z-index: 9999999999999999;
 }
+
+#radiobutton.favedtrack {
+  animation:favrainbow .3s infinite linear
+}
+
+@keyframes favrainbow {
+  0% { border: 4px inset #fff; }
+  25% { border: 4px inset #f0f; }
+  50% { border: 4px inset #ff0; }
+  75% { border: 4px inset #0ff; }
+  100% { border: 4px inset #fff; }
+}
+
+#radiobutton {
+    width: 30px;
+    height: 0px;
+border: 4px outset #63ffcf;
+    background: #0eff00;
+    position: absolute;
+    right: 0px;
+        bottom: 28px;
+    transition:all .12s ease-in-out;
+}
+
+html.radioready #radiobutton:active, html.radioready #radiobutton.active {
+  background: #0eff00;
+  border: 4px inset #fff;
+}
+
+html.radioready #radiobutton {
+  height:0px;
+}
+
+.pointereventsnone {
+  pointer-events:none!important
+}
+
+
+/* radio is active */
+
+html.radioready #mutebutton {
+    width: 30px;
+    display: inline;
+    position: relative;
+    z-index: 999999999999;
+    right: 0px;
+    background-color: #1d00ff;
+    background-image: url(./image/mute.gif);
+    background-size: 30px 21px;
+    image-rendering: pixelated;
+    height: 22px;
+    bottom: -2px;
+    position: absolute;
+    border: 4px outset #ff9def;
+    transition: all .3s ease-in-out;
+}
+
+html.radioready #mutebutton:active {
+  border: 4px inset #ff9def;
+}
+
+#favcurrenttrackbutton {
+    width: 30px;
+    display: inline;
+    position: relative;
+    z-index: 99;
+    right: 0px;
+    background-color: #ffcbf9;
+    background-image: url(https://bog.jollo.org/css/image/favtrack.png);
+    background-size: cover;
+    /* image-rendering: pixelated; */
+    height: 22px;
+    bottom: -2px;
+    position: absolute;
+    border: 4px outset #ffb8e1;
+    transition: all .3s ease-in-out;
+}
+
+#favcurrenttrackbutton:active {
+  border: 4px inset #ffb8e1;
+}
+
+html.radioplaying #mutebutton {
+  bottom:-42px;
+}
+
+/*
+html.radioready #mutebutton.muted {
+  background-color: #510905;
+  background-image: url(./image/mute.gif);
+  background-size: 30px 17px;
+  border: 4px outset #990065
+}
+
+html.radioready #mutebutton.muted:active {
+  border: 4px inset #990065;
+}
+*/
+
+html.radioready #mutebutton.muted::before {
+    content: 'X';
+    font-family: arial;
+    font-size: 36px;
+    position: absolute;
+    color: maroon;
+    left: 2px;
+    transform: scaleY(0.8);
+    top: -10px;
+    z-index: 9999999999999999;
+}
+
+/* */
 
 
 #binbutton {
@@ -489,7 +595,7 @@ html.night #lockbutton.locked {
 /* stored container */
 
 #storedcontainer {
-  width: 360px;
+  width: 245px;
   height: 50px;
   z-index: 5;
   overflow-y: hidden;

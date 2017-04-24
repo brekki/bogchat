@@ -1,5 +1,3 @@
-
-
 var _currentPatternSequenceRaw;
 var currentPattern = null
 var tempPattern = null
@@ -740,7 +738,7 @@ var App = {
     }, false);
     var samples = {},
       sampleList = [
-        'kick', 'snare', 'openHat', 'closedHat', "conga", "clap", "stick", 'ffog15', 'ffogBASS-Synthbazzz', 'ffogBD-dx200-RotterdamGabberKick', 'ffogDR660Anvil', "ffogDR660hiups", "ffogMD16_SD_Killa_3", "ffogVibraphoneHi-MT70"
+        'kick', 'snare', 'openHat', 'closedHat', "conga", "clap", "stick", 'ffog15', 'ffogBASS-Synthbazzz', 'ffogBD-dx200-RotterdamGabberKick', 'ffogDR660Anvil', "ffogDR660hiups", "ffogMD16_SD_Killa_3", "ffogVibraphoneHi-MT70", 'tj_e-bd', 'tj_e-bite', 'tj_e-clap', 'tj_e-scratch', 'tj_e-snare', 'tj_e-burp', 'tj_e-meep'
       ]
     sampleList.forEach(function(id) {
       samples[id] = 'https://bog.jollo.org/au/drums/' + id + '.wav'
@@ -779,10 +777,6 @@ $(document).on('click','.inlinepush',function() {
   var e = $(this).parent().attr("data-warble")
   handletape("push",e)
   $(this).remove()
-})
-
-$(document).on('click','#binbutton',function() { 
-  bintoggle()
 })
 
 $(document).on('click','#fullstop',function() {

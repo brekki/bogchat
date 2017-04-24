@@ -191,9 +191,6 @@ var testsignalstrength = setInterval(function() {
       connection.send(JSON.stringify({type: "ping", data: 0}))
     } 
   }
-}, 2000)
-
-var viewsignalstrength = setInterval(function() {
   if (signal.length > 3 ) {
     $('#input').addClass("weaksignal")
   }
@@ -203,3 +200,4 @@ var viewsignalstrength = setInterval(function() {
     }
   }
 }, 2000)
+

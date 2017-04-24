@@ -72,9 +72,9 @@ var bin = {
     var thisisactive = ""
 
     $('#binarea').append('<div data-id="'+id+'" class="bin"><div title="bogbin" data-icon="'+bogbin.bins[id].icon+'" style="background-image:url(./css/image/bin'+bogbin.bins[id].icon+'.png)" class="header"></div><div class="minimize" title="minimize"></div><div title="trash" class="bintrash"></div><div title="hide qwikpik icon" class="showthumb"></div><div class="bincontainer" data-id="'+id+'"></div><input type="text" class="bininput"></input></div>')
-    var items = this.loadbin(bogbin,id,0,10)
+    var items = this.loadbin(bogbin,id,0,7)
     for (i=0;i<items.length;i++) {
-      $('.bincontainer[data-id="'+id+'"]').append('<img src="'+items[i]+'">')
+      $('.bincontainer[data-id="'+id+'"]').append('<noscript class="pausecache"><img src="'+items[i]+'"></noscript>')
     }
     if (bogbin.bins[id].qwik == false) {
       console.log("falsex")
@@ -338,5 +338,6 @@ $(document).on('click','.showthumb',function() {
 })
 
 
-
-
+$(document).on('click','#binbutton',function() { 
+  bintoggle()
+})

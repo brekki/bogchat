@@ -56,9 +56,24 @@ html.night #bin {
     right: 0;
 }
 
+html.night #biggerbinbutton {
+      border: 4px outset #48494c;
+    background: rgb(41, 41, 41);
+    background-image: url(./image/bigger.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 50%;
+}
+
 #biggerbinbutton:active, #biggerbinbutton.locked, #biggerbinbutton.locked:active {
   border: 4px inset #dbdfe8;
 }
+
+html.night #biggerbinbutton:active, html.night #biggerbinbutton.locked, html.night #biggerbinbutton.locked:active {
+  border: 4px inset #48494c;
+}
+
+
 
 #binarea {
   transition:all .4s ease-in-out

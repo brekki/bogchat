@@ -17,7 +17,7 @@ if (!String.prototype.startsWith) {
 }
 
 function checkimgurl(url) {
-  return (url.match(/https?:\/\/.+\.(jpeg|jpg|gif|png|bmp|JPEG|JPG|GIF|PNG|BMP)$/) != null)
+  return (url.match(/https?:\/\/.+\.(jpeg|jpg|gif|png|bmp|ico|JPEG|JPG|GIF|PNG|BMP|ICO)$/) != null)
 }
 
 function isJSON(str) {

@@ -1,14 +1,23 @@
-function getStylesheet() {
+function setstylesheetbasedontime() {
   var currentTime = new Date().getHours()
   if (0 <= currentTime&&currentTime < 6) {
-   $('html').addClass("night")
+   if ( !$('html').hasClass("night") ) {
+     $('html').addClass("night")
+     $('html').removeClass("day")
+   }
   }
   else if (6 <= currentTime&&currentTime < 22) {
-   $('html').addClass("day")
+    if ( !$('html').hasClass("day") ) {
+     $('html').addClass("day")
+     $('html').removeClass("night")
+    }
   }
   else if (22 <= currentTime&&currentTime <= 24) {
-   $('html').addClass("night")
+    if ( !$('html').hasClass("night") ) {
+     $('html').addClass("night")
+     $('html').removeClass("day")
+    }
   }
 }
 
-getStylesheet()
+setstylesheetbasedontime()

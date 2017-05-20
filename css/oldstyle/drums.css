@@ -15,11 +15,11 @@ body.drum #msg::after {
   opacity: 1;
   content: '';
   height: 2px;
-  width: calc(100% - 234px);
+  width: calc(100% - 304px);
   position: absolute;
-  bottom: 35px;
-  z-index: 999000000999;
-  left: 3px;
+  bottom: 31px;
+  z-index: 999999;
+  left: 91px;
   pointer-events: none;
 }
 

@@ -1,12 +1,12 @@
 "use strict";
-
+require('dotenv').config()
 process.title = 'node-chat-staging';
 
 var mysql = require('mysql');
 var pool  = mysql.createPool({
   host     : 'localhost',
   user     : 'admin',
-  password : 'eJ7dICpftHfnXDXZ3Rkw',
+  password : process.env.sql,
   database : 'bogchat'
 });
 
@@ -14,14 +14,43 @@ var webSocketsServerPort = 1337;
 
 var webSocketServer = require('websocket').server;
 var http = require('http');
-var localStorage
+var SHA256 = require("crypto-js/sha256");
+var CryptoJS = require("crypto-js");
 
-if (typeof localStorage === "undefined" || localStorage === null) {
-  var LocalStorage = require('node-localstorage').LocalStorage;
-  localStorage = new LocalStorage('./scratch');
+function hashstringify(wordArray) {
+  var words = wordArray.words
+  var sigBytes = wordArray.sigBytes
+  var hexChars = []
+  for (var i = 0; i < sigBytes; i++) {
+    var bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff
+    hexChars.push((bite >>> 4).toString(16))
+    hexChars.push((bite & 0x0f).toString(16))
+  }
+  return hexChars.join('')
+}
+  
+function uniquepush(item, oldarray) {
+
+  if (oldarray.indexOf(item) === -1) {
+    oldarray.push(item)
+  }
+
+  return oldarray
 }
 
+//if (typeof localStorage === "undefined" || localStorage === null) {
+  var LocalStorage = require('node-localstorage').LocalStorage;
+  var localStorage = new LocalStorage('./scratch');
+//}
+
 var history = [ ]
+
+var bannedips = [ ]
+
+if (localStorage.getItem('xbannedips') ) {
+  bannedips = JSON.parse(localStorage.getItem('xbannedips'))
+  console.log(JSON.stringify(bannedips))
+}
 
 if (localStorage.getItem('history') ) {
   history = JSON.parse(localStorage.getItem('history'))
@@ -34,8 +63,6 @@ var increment = 0;
 if (localStorage.getItem('increment') ) {
   increment = JSON.parse(localStorage.getItem('increment'))
 }
-
-// util
 
 function mysql_real_escape_string(str) {
   return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function(char) {
@@ -106,10 +133,28 @@ var wsServer = new webSocketServer({
 
 wsServer.on('request', function(request) {
   
-  console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
+  function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+  }
+  
   
   var colors = [ 'red', 'blue', 'magenta', 'purple', 'coral', 'orangered' ];
-  colors.sort(function(a,b) { return Math.random() > 0.5; } );
+  colors = shuffle(colors)
 
   var connection = request.accept(null, request.origin); 
   
@@ -127,38 +172,56 @@ wsServer.on('request', function(request) {
   if (history.length > 0) {
     connection.sendUTF(JSON.stringify( { type: 'history', data: history} ));
   }
+  else {
+    console.log("why isnt there any history")
+  }
 
   connection.on('message', function(message) {
+    
+    if (bannedips.indexOf(connection.remoteAddress) > -1) {
+      return
+    }
+    //console.log(JSON.stringify(message))
     if (message.type === 'utf8') { 
-      if (userName === false) { 
+    
+      if (userName === false) {
         if ( isJSON(message.utf8Data)) {
           var parsed = JSON.parse(message.utf8Data)
             if (parsed.type == "nick" ) {
               userName = htmlEntities(parsed.data)
               userName = userName.substring(0,100)
               userColor = colors[0];
+              
+              
+              if (userName == "yvonne") {
+                userColor = "magenta"
+              }
               connection.sendUTF(JSON.stringify({ type:'color', data: userColor }))
-              console.log((new Date()) + ' User is known as: ' + userName
-                    + ' with ' + userColor + ' color.')
+
             }
           }
-        }
+          else {
+            console.log("no")
+          }
+        } 
         else {
-          if (isJSON(message.utf8Data) ){
+          if ( isJSON(message.utf8Data) ) {
           var parsed = JSON.parse(message.utf8Data)
           
-          if (parsed.type == "message" ) {
-            console.log("message " + parsed.data)
+          if ( parsed.type == "message" ) {
+            //console.log("message " + parsed.data)
 
             increment++
 
             var thistime = (new Date()).getTime()
             var thismessage = htmlEntities(parsed.data)
+            var thislocale = CryptoJS.AES.encrypt(connection.remoteAddress, process.env.aes).toString()
             var obj = {
               time: thistime,
               text: thismessage,
               author: userName,
               color: userColor,
+              locale: thislocale,
               id: increment
             }
             
@@ -185,15 +248,17 @@ wsServer.on('request', function(request) {
             
           }
           else if (parsed.type == "drum" ) {
-            console.log("drum")
+            //console.log("drum")
             increment++
             var thistime = (new Date()).getTime()
             var thismessage = htmlEntities(parsed.data)
+            var thislocale = CryptoJS.AES.encrypt(connection.remoteAddress, process.env.aes).toString()
             var obj = {
               time: thistime,
               text: thismessage,
               drum: true,
               author: userName,
+              locale: thislocale,
               color: userColor,
               id: increment
             }
@@ -202,7 +267,7 @@ wsServer.on('request', function(request) {
             history = history.slice(-100);
             localStorage.setItem('history', JSON.stringify(history))
             localStorage.setItem('increment', increment)
-
+          
             var ctime = parseInt((+ new Date()).toString().slice(0,-3))
             var matches = richtext(thismessage).slice(0,10)
                 
@@ -214,11 +279,11 @@ wsServer.on('request', function(request) {
           else if (parsed.type == "fav" ) {
             if ( !isNaN(parsed.data) ) {
               if (parsed.data <= increment && parsed.data > 0 ) {
-
-                pool.query('UPDATE bogchat SET favd = (CASE WHEN favd IS NULL THEN 0 ELSE favd END) + 1 WHERE postid = '+mysql_real_escape_string(parsed.data)+';', function (error, results, fields) {
-                  if (error) throw error;
-                });
- 
+          
+                 pool.query('UPDATE bogchat SET favd = (CASE WHEN favd IS NULL THEN 0 ELSE favd END) + 1 WHERE postid = '+mysql_real_escape_string(parsed.data)+';', function (error, results, fields) {
+                   if (error) throw error;
+                 });
+          
                  for (var i=0; i < clients.length; i++) {
                    clients[i].sendUTF(JSON.stringify({type:'fav', data: parsed.data}))
                 }             
@@ -228,6 +293,70 @@ wsServer.on('request', function(request) {
           else if (parsed.type == "ping" ) {
             connection.sendUTF(JSON.stringify({ type:'pong', data: parsed.data }))
           }
+          else if (parsed.type == "whatshot" ) {
+            var yctime = (parseInt((+ new Date()).toString().slice(0,-3)) - 86400)
+            pool.query('select * from bogchat where ctime > '+yctime+' and favd > 4', function (error, results, fields) {
+              if (error) throw error;
+              connection.sendUTF(JSON.stringify({ type:'whatshot', data: results }))
+            });
+          }
+          
+          //
+          
+          else if ( parsed.type == "oper") {
+            
+            //console.log(JSON.stringify(parsed.data))
+            
+            if (parsed.data.login) {
+              if ( hashstringify(SHA256(parsed.data.login)) == process.env.sha ) {
+                connection.sendUTF(JSON.stringify(
+                  { 
+                    type:'oper',
+                    data: {
+                      type:"login",
+                      message:process.env.opermessage,
+                      content:parsed.data.login
+                    }
+                  }
+                ))
+              }
+            }
+            else {
+              if (parsed.data.id) {
+                
+                // verify id is correct
+                if ( hashstringify(SHA256(parsed.data.id)) == process.env.sha ) {
+                  if (parsed.data.command) {
+                  
+                    //console.log("good process " + parsed.data.command)
+                    var n = parsed.data.command.split(" ");
+                    
+                    if (n[0] == "ban") {
+                      n.splice(0,1)
+                      n = n.join(" ")
+                      //console.log("lookup " + n)
+                      uniquepush(n,bannedips)
+                      localStorage.setItem("xbannedips",JSON.stringify(bannedips))
+                    }
+                    else if (n[0] == "dec") {
+                      //console.log(n[1])
+                      //console.log(n[2])
+                      var bytes  = CryptoJS.AES.decrypt(n[2], process.env.aes)
+                      var plaintext = bytes.toString(CryptoJS.enc.Utf8)
+                      connection.sendUTF(JSON.stringify( {
+                          type: 'decreq', 
+                          data: {
+                            id: n[1],
+                            req: plaintext
+                          }
+                        } 
+                      ));                      
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     } 
@@ -236,20 +365,18 @@ wsServer.on('request', function(request) {
     }
   });
 
-  connection.on('close', function(connection) {
-    if (userName !== false && userColor !== false) {
-      console.log((new Date()) + " Peer "
-      + connection.remoteAddress + " disconnected.");
-      for (var i = 0; i < clients.length; i ++) {
-        if (connection.remoteAddress == clients[i].remoteAddress) { 
-          clients.splice(i, 1)
-        }
-      }
-      colors.push(userColor);
-      var json = JSON.stringify({ type:'byebye' })
-      for (var i=0; i < clients.length; i++) {
-        clients[i].sendUTF(json)
-      }
+  connection.on('close', function(e) {
+
+    for (var i = 0; i < clients.length; i ++) {
+    if ((connection.remoteAddress == clients[i].remoteAddress) && (connection.socket._peername.port == clients[i].socket._peername.port)) {
+        //console.log("spliced")
+        clients.splice(i, 1)
+      };
+    };
+    //colors.push(userColor);
+    var json = JSON.stringify({ type:'byebye' })
+    for (var i=0; i < clients.length; i++) {
+      clients[i].sendUTF(json)
     }
   })
 })

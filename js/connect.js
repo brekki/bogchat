@@ -1,4 +1,7 @@
 var connection, myname
+var quiet
+
+
 
 function startwebsocket() {
   "use strict"
@@ -18,6 +21,8 @@ function startwebsocket() {
   }
   //prod
   connection = new WebSocket('wss://chat.bog.jollo.org')
+  //connection = new WebSocket('ws://104.236.50.22:2338')
+  
   connection.onclose = function() {
     console.log("close event received")
   }
@@ -81,12 +86,13 @@ function startwebsocket() {
                 }
               }
             }
-            
-            addDrumtrack(json.data[i].author, json.data[i].text, image, backgroundcolor, json.data[i].color, json.data[i].id, ytid)
+            var locale = (data.locale ) ? data.locale : ""
+            addDrumtrack(locale, json.data[i].author, json.data[i].text, image, backgroundcolor, json.data[i].color, json.data[i].id, ytid)
           }
         }
         else {
-          addMessage(json.data[i].author, json.data[i].text, json.data[i].color, json.data[i].id)
+          var locale = (json.data[i].locale ) ? json.data[i].locale : ""
+          addMessage(locale, json.data[i].author, json.data[i].text, json.data[i].color, json.data[i].id)
         }
       }
       $('#content').scrollTop(200000)
@@ -99,7 +105,8 @@ function startwebsocket() {
         $('#title').html(`${mentionstar}(${unseenfavbundle}${unread}) bogchat`)
       }
       input.removeAttr('disabled')
-      addMessage(json.data.author, json.data.text, json.data.color, json.data.id)
+      var locale = (json.data.locale ) ? json.data.locale : ""
+      addMessage(locale, json.data.author, json.data.text, json.data.color, json.data.id)
       setTimeout(function() {
         if ( ($('#content p:last-of-type').offset().top - $('#content').height()) > 100 ) {
           // console.log("avoid scrolldown")
@@ -125,6 +132,28 @@ function startwebsocket() {
       if (!muted) {
         new Audio('https://bog.jollo.org/au/exit.mp3').play()
       }
+    } else if (json.type === "whatshot") {
+      
+      var whatshotescape = function(html) {
+        return html.replace(/&/g, '&amp;')
+          .replace(/>/g, '&gt;')
+          .replace(/</g, '&lt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&apos;');
+        }
+      
+      console.log(json.data)
+      if ( $('#whatshot').html().length == 0 ) {
+        // propagate whatshot with images
+        for (key in json.data) {
+          console.log(json.data[key].context)
+          if ( $('#whatshot .whatshot'+json.data[key].postid).length == 0 ) {
+            $('#whatshot').append('<div class="whatshot'+json.data[key].postid+'"><span>'+whatshotescape(json.data[key].username)+'</span></div>')
+          }
+          $('#whatshot .whatshot'+json.data[key].postid).append('<img src="'+json.data[key].context+'"></img>')
+        }
+      }
+      
     } else if (json.type === "treehouse") {
       
     } else if (json.type === "drum" ) {
@@ -133,9 +162,10 @@ function startwebsocket() {
         var data = JSON.parse(atob(json.data.text))
         var image = data.image
         var backgroundcolor = data.color
-        addDrumtrack(json.data.author, json.data.text, image, backgroundcolor, json.data.color, json.data.id)
+        var locale = (data.locale) ? data.locale : ""
+        addDrumtrack(locale, json.data.author, json.data.text, image, backgroundcolor, json.data.color, json.data.id)
       }
-                $('#content').scrollTop(200000)
+          $('#content').scrollTop(200000)
           setTimeout(function() {
             $('#content').scrollTop(200000)
           }, 300)
@@ -161,7 +191,42 @@ function startwebsocket() {
       // json.data
       signal.pop()
       signal.pop()
+      
+      
+    } 
+    else if (json.type === "decreq") {
+      var id = json.data.id
+      var req = json.data.req
+      if ($('p[data-id="'+id+'"]').hasClass("ok")) {
+        // snub
+      }
+      else {
+        $('p[data-id="'+id+'"]').addClass("ok")
+        $('p[data-id="'+id+'"] span').html("<span>("+req+") </span>" + $('p[data-id="'+id+'"] span').html())
+      }
+    }
+    else if (json.type === "oper") {
+      if (json.data.type == "login") {
+        
+        $('#input').val(json.data.message)
+        localStorage.setItem("oper",btoa(json.data.content))
+        //localStorage.setItem("key",btoa(json.data.aes))
+        $('#input').attr("disabled","disabled")
+        setTimeout(function(){
+          $('#input').val("")
+          $('#input').removeAttr("disabled")
+          
+          },3800)
+        
+        
+        console.log("logged in")
+      }
+      
     } else {
+      
+      
+      
+      
       console.log('vbadjson: ', json)
     }
   }
@@ -183,6 +248,10 @@ function startwebsocket() {
   }
 }
 startwebsocket()
+
+var whatshot = function() {
+  connection.send(JSON.stringify({type: "whatshot", data: 0}))
+}
 
 var testsignalstrength = setInterval(function() {
   if (connection.readyState == 1) {

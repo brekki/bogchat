@@ -9,25 +9,32 @@ function activeradiotest() {
     dataType: "json",
     success: function (data) {
       if ( data.playstate == "playing" ) {
-        $('html').addClass("radioready radioplaying")
+        $('html').addClass("radioready")
         radiostateuser = data.current_track.user
         radiostateurl = data.current_track.url
       }
       else {
-        $('html').removeClass("radioready radioplaying")
+        if ( !$('html').hasClass("radioplaying") ) {
+          $('html').removeClass("radioready")
+        }
       }
     }
   })
 }
+
 activeradiotest()
+
 var radiostatus = setInterval(function(){
   activeradiotest() 
-  setstylesheetbasedontime()
-  }, 10000)
+  }, 30000)
 
 function stopradiostatus() {
   clearInterval(radiostatus)
 }
+
+var updatestylesheetinterval = setInterval(function(){
+  updatestylesheet()
+  }, 30000)
 
 $('#radiobutton').click(function() {
   if ($(this).hasClass("active")) {

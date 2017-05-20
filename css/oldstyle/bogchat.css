@@ -91,7 +91,7 @@ html.day .line {
   width: 100vw;
   height: calc(100vh - 50px);
   margin: 0;
-  bottom: 45px;
+  bottom: 50px;
   perspective: 220px;
   position: absolute;
   transition:all .5s ease-in-out
@@ -147,7 +147,7 @@ html.day #container {
 }
 
 #crawl {
-  overflow-y: hidden;
+  overflow-y: scroll;
   height: calc(100% + 0px);
   overflow-x: hidden;
   width: calc(100vw - 10px);
@@ -168,12 +168,12 @@ html.night #content {
 }
 
 html.crawl #content {
-  width:calc(40vw - 10px);
+  width:calc(50vw - 10px);
 }
 
 html.crawl #crawl {
-  width:calc(60vw - 10px);
-  left:40vw
+  width:calc(50vw - 10px);
+  left:50vw
 }
 
 #content.starfox {
@@ -188,30 +188,6 @@ html.day #content.starfox {
 /* messagebox area */
 
 #status {
-  transition: all .3s ease-out;
-  width: 0;
-  margin:0;
-  padding:0;
-  opacity: 0;
-  position: absolute;
-  left:0;
-}
-
-body.setnick #msg {
-  padding: 8px;
-  animation: 1s rainbow linear infinite
-}
-
-body.setnick #input {
-  margin-left:88px;
-}
-
-body.setnick [id*=button], body.setnick #storedarea {
-  opacity: 0;
-  display: none;
-}
-
-body.setnick #status {
   width: 88px;
   display: inline-block;
   padding-top: 1px;
@@ -221,7 +197,18 @@ body.setnick #status {
   margin-top: 15px;
   bottom:6px;
   color: coral;
-  opacity: 1; 
+  opacity: 1;
+  transition: all .3s ease-out
+}
+
+body.setnick #msg {
+  padding: 8px;
+  animation: 1s rainbow linear infinite
+}
+
+body.setnick [id*=button], body.setnick #storedarea {
+  opacity: 0;
+  display: none;
 }
 
 #msg {
@@ -269,7 +256,7 @@ html.night #msg {
 }
 
 html.day #msg::after {
-      background: #d8d9ea;
+  background: #ffeed8;
 }
 
 html.night #msg::after {
@@ -295,15 +282,13 @@ html.night #msg::after {
 /* message area input box */
 
 #input {
-  border: 2px solid magenta;
-  border-right:4px solid magenta;
-  width: calc(100vw - 246px);
-  margin-top: 0px;
-  margin-left: 0px;
-  height: 30px;
-  font-size: 20px;
-  padding-left: 6px;
-  padding-bottom: 1px;
+  border-radius: 2px;
+  border: 3px solid magenta;
+  width: calc(100vw - 352px);
+    margin-top: 8px;
+    height: 15px;
+    padding: 6px;
+  margin-left: 88px;
   transition: all .3s ease-in-out;
 }
 
@@ -317,7 +302,7 @@ html.night #input {
 }
 
 #input.makeroom {
-  width: calc(100vw - 528px);
+  width: calc(100vw - 630px);
 }
 
 
@@ -1053,7 +1038,7 @@ html.night.broken #whatshot {
     display: none!important
   }
   #msg #input {
-    width: calc(100vw - 246px);
+    width: calc(100vw - 257px);
     height: 18px;
     border-radius: 0;
     font-size: 19px;

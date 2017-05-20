@@ -24,12 +24,14 @@ function bogscript(a,b) {
     }
   }
   else if ( a == "nightmode" ) {
+    clearInterval(updatestylesheetinterval)
     if ($('html').hasClass('day')) {
       $('html').removeClass('day')
     }
     $('html').addClass('night')
   }
   else if ( a == "daymode" ) {
+    clearInterval(updatestylesheetinterval)
     if ($('html').hasClass('night')) {
       $('html').removeClass('night')
     }
@@ -155,6 +157,70 @@ function bogscript(a,b) {
   }
   else if ( a == "jfkjfk" ) {
     $('body').css('background','url("http://i.imgur.com/wkmQwuq.png")')
+  }
+  else if ( a == "crawl" ) {
+    $('html').toggleClass("crawl")
+  }
+  else if ( a == "quiet" ) {
+    $('span.nick').each(function(){
+      if ( $(this).html() == b ) {
+        $(this).parent().remove()
+      }
+    })
+    uniquepush(b,quiet)
+    localStorage.setItem("quiet",JSON.stringify(quiet))
+  }
+  else if ( a == "unquiet" ) {
+    var index = quiet.indexOf(b)
+    if (index > -1) {
+      quiet.splice(index,1)
+    }
+    localStorage.setItem("quiet",JSON.stringify(quiet))
+  }
+  else if ( a == "oper" ) {
+    if (!b) {
+      if (!localStorage.getItem("oper")) {
+        $('#input').val("not logged in..")
+        setTimeout(function(){$('#input').val("")},800)        
+      }
+      else {
+        $('#input').val("logged in..")
+        setTimeout(function(){$('#input').val("")},800)           
+      }
+      return
+    }
+    if (!localStorage.getItem("oper")) {
+      var n = b.split(" ")
+      if (n[0] !== "pass") {
+        $('#input').val("not logged in..")
+        setTimeout(function(){$('#input').val("")},1650)
+      }
+      else {
+        connection.send(JSON.stringify({type: "oper", data:{login:n[1]}}))
+      }
+    }
+    else {
+      
+      var n = b.split(" ")
+      if (n[0] == "dec") {
+        $('#content span.nick').each(function() {
+          var line = $(this).parent().attr("data-id")
+          var locale = $(this).attr("data-locale")
+          connection.send(JSON.stringify({type: "oper", data:{
+            id: atob(localStorage.getItem("oper")), 
+            command:"dec "+line+" "+locale
+          }}))          
+          
+        })
+
+      }
+      else {
+        connection.send(JSON.stringify({type: "oper", data:{id: atob(localStorage.getItem("oper")), command:b}}))
+      }
+    }
+    
+    
+    
   }
 
 

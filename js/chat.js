@@ -21,6 +21,13 @@ var userlist = [ ]
 ,   userlistarraymatch = [ ]
 ,   messagessplitspaces
 
+if (!localStorage.getItem("quiet")) {
+  quiet = []
+  localStorage.setItem("quiet", JSON.stringify(quiet))
+} else {
+  quiet = JSON.parse(localStorage.getItem("quiet"))
+}
+
 if (!localStorage.getItem("muted")) {
   localStorage.setItem("muted", "0")
   muted = false
@@ -36,15 +43,16 @@ function favrequest(e) {
   console.log(e)
 }
 
-function addMessage(author, message, color, id) {
+function addMessage(locale, author, message, color, id) {
   userlist = uniquepush(author, userlist)
-  $('#content').append(`<p data-id="${id}"><span class="nick" style="color:${color}">${author.substr(0,16)}</span>: ${richtext(message)}</p>`)
-  
+  if (quiet.indexOf(author) == -1) {
+    $('#content').append(`<p data-nick="${btoa(author.substr(0,16))}" data-id="${id}"><span data-locale="${locale}" class="nick" style="color:${color}">${author.substr(0,16)}</span>: ${richtext(message)}</p>`)
+  }
 }
 
-function addDrumtrack(author, data, image, backgroundcolor, color, id) {
+function addDrumtrack(locale, author, data, image, backgroundcolor, color, id) {
   userlist = uniquepush(author, userlist)
-  $('#content').append(`<p data-id="${id}"><span class="nick" style="color:${color}">${author.substr(0,16)}</span>: <span class="pgx" style="background:${color}; background-image:url(${image}); background-size:350px 130px; display:inline-block; border: 8px groove #eaeaea; height:130px; width:350px" data-warble="${data}"><span class="inlineplay"></span><span class="inlinepush"></span></span> </p>`)
+  $('#content').append(`<p data-nick="${btoa(author.substr(0,16))}" data-id="${id}"><span data-locale="${locale}" class="nick" style="color:${color}">${author.substr(0,16)}</span>: <span class="pgx" style="background:${color}; background-image:url(${image}); background-size:350px 130px; display:inline-block; border: 8px groove #eaeaea; height:130px; width:350px" data-warble="${data}"><span class="inlineplay"></span><span class="inlinepush"></span></span> </p>`)
 }
 
 
@@ -69,17 +77,25 @@ function storefavitems(id) {
 }
 
 function richtext(input) {
-
-
+  var ytparse = 0
+  function ytvidid(url) {
+    var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/
+    return (url.match(p)) ? RegExp.$1 : false
+  }
   function checklinkurl(url) {
     return (url.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/) != null)
   }
   var string = input.split(" ")
   for (i = 0; i < string.length; i++) {
     var word = string[i]
-    if (checkimgurl(word)) {
+    if (ytvidid(word) && (ytparse < 3) ) {
+      word = `<iframe width="100" height="80" src="https://www.youtube.com/embed/${ytvidid(word)}?&rel=0&fs=0&theme=light&loop=1&showinfo=0&disablekb=1&modestbranding=1&hd=1&autohide=1&color=white&playlist=${ytvidid(word)}" frameborder="0" allowfullscreen></iframe><a class="yvonneqwikfix" target="_blank" href="${word}">+</a>`
+      ytparse++
+    }
+    else if (checkimgurl(word)) {
       word = `<img class="readyqwikbin" data-src="${word}" draggable="true" onmousedown="showstored(true)" ondrag="dragready()" onmouseup="showstored(false)" ondragend="showstored(false)" src="${word}">`
-    } else if (checklinkurl(word)) {
+    } 
+    else if (checklinkurl(word)) {
       word = `<a target="_blank" href="${word}">${word}</a>`
     }
     string[i] = word

@@ -184,6 +184,33 @@ wsServer.on('request', function(request) {
             }
             
           }
+          else if (parsed.type == "drum" ) {
+            console.log("drum")
+            increment++
+            var thistime = (new Date()).getTime()
+            var thismessage = htmlEntities(parsed.data)
+            var obj = {
+              time: thistime,
+              text: thismessage,
+              drum: true,
+              author: userName,
+              color: userColor,
+              id: increment
+            }
+            
+            history.push(obj);
+            history = history.slice(-100);
+            localStorage.setItem('history', JSON.stringify(history))
+            localStorage.setItem('increment', increment)
+
+            var ctime = parseInt((+ new Date()).toString().slice(0,-3))
+            var matches = richtext(thismessage).slice(0,10)
+                
+            var json = JSON.stringify({ type:'drum', data: obj })
+            for (var i=0; i < clients.length; i++) {
+              clients[i].sendUTF(json)
+            }
+          }
           else if (parsed.type == "fav" ) {
             if ( !isNaN(parsed.data) ) {
               if (parsed.data <= increment && parsed.data > 0 ) {
@@ -200,6 +227,13 @@ wsServer.on('request', function(request) {
           }
           else if (parsed.type == "ping" ) {
             connection.sendUTF(JSON.stringify({ type:'pong', data: parsed.data }))
+          }
+          else if (parsed.type == "whatshot" ) {
+            var yctime = (parseInt((+ new Date()).toString().slice(0,-3)) - 86400)
+            pool.query('select * from bogchat where ctime > '+yctime+' and favd > 4', function (error, results, fields) {
+              if (error) throw error;
+              connection.sendUTF(JSON.stringify({ type:'whatshot', data: results }))
+            });
           }
         }
       }

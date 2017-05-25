@@ -15,3 +15,6 @@
 [esc]      :: focuses the input box || exits the bubble room
 [tab]      :: autocompletes and cycles through usernames in the input box
 [up/down]  :: scroll through input history in the input box
+
+fjdksla;   :: typed real fast opens the HOT posts from past 24 hours area
+a;sldkfj   :: typed real fast closes the HOT posts area

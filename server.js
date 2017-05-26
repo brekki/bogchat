@@ -43,14 +43,25 @@ function uniquepush(item, oldarray) {
   var localStorage = new LocalStorage('./scratch');
 //}
 
-var history = [ ]
 
 var bannedips = [ ]
 
 if (localStorage.getItem('xbannedips') ) {
   bannedips = JSON.parse(localStorage.getItem('xbannedips'))
-  console.log(JSON.stringify(bannedips))
 }
+var zooips = [ ]
+
+if (localStorage.getItem('xzooips') ) {
+  zooips = JSON.parse(localStorage.getItem('xzooips'))
+}
+
+var shadowips = [ ]
+
+if (localStorage.getItem('xshadowips') ) {
+  shadowips = JSON.parse(localStorage.getItem('xshadowips'))
+}
+
+var history = [ ]
 
 if (localStorage.getItem('history') ) {
   history = JSON.parse(localStorage.getItem('history'))
@@ -181,9 +192,18 @@ wsServer.on('request', function(request) {
     if (bannedips.indexOf(connection.remoteAddress) > -1) {
       return
     }
-    //console.log(JSON.stringify(message))
-    if (message.type === 'utf8') { 
     
+    var zooflag = false
+    if (zooips.indexOf(connection.remoteAddress) > -1) {
+      zooflag = true
+    }
+    
+    var shadowflag = false
+    if (shadowips.indexOf(connection.remoteAddress) > -1) {
+      shadowflag = true
+    }
+    //console.log(JSON.stringify(message))
+    if (message.type === 'utf8') {
       if (userName === false) {
         if ( isJSON(message.utf8Data)) {
           var parsed = JSON.parse(message.utf8Data)
@@ -192,12 +212,10 @@ wsServer.on('request', function(request) {
               userName = userName.substring(0,100)
               userColor = colors[0];
               
-              
-              if (userName == "yvonne") {
+              if (userName == "yvonne" || userName == "hali" || userName == `yvonne's phone: honk` || userName == "yvonnie") {
                 userColor = "magenta"
               }
               connection.sendUTF(JSON.stringify({ type:'color', data: userColor }))
-
             }
           }
           else {
@@ -207,6 +225,10 @@ wsServer.on('request', function(request) {
         else {
           if ( isJSON(message.utf8Data) ) {
           var parsed = JSON.parse(message.utf8Data)
+          
+          
+          
+          
           
           if ( parsed.type == "message" ) {
             //console.log("message " + parsed.data)
@@ -218,6 +240,7 @@ wsServer.on('request', function(request) {
             var thislocale = CryptoJS.AES.encrypt(connection.remoteAddress, process.env.aes).toString()
             var obj = {
               time: thistime,
+              zoo: zooflag,
               text: thismessage,
               author: userName,
               color: userColor,
@@ -234,18 +257,24 @@ wsServer.on('request', function(request) {
             var matches = richtext(thismessage).slice(0,10)
             
             // mySQL
-
-            for (i=0;i<matches.length;i++) {
-              pool.query('INSERT INTO bogchat (postid, username, context, ctime) VALUES ('+increment+', "'+mysql_real_escape_string(userName.toString().substring(0,100))+'", "'+mysql_real_escape_string(matches[i])+'", '+ctime+')', function (error, results, fields) {
-                if (error) throw error;
-              });
-            }            
             
-            var json = JSON.stringify({ type:'message', data: obj })
-            for (var i=0; i < clients.length; i++) {
-              clients[i].sendUTF(json);
+            if (!zooflag && !shadowflag) {
+              for (i=0;i<matches.length;i++) {
+                pool.query('INSERT INTO bogchat (postid, username, context, ctime) VALUES ('+increment+', "'+mysql_real_escape_string(userName.toString().substring(0,100))+'", "'+mysql_real_escape_string(matches[i])+'", '+ctime+')', function (error, results, fields) {
+                  if (error) throw error;
+                });
+              }  
             }
+            var json = JSON.stringify({ type:'message', data: obj })
             
+            if (shadowflag) {
+              connection.sendUTF(json);
+            }
+            else {
+              for (var i=0; i < clients.length; i++) {
+                clients[i].sendUTF(json);
+              }              
+            }
           }
           else if (parsed.type == "drum" ) {
             //console.log("drum")
@@ -256,6 +285,7 @@ wsServer.on('request', function(request) {
             var obj = {
               time: thistime,
               text: thismessage,
+              zoo: zooflag,
               drum: true,
               author: userName,
               locale: thislocale,
@@ -272,21 +302,31 @@ wsServer.on('request', function(request) {
             var matches = richtext(thismessage).slice(0,10)
                 
             var json = JSON.stringify({ type:'drum', data: obj })
-            for (var i=0; i < clients.length; i++) {
-              clients[i].sendUTF(json)
+            if (zooflag || shadowflag) {
+              connection.sendUTF(json)
+            }
+            else {
+              for (var i=0; i < clients.length; i++) {
+                clients[i].sendUTF(json)
+              }
             }
           }
           else if (parsed.type == "fav" ) {
+            
             if ( !isNaN(parsed.data) ) {
               if (parsed.data <= increment && parsed.data > 0 ) {
           
                  pool.query('UPDATE bogchat SET favd = (CASE WHEN favd IS NULL THEN 0 ELSE favd END) + 1 WHERE postid = '+mysql_real_escape_string(parsed.data)+';', function (error, results, fields) {
                    if (error) throw error;
                  });
-          
-                 for (var i=0; i < clients.length; i++) {
-                   clients[i].sendUTF(JSON.stringify({type:'fav', data: parsed.data}))
-                }             
+                 if (zooflag || shadowflag) {
+                   connection.sendUTF(JSON.stringify({ type:'fav', data: parsed.data }))  
+                 }
+                 else {
+                  for (var i=0; i < clients.length; i++) {
+                    clients[i].sendUTF(JSON.stringify({type:'fav', data: parsed.data}))
+                  }
+                }
               }
             }
           }
@@ -300,8 +340,6 @@ wsServer.on('request', function(request) {
               connection.sendUTF(JSON.stringify({ type:'whatshot', data: results }))
             });
           }
-          
-          //
           
           else if ( parsed.type == "oper") {
             
@@ -337,8 +375,56 @@ wsServer.on('request', function(request) {
                       //console.log("lookup " + n)
                       uniquepush(n,bannedips)
                       localStorage.setItem("xbannedips",JSON.stringify(bannedips))
+                    
                     }
-                    else if (n[0] == "dec") {
+                    else if ( n[0] == "zoo") {
+                    
+                      n.splice(0,1)
+                      n = n.join(" ")
+                      //console.log("lookup " + n)
+                      uniquepush(n,zooips)
+                      localStorage.setItem("xzooips",JSON.stringify(zooips))                        
+                    
+                    }
+                    else if ( n[0] == "shadow") {
+                      n.splice(0,1)
+                      n = n.join(" ")
+                      //console.log("lookup " + n)
+                      uniquepush(n,shadowips)
+                      localStorage.setItem("xshadowips",JSON.stringify(shadowips))                        
+                   
+                    
+                    }
+                    else if ( n[0] == "clearzoo") {
+                      zooips = []
+                      localStorage.setItem("xzooips",JSON.stringify(zooips))                        
+                   
+                    
+                    }
+                    else if ( n[0] == "clearshadow") {
+                      shadowips = []
+                      localStorage.setItem("xshadowips",JSON.stringify(shadowips))                        
+                   
+                    
+                    }
+                    else if ( n[0] == "clearban") {
+                      bannedips = []
+                      localStorage.setItem("xbannedips",JSON.stringify(bannedips))                        
+                   
+                    }
+                    else if ( n[0] == "list") {
+                      connection.sendUTF(JSON.stringify( {
+                          type: 'list', 
+                          data: {
+                            bannedips: bannedips,
+                            shadowips: shadowips,
+                            zooips: zooips,
+                          }
+                        } 
+                      ));                    
+                    }
+                    
+                    else if ( n[0] == "dec") {
                       //console.log(n[1])
                       //console.log(n[2])
                       var bytes  = CryptoJS.AES.decrypt(n[2], process.env.aes)
@@ -350,7 +436,7 @@ wsServer.on('request', function(request) {
                             req: plaintext
                           }
                         } 
-                      ));                      
+                      ));                        
                     }
                   }
                 }

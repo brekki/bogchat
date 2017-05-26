@@ -4,12 +4,12 @@ function jaztape() {
   document.body.appendChild(a);
   a.style = "display: none";
   return function (data, fileName) {
-  blob = new Blob([data], {type: "octet/stream"}),
-  url = window.URL.createObjectURL(blob);
-  a.href = url;
-  a.download = fileName;
-  a.click();
-  window.URL.revokeObjectURL(url);
+    blob = new Blob([data], {type: "octet/stream"}),
+    url = window.URL.createObjectURL(blob);
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
   }());
 
@@ -67,20 +67,19 @@ var bin = {
     }
   },
   
+  // shuffle en progres
+  
   appendbin: function(id) {
     let bogbin = this.getbin()
     var thisisactive = ""
 
-    $('#binarea').append('<div data-id="'+id+'" class="bin"><div title="bogbin" data-icon="'+bogbin.bins[id].icon+'" style="background-image:url(./css/image/bin'+bogbin.bins[id].icon+'.png)" class="header"></div><div class="minimize" title="minimize"></div><div title="trash" class="bintrash"></div><div title="hide qwikpik icon" class="showthumb"></div><div class="bincontainer" data-id="'+id+'"></div><input type="text" class="bininput"></input></div>')
+    $('#binarea').append('<div data-id="'+id+'" class="bin"><div title="bogbin" data-icon="'+bogbin.bins[id].icon+'" style="background-image:url(./css/image/bin'+bogbin.bins[id].icon+'.png)" class="header"></div><div class="minimize" title="minimize"></div><div title="shuffle" data-id="'+id+'" class="shuffle"></div><div title="trash" class="bintrash"></div><div title="hide qwikpik icon" class="showthumb"></div><div class="bincontainer" data-id="'+id+'"></div><input type="text" class="bininput"></input></div>')
     var items = this.loadbin(bogbin,id,0,7)
     for (i=0;i<items.length;i++) {
       $('.bincontainer[data-id="'+id+'"]').append('<noscript class="pausecache"><img src="'+items[i]+'"></noscript>')
     }
     if (bogbin.bins[id].qwik == false) {
-      console.log("falsex")
-
       $('body').addClass('xbin'+id)
-
       $('.bin[data-id="'+id+'"] .showthumb').addClass('active')
     }
     return
@@ -130,6 +129,17 @@ var bin = {
     }
     var bogbin = JSON.parse(atob(localStorage.getItem("bogbin")))
     return bogbin
+  },
+  
+  shufflebin: function(bogbin) {
+    // clear this bin..
+    $('.bincontainer[data-id="'+id+'"]').html("")
+    // shuffle this bincontainer's contents..
+    
+    // save bins..
+    
+    // repropogate this bincontainer
+    
   },
   
   savebin: function(bogbin) {
@@ -198,11 +208,8 @@ var bin = {
     
     if (olditems.indexOf(content) != -1) {
       var index = olditems.indexOf(content)
-
       olditems.splice(index,1)
-
     }
-    
     bogbin.bins[id].items = olditems
     bin.savebin(bogbin)    
   },
@@ -214,10 +221,7 @@ var bin = {
   
 };
 
-
-  
 bin.loadallbins();
-
 
 
 $('#newbinbutton').click(function(){
@@ -301,6 +305,11 @@ $(document).on('click','.bin div.minimize',function() {
   $(this).parent().toggleClass("minimize")
 })
 
+$(document).on('click','.bin div.shuffle',function() {
+  var id = $(this).attr("data-id")
+  bin.shufflebin(id)
+})
+
 $(document).on('click','.qwikbinicon',function() {
   
   let image = $(this).parent().prev().attr("data-src")
@@ -336,7 +345,6 @@ $(document).on('click','.showthumb',function() {
     $(this).addClass('active')
   }
 })
-
 
 $(document).on('click','#binbutton',function() { 
   bintoggle()

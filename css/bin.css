@@ -317,7 +317,31 @@ html.night .bin .showthumb {
   background: #2f2f2f;
 }
 
+.bin .shuffle {
+  position: absolute;
+    bottom: 30px;
+    width: 15px;
+    height: 3px;
+    background: #eee;
+    border: 3px outset #eee;
+}
 
+.bin .shuffle:active {
+  border: 3px inset #eee;
+}
+
+html.night .bin .shuffle:active {
+  border: 3px inset #505050;
+}
+
+html.night .bin .shuffle {
+    position: absolute;
+    bottom: 30px;
+    width: 15px;
+    height: 3px;
+    background: #333;
+    border: 3px outset #505050;
+}
 
 .bin .bintrash {
       position: absolute;

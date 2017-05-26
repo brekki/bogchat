@@ -92,7 +92,8 @@ function startwebsocket() {
         }
         else {
           var locale = (json.data[i].locale ) ? json.data[i].locale : ""
-          addMessage(locale, json.data[i].author, json.data[i].text, json.data[i].color, json.data[i].id)
+          var zoo = (json.data[i].zoo ) ? json.data[i].zoo : ""
+          addMessage(locale, json.data[i].author, json.data[i].text, json.data[i].color, json.data[i].id, json.data[i].zoo)
         }
       }
       $('#content').scrollTop(200000)
@@ -106,7 +107,8 @@ function startwebsocket() {
       }
       input.removeAttr('disabled')
       var locale = (json.data.locale ) ? json.data.locale : ""
-      addMessage(locale, json.data.author, json.data.text, json.data.color, json.data.id)
+      var zoo = (json.data.zoo ) ? json.data.zoo : ""
+      addMessage(locale, json.data.author, json.data.text, json.data.color, json.data.id, json.data.zoo)
       setTimeout(function() {
         if ( ($('#content p:last-of-type').offset().top - $('#content').height()) > 100 ) {
           // console.log("avoid scrolldown")
@@ -204,6 +206,9 @@ function startwebsocket() {
         $('p[data-id="'+id+'"]').addClass("ok")
         $('p[data-id="'+id+'"] span').html("<span>("+req+") </span>" + $('p[data-id="'+id+'"] span').html())
       }
+    }
+    else if (json.type === "list") {
+      console.log(json.data)
     }
     else if (json.type === "oper") {
       if (json.data.type == "login") {

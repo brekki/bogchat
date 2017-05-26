@@ -43,10 +43,16 @@ function favrequest(e) {
   console.log(e)
 }
 
-function addMessage(locale, author, message, color, id) {
+function addMessage(locale, author, message, color, id, zoo) {
   userlist = uniquepush(author, userlist)
   if (quiet.indexOf(author) == -1) {
-    $('#content').append(`<p data-nick="${btoa(author.substr(0,16))}" data-id="${id}"><span data-locale="${locale}" class="nick" style="color:${color}">${author.substr(0,16)}</span>: ${richtext(message)}</p>`)
+    if (zoo && author != myname) {
+      $('#zoo').removeClass("empty")
+      $('#zoo').append(`<p><span class="nick" style="color:${color}">${author.substr(0,16)}</span>: ${message}</p>`)
+    }
+    else {
+      $('#content').append(`<p data-nick="${btoa(author.substr(0,16))}" data-id="${id}"><span data-locale="${locale}" class="nick" style="color:${color}">${author.substr(0,16)}</span>: ${richtext(message)}</p>`)
+    }
   }
 }
 
@@ -479,6 +485,10 @@ document.addEventListener('visibilitychange', function() {
     $('#title').html('bogchat')
   }
 }, false)
+
+$(document).on('click','#leavezoo',function() {
+  $('#zoo').hide()
+})
 
 $(document).on('click', '#storedcontainer img', function(e) {
   var neue = e.toElement.currentSrc

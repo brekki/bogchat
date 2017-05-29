@@ -37,25 +37,6 @@ function bogscript(a,b) {
     clear: () => {
       $('#content').html('')
     },
-    term: () => {
-      toggleterminalmode()
-    },
-    joel: () => {
-      if (joelnormallaunch) {
-        joelnormallaunch = false
-        joelmode = false
-        $('#msg #input').removeClass("dark")
-        terminalmode = false
-        $('body').removeClass("terminal")
-      }
-      else if (!joelmode && !terminalmode) {
-        joelnormallaunch = true
-        togglejoelmode()
-      }
-      else {
-        togglejoelmode()
-      }
-    },
     msg: () => {
       if (b) {
         connection.send(JSON.stringify({type: "message", data: b}))
@@ -74,9 +55,6 @@ function bogscript(a,b) {
       bintoggle()
     },
     draw: () => {
-      if ($('body').hasClass("terminal")) {
-        toggleterminalmode()
-      }
       hidebabydraw()  
       if ($('body').hasClass("drum")) {
         $('body').removeClass('drum')
@@ -94,11 +72,11 @@ function bogscript(a,b) {
       drumviewtoggle()
     },
     send: () => {
-      if ( $('body').hasClass("drum") && !$('body').hasClass("terminal")) {
+      if ( $('body').hasClass("drum") ) {
         hidebabydraw()   
         uploadtrack($('#includecoverart').prop('checked'))
       }
-      else if ( $('body').hasClass("draw") && !$('body').hasClass("terminal")) {
+      else if ( $('body').hasClass("draw") ) {
         var blobber = $('.drawing-board-canvas')[0].toDataURL("image/png")
         var uri = blobber.substring(22)
         webcamtoimgur(uri)
@@ -117,6 +95,13 @@ function bogscript(a,b) {
     },
     scrap: () => {
       storedtoggle()
+    },
+    radio: () => {
+      if (!b) {
+        // toggleradio
+        return
+      }
+      connection.send(JSON.stringify({type:"radioqueue", data: b}))
     },
     trim: () => {
       $('p img').remove()
@@ -169,7 +154,6 @@ function bogscript(a,b) {
         }
       }
       else {
-        
         var n = b.split(" ")
         if (n[0] == "dec") {
           $('#content span.nick').each(function() {
@@ -205,9 +189,6 @@ function bogscript(a,b) {
   
   function drumviewtoggle() {
     hidebabydraw()   
-    if ($('body').hasClass("terminal")) {
-      toggleterminalmode()
-    }
     if ($('body').hasClass("draw")) {
       $('body').removeClass('draw')
     }    

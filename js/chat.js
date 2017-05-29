@@ -48,7 +48,10 @@ function addMessage(locale, author, message, color, id, zoo) {
   if (quiet.indexOf(author) == -1) {
     if (zoo && author != myname) {
       $('#zoo').removeClass("empty")
-      $('#zoo').append(`<p><span class="nick" style="color:${color}">${author.substr(0,16)}</span>: ${message}</p>`)
+      $('#zoo #exhibit').append(`<p><span class="nick" style="color:${color}">${author.substr(0,16)}</span>: ${message}</p>`)
+      setTimeout(function() {
+        $('#exhibit').scrollTop(200000)
+      },300)
     }
     else {
       $('#content').append(`<p data-nick="${btoa(author.substr(0,16))}" data-id="${id}"><span data-locale="${locale}" class="nick" style="color:${color}">${author.substr(0,16)}</span>: ${richtext(message)}</p>`)

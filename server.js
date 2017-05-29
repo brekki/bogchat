@@ -14,8 +14,30 @@ var webSocketsServerPort = 1337;
 
 var webSocketServer = require('websocket').server;
 var http = require('http');
+const xrequest = require('request');
 var SHA256 = require("crypto-js/sha256");
 var CryptoJS = require("crypto-js");
+
+var irc = require('irc')
+
+const ircme = `bogchat`
+const ircport = 9999
+const irchost = `irc.jollo.org`
+
+var client = new irc.Client(irchost, ircme, {
+    channels: ['#asdf'],
+    userName: ircme,
+    debug: true,
+    realName: ircme,
+    port: ircport,
+    selfSigned: true,
+    debug: false,
+    showErrors: false,
+    secure: true,
+    floodProtection: false,
+})
+
+client.addListener('error', (n) => {} )
 
 function hashstringify(wordArray) {
   var words = wordArray.words
@@ -42,7 +64,6 @@ function uniquepush(item, oldarray) {
   var LocalStorage = require('node-localstorage').LocalStorage;
   var localStorage = new LocalStorage('./scratch');
 //}
-
 
 var bannedips = [ ]
 
@@ -128,8 +149,6 @@ function htmlEntities(str) {
             .replace(/>/g, '&gt;').replace(/"/g, '&quot;').substring(0,30000)
 }
 
-//
-
 var server = http.createServer(function(request, response) {
 
 })
@@ -142,7 +161,16 @@ var wsServer = new webSocketServer({
   httpServer: server
 });
 
+client.addListener('message', (...a) => {
+
+  let nick        = a[0]
+  let chan        = a[1]
+  let fulladdress = a[3].prefix
+  
+})
+
 wsServer.on('request', function(request) {
+  
   
   function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
@@ -169,10 +197,11 @@ wsServer.on('request', function(request) {
 
   var connection = request.accept(null, request.origin); 
   
-  var json = JSON.stringify({ type:'hi' });
-  for (var i=0; i < clients.length; i++) {
-    clients[i].sendUTF(json);
-  }
+  // // disabling sound.. revive in legacy
+  // var json = JSON.stringify({ type:'hi' });
+  // for (var i=0; i < clients.length; i++) {
+  //   clients[i].sendUTF(json);
+  // }
   
   var index = clients.push(connection) - 1;
   var userName = false;
@@ -204,251 +233,253 @@ wsServer.on('request', function(request) {
     }
     //console.log(JSON.stringify(message))
     if (message.type === 'utf8') {
+      
       if (userName === false) {
         if ( isJSON(message.utf8Data)) {
           var parsed = JSON.parse(message.utf8Data)
-            if (parsed.type == "nick" ) {
-              userName = htmlEntities(parsed.data)
-              userName = userName.substring(0,100)
-              userColor = colors[0];
-              
-              if (userName == "yvonne" || userName == "hali" || userName == `yvonne's phone: honk` || userName == "yvonnie") {
-                userColor = "magenta"
-              }
-              connection.sendUTF(JSON.stringify({ type:'color', data: userColor }))
-            }
-          }
-          else {
-            console.log("no")
-          }
-        } 
-        else {
-          if ( isJSON(message.utf8Data) ) {
-          var parsed = JSON.parse(message.utf8Data)
-          
-          
-          
-          
-          
-          if ( parsed.type == "message" ) {
-            //console.log("message " + parsed.data)
+          if (parsed.type == "nick" ) {
+            userName = htmlEntities(parsed.data)
+            userName = userName.substring(0,100)
+            userColor = colors[0];
 
-            increment++
-
-            var thistime = (new Date()).getTime()
-            var thismessage = htmlEntities(parsed.data)
-            var thislocale = CryptoJS.AES.encrypt(connection.remoteAddress, process.env.aes).toString()
-            var obj = {
-              time: thistime,
-              zoo: zooflag,
-              text: thismessage,
-              author: userName,
-              color: userColor,
-              locale: thislocale,
-              id: increment
+            if (userName == "yvonne" || userName == "hali" || userName == `yvonne's phone: honk` || userName == "yvonnie") {
+              userColor = "magenta"
             }
-            
-            history.push(obj);
-            history = history.slice(-100);
-            localStorage.setItem('history', JSON.stringify(history))
-            localStorage.setItem('increment', increment)
-
-            var ctime = parseInt((+ new Date()).toString().slice(0,-3))
-            var matches = richtext(thismessage).slice(0,10)
-            
-            // mySQL
-            
-            if (!zooflag && !shadowflag) {
-              for (i=0;i<matches.length;i++) {
-                pool.query('INSERT INTO bogchat (postid, username, context, ctime) VALUES ('+increment+', "'+mysql_real_escape_string(userName.toString().substring(0,100))+'", "'+mysql_real_escape_string(matches[i])+'", '+ctime+')', function (error, results, fields) {
-                  if (error) throw error;
-                });
-              }  
-            }
-            var json = JSON.stringify({ type:'message', data: obj })
-            
-            if (shadowflag) {
-              connection.sendUTF(json);
-            }
-            else {
-              for (var i=0; i < clients.length; i++) {
-                clients[i].sendUTF(json);
-              }              
-            }
-          }
-          else if (parsed.type == "drum" ) {
-            //console.log("drum")
-            increment++
-            var thistime = (new Date()).getTime()
-            var thismessage = htmlEntities(parsed.data)
-            var thislocale = CryptoJS.AES.encrypt(connection.remoteAddress, process.env.aes).toString()
-            var obj = {
-              time: thistime,
-              text: thismessage,
-              zoo: zooflag,
-              drum: true,
-              author: userName,
-              locale: thislocale,
-              color: userColor,
-              id: increment
-            }
-            
-            history.push(obj);
-            history = history.slice(-100);
-            localStorage.setItem('history', JSON.stringify(history))
-            localStorage.setItem('increment', increment)
-          
-            var ctime = parseInt((+ new Date()).toString().slice(0,-3))
-            var matches = richtext(thismessage).slice(0,10)
-                
-            var json = JSON.stringify({ type:'drum', data: obj })
-            if (zooflag || shadowflag) {
-              connection.sendUTF(json)
-            }
-            else {
-              for (var i=0; i < clients.length; i++) {
-                clients[i].sendUTF(json)
-              }
-            }
-          }
-          else if (parsed.type == "fav" ) {
-            
-            if ( !isNaN(parsed.data) ) {
-              if (parsed.data <= increment && parsed.data > 0 ) {
-          
-                 pool.query('UPDATE bogchat SET favd = (CASE WHEN favd IS NULL THEN 0 ELSE favd END) + 1 WHERE postid = '+mysql_real_escape_string(parsed.data)+';', function (error, results, fields) {
-                   if (error) throw error;
-                 });
-                 if (zooflag || shadowflag) {
-                   connection.sendUTF(JSON.stringify({ type:'fav', data: parsed.data }))  
-                 }
-                 else {
-                  for (var i=0; i < clients.length; i++) {
-                    clients[i].sendUTF(JSON.stringify({type:'fav', data: parsed.data}))
-                  }
-                }
-              }
-            }
-          }
-          else if (parsed.type == "ping" ) {
-            connection.sendUTF(JSON.stringify({ type:'pong', data: parsed.data }))
-          }
-          else if (parsed.type == "whatshot" ) {
-            var yctime = (parseInt((+ new Date()).toString().slice(0,-3)) - 86400)
-            pool.query('select * from bogchat where ctime > '+yctime+' and favd > 4', function (error, results, fields) {
-              if (error) throw error;
-              connection.sendUTF(JSON.stringify({ type:'whatshot', data: results }))
-            });
-          }
-          
-          else if ( parsed.type == "oper") {
-            
-            //console.log(JSON.stringify(parsed.data))
-            
-            if (parsed.data.login) {
-              if ( hashstringify(SHA256(parsed.data.login)) == process.env.sha ) {
-                connection.sendUTF(JSON.stringify(
-                  { 
-                    type:'oper',
-                    data: {
-                      type:"login",
-                      message:process.env.opermessage,
-                      content:parsed.data.login
-                    }
-                  }
-                ))
-              }
-            }
-            else {
-              if (parsed.data.id) {
-                
-                // verify id is correct
-                if ( hashstringify(SHA256(parsed.data.id)) == process.env.sha ) {
-                  if (parsed.data.command) {
-                  
-                    //console.log("good process " + parsed.data.command)
-                    var n = parsed.data.command.split(" ");
-                    
-                    if (n[0] == "ban") {
-                      n.splice(0,1)
-                      n = n.join(" ")
-                      //console.log("lookup " + n)
-                      uniquepush(n,bannedips)
-                      localStorage.setItem("xbannedips",JSON.stringify(bannedips))
-                    
-                    }
-                    else if ( n[0] == "zoo") {
-                    
-                      n.splice(0,1)
-                      n = n.join(" ")
-                      //console.log("lookup " + n)
-                      uniquepush(n,zooips)
-                      localStorage.setItem("xzooips",JSON.stringify(zooips))                        
-                    
-                    }
-                    else if ( n[0] == "shadow") {
-                      n.splice(0,1)
-                      n = n.join(" ")
-                      //console.log("lookup " + n)
-                      uniquepush(n,shadowips)
-                      localStorage.setItem("xshadowips",JSON.stringify(shadowips))                        
-                   
-                    
-                    }
-                    else if ( n[0] == "clearzoo") {
-                      zooips = []
-                      localStorage.setItem("xzooips",JSON.stringify(zooips))                        
-                   
-                    
-                    }
-                    else if ( n[0] == "clearshadow") {
-                      shadowips = []
-                      localStorage.setItem("xshadowips",JSON.stringify(shadowips))                        
-                   
-                    
-                    }
-                    else if ( n[0] == "clearban") {
-                      bannedips = []
-                      localStorage.setItem("xbannedips",JSON.stringify(bannedips))                        
-                   
-                    }
-                    else if ( n[0] == "list") {
-                      connection.sendUTF(JSON.stringify( {
-                          type: 'list', 
-                          data: {
-                            bannedips: bannedips,
-                            shadowips: shadowips,
-                            zooips: zooips,
-                          }
-                        } 
-                      ));                    
-                    }
-                    
-                    else if ( n[0] == "dec") {
-                      //console.log(n[1])
-                      //console.log(n[2])
-                      var bytes  = CryptoJS.AES.decrypt(n[2], process.env.aes)
-                      var plaintext = bytes.toString(CryptoJS.enc.Utf8)
-                      connection.sendUTF(JSON.stringify( {
-                          type: 'decreq', 
-                          data: {
-                            id: n[1],
-                            req: plaintext
-                          }
-                        } 
-                      ));                        
-                    }
-                  }
-                }
-              }
-            }
+            connection.sendUTF(JSON.stringify({ type:'color', data: userColor }))
           }
         }
       }
+      else {
+        if ( isJSON(message.utf8Data) ) {
+          var parsed = JSON.parse(message.utf8Data)
+          
+          ;(({
+            message: () => {
+
+              increment++
+
+              var thistime = (new Date()).getTime()
+              var thismessage = htmlEntities(parsed.data)
+              var thislocale = CryptoJS.AES.encrypt(connection.remoteAddress, process.env.aes).toString()
+              var obj = {
+                time: thistime,
+                zoo: zooflag,
+                text: thismessage,
+                author: userName,
+                color: userColor,
+                locale: thislocale,
+                id: increment
+              }
+              
+              history.push(obj);
+              history = history.slice(-100);
+              localStorage.setItem('history', JSON.stringify(history))
+              localStorage.setItem('increment', increment)
+
+              var ctime = parseInt((+ new Date()).toString().slice(0,-3))
+              var matches = richtext(thismessage).slice(0,10)
+              
+              // mySQL
+              
+              if (!zooflag && !shadowflag) {
+                for (i=0;i<matches.length;i++) {
+                  pool.query('INSERT INTO bogchat (postid, username, context, ctime) VALUES ('+increment+', "'+mysql_real_escape_string(userName.toString().substring(0,100))+'", "'+mysql_real_escape_string(matches[i])+'", '+ctime+')', function (error, results, fields) {
+                    if (error) throw error;
+                  });
+                }
+              }
+              var json = JSON.stringify({ type:'message', data: obj })
+              
+              if (shadowflag) {
+                connection.sendUTF(json);
+              }
+              else {
+                for (var i=0; i < clients.length; i++) {
+                  clients[i].sendUTF(json);
+                }              
+              }
+            },
+            drum: () => {
+
+              increment++
+              var thistime = (new Date()).getTime()
+              var thismessage = htmlEntities(parsed.data)
+              var thislocale = CryptoJS.AES.encrypt(connection.remoteAddress, process.env.aes).toString()
+              var obj = {
+                time: thistime,
+                text: thismessage,
+                zoo: zooflag,
+                drum: true,
+                author: userName,
+                locale: thislocale,
+                color: userColor,
+                id: increment
+              }
+              
+              history.push(obj);
+              history = history.slice(-100);
+              localStorage.setItem('history', JSON.stringify(history))
+              localStorage.setItem('increment', increment)
+            
+              var ctime = parseInt((+ new Date()).toString().slice(0,-3))
+              var matches = richtext(thismessage).slice(0,10)
+                  
+              var json = JSON.stringify({ type:'drum', data: obj })
+              if (zooflag || shadowflag) {
+                connection.sendUTF(json)
+              }
+              else {
+                for (var i=0; i < clients.length; i++) {
+                  clients[i].sendUTF(json)
+                }
+              }
+            },
+            fav: () => {
+              if ( !isNaN(parsed.data) ) {
+                if (parsed.data <= increment && parsed.data > 0 ) {
+                   pool.query('UPDATE bogchat SET favd = (CASE WHEN favd IS NULL THEN 0 ELSE favd END) + 1 WHERE postid = '+mysql_real_escape_string(parsed.data)+';', function (error, results, fields) {
+                     if (error) throw error;
+                   });
+                   if (zooflag || shadowflag) {
+                     connection.sendUTF(JSON.stringify({ type:'fav', data: parsed.data }))  
+                   }
+                   else {
+                    for (var i=0; i < clients.length; i++) {
+                      clients[i].sendUTF(JSON.stringify({type:'fav', data: parsed.data}))
+                    }
+                  }
+                }
+              }
+            },
+            ping: () => {
+              connection.sendUTF(JSON.stringify({ type:'pong', data: parsed.data }))
+            },
+            radioqueue: () => {
+              if (parsed.data) {
+                // if its one word and starts with http send just this word
+                // else if its multiple words do a query on it using youtube search..
+                // send the reply to plinko
+                var content = parsed.data.split(" ")
+                if (content.length == 1 && content[0].substr(0,4) == "http") {
+                  // send plinko this url
+                  client.say('plinko', `api ${process.env.plinkoapi} msg #radio <${userName.substr(0,10)}> ${content[0]}`);
+                  connection.sendUTF(JSON.stringify({ type:'status', data: "OK" }))
+                }
+                else {
+                  // some kind of search
+                  var subdata = (parsed.data).substr(0,100)
+                  xrequest('https://www.googleapis.com/youtube/v3/search?part=snippet&q='+encodeURI(subdata)+'&key='+process.env.ytapi, (err,res,body) => {
+                    var json = JSON.parse(body)
+                    if (json && json.items && json.items.length >= 1) {
+                      client.say('plinko', `api ${process.env.plinkoapi} msg #radio <${userName.substr(0,10)}> https://www.youtube.com/watch?v=${json.items[0].id.videoId}`);
+                      connection.sendUTF(JSON.stringify({ type:'status', data: "OK" }))
+                    }
+                    else {
+                      console.log("no results found")
+                      connection.sendUTF(JSON.stringify({ type:'status', data: "no results" }))
+                    }
+                  })
+                }
+              }
+            },
+            whatshot: () => {
+              var yctime = (parseInt((+ new Date()).toString().slice(0,-3)) - 86400)
+              pool.query('select * from bogchat where ctime > '+yctime+' and favd > 4', function (error, results, fields) {
+                if (error) throw error;
+                connection.sendUTF(JSON.stringify({ type:'whatshot', data: results }))
+              });
+            },
+            oper: () => {
+              if (parsed.data.login) {
+                if ( hashstringify(SHA256(parsed.data.login)) == process.env.sha ) {
+                  connection.sendUTF(JSON.stringify(
+                    { 
+                      type:'oper',
+                      data: {
+                        type:"login",
+                        message:process.env.opermessage,
+                        content:parsed.data.login
+                      }
+                    }
+                  ))
+                }
+              }
+              else {
+                if (parsed.data.id) {
+                  // verify id is correct
+                  if ( hashstringify(SHA256(parsed.data.id)) == process.env.sha ) {
+                    if (parsed.data.command) {
+                      //console.log("good process " + parsed.data.command)
+                      var n = parsed.data.command.split(" ");
+                      (({
+                        ban: () => {
+                          n.splice(0,1)
+                          n = n.join(" ")
+                          //console.log("lookup " + n)
+                          uniquepush(n,bannedips)
+                          localStorage.setItem("xbannedips",JSON.stringify(bannedips))
+                        },
+                        zoo: () => {
+                          n.splice(0,1)
+                          n = n.join(" ")
+                          //console.log("lookup " + n)
+                          uniquepush(n,zooips)
+                          localStorage.setItem("xzooips",JSON.stringify(zooips))                        
+                        },
+                        shadow: () => {
+                          n.splice(0,1)
+                          n = n.join(" ")
+                          //console.log("lookup " + n)
+                          uniquepush(n,shadowips)
+                          localStorage.setItem("xshadowips",JSON.stringify(shadowips))                        
+                        },
+                        clearzoo: () => {
+                          zooips = []
+                          localStorage.setItem("xzooips",JSON.stringify(zooips))                        
+                        },
+                        clearshadow: () => {
+                          shadowips = []
+                          localStorage.setItem("xshadowips",JSON.stringify(shadowips))                        
+                        },
+                        clearban: () => {
+                          bannedips = []
+                          localStorage.setItem("xbannedips",JSON.stringify(bannedips))                        
+                        },
+                        list: () => {
+                          connection.sendUTF(JSON.stringify( {
+                              type: 'list', 
+                              data: {
+                                bannedips: bannedips,
+                                shadowips: shadowips,
+                                zooips: zooips,
+                              }
+                            } 
+                          ));                    
+                        },
+                        dec: () => {
+                          //console.log(n[1])
+                          //console.log(n[2])
+                          var bytes  = CryptoJS.AES.decrypt(n[2], process.env.aes)
+                          var plaintext = bytes.toString(CryptoJS.enc.Utf8)
+                          connection.sendUTF(JSON.stringify( {
+                              type: 'decreq', 
+                              data: {
+                                id: n[1],
+                                req: plaintext
+                              }
+                            } 
+                          ));                        
+                        },
+                      })[n[0]] || (() => {  } ))();
+                    }
+                  }
+                }
+              }
+            }
+          })[parsed.type] || (() => {  } ))();
+        }
+      }
     } 
-    else {
-      // do something with favs, treehouse, other stuff.. these can be objects i guess
-    }
   });
 
   connection.on('close', function(e) {
@@ -460,9 +491,10 @@ wsServer.on('request', function(request) {
       };
     };
     //colors.push(userColor);
-    var json = JSON.stringify({ type:'byebye' })
-    for (var i=0; i < clients.length; i++) {
-      clients[i].sendUTF(json)
-    }
+    // // disabling sound.. revive in legacy
+    // var json = JSON.stringify({ type:'byebye' })
+    // for (var i=0; i < clients.length; i++) {
+    //   clients[i].sendUTF(json)
+    // }
   })
 })

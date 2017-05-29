@@ -297,7 +297,7 @@ html.night #msg::after {
 #input {
   border: 2px solid magenta;
   border-right:4px solid magenta;
-  width: calc(100vw - 246px);
+  width: calc(100vw - 240px);
   margin-top: 0px;
   margin-left: 0px;
   height: 30px;
@@ -317,7 +317,7 @@ html.night #input {
 }
 
 #input.makeroom {
-  width: calc(100vw - 528px);
+  width: calc(100vw - 522px);
 }
 
 
@@ -1067,6 +1067,7 @@ html.night.broken #whatshot {
   width:460px;
   height:380px;
   background-repeat:no-repeat;
+  pointer-events:none;
   position:absolute;
   left:-50px;
   top:80px;
@@ -1084,18 +1085,61 @@ html.night.broken #whatshot {
   border-radius:200px 200px 0 0;
 }
 
+#zoo #listen {
+        position: absolute;
+    right: 30px;
+    bottom: 31px;
+    z-index: 99999999999;
+}
+
+#zoo #listen::after {
+  content: 'listen';
+    font-size: 8px;
+    font-family: georgia;
+    letter-spacing: 1px;
+    padding-top: 3px;
+    text-align: center;
+    pointer-events: none;
+    /* font-weight: bold; */
+    width: 30px;
+    color: #55ff44;
+    height: 15px;
+    z-index: 99999999999999999999999999;
+    background: black;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+
+#zoo iframe {
+      position: absolute;
+    right: 0;
+    left:0;
+    z-index: 99999999999;
+}
+
+
 #zoo::after {
-  content:'Please do not interact with any users in this zoo exhibit. Please do not even mention the zoo in the chatroom. Thank you - Zoo Mgmt';
-  z-index:99999999999;
-  border-radius:0px 10px 0 0;
-  left:0;
-  bottom:0;
-  width:130px;
-  height:50px;
-  text-shadow:1px 1px lime;
-  position:absolute;
-  font-size:10px;
-  font-family:georgia;
+    content: '';
+    z-index: 99999999999;
+    border-radius: 0px 10px 0 0;
+    right: -43px;
+    bottom: 0px;
+    text-align: right;
+    image-rendering: auto;
+    width: 145px;
+    height: 171px;
+    image-rendering: pixelated;
+    text-shadow: 0px 0px 3px lime;
+    /* background: rgba(255,255,255,.8); */
+    background-image: url(http://i.imgur.com/Ng794JA.png);
+    z-index: 9999999;
+    background-repeat: no-repeat;
+    position: absolute;
+    background-size: contain;
+    font-size: 10px;
+    font-family: georgia;
 }
 
 #zoo button {
@@ -1114,13 +1158,7 @@ html.night.broken #whatshot {
   #status {
     display: none!important
   }
-  #msg #input {
-    width: calc(100vw - 246px);
-    height: 18px;
-    border-radius: 0;
-    font-size: 19px;
-    margin-left: 0px;
-  }
+
   #videobox {
     right: -50px
   }
@@ -1131,5 +1169,8 @@ html.night.broken #whatshot {
     content:''!important;
     opacity:0!important;
     pointer-events:none!important
+  }
+  #zoo {
+    display:none!important
   }
 }

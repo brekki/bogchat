@@ -85,6 +85,15 @@ var bin = {
     return
   },
   
+  reappendbin: function(id) {
+    let bogbin = this.getbin()
+    var items = this.loadbin(bogbin,id,0,7)
+    for (i=0;i<items.length;i++) {
+      $('.bincontainer[data-id="'+id+'"]').append('<img src="'+items[i]+'">')
+    }
+    return
+  },
+  
   createbin: function() {
     var bogbin = this.getbin()
     
@@ -131,11 +140,17 @@ var bin = {
     return bogbin
   },
   
-  shufflebin: function(bogbin) {
+  shufflebin: function(id) {
+    
+    let bogbin = this.getbin()
     // clear this bin..
     $('.bincontainer[data-id="'+id+'"]').html("")
     // shuffle this bincontainer's contents..
-    
+
+    bogbin.bins[id].items.shuffle()
+    this.savebin(bogbin)
+    this.reappendbin(id)
+    return
     // save bins..
     
     // repropogate this bincontainer

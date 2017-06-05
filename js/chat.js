@@ -28,15 +28,29 @@ if (!localStorage.getItem("quiet")) {
   quiet = JSON.parse(localStorage.getItem("quiet"))
 }
 
-if (!localStorage.getItem("muted")) {
-  localStorage.setItem("muted", "0")
-  muted = false
-} else {
-  var mutedstatus = localStorage.getItem("muted")
-  if (mutedstatus == "1") {
-    $('#mutebutton').addClass("muted")
-    muted = true
-  }
+// neuemute
+//
+//   => not muted
+// / => frog muted
+// \ => doom muted
+// X => muted
+
+if (!localStorage.getItem("neuemute")) {
+  localStorage.setItem("neuemute", "0")
+} 
+else {
+  ;(({
+    2: () => {
+      $('#mutebutton').addClass("frogmute")
+    },
+    3: () => {
+      $('#mutebutton').addClass("doommute")
+    },
+    4: () => {
+      $('#mutebutton').addClass("doommute")
+      $('#mutebutton').addClass("frogmute")
+    }
+  })[localStorage.getItem("neuemute")] || (() => {  } ))();
 }
 
 function favrequest(e) {
@@ -133,39 +147,50 @@ function hidebabydraw() {
 }
 
 function bintoggle() {
-      if ($('body').hasClass("terminal")) {
-      toggleterminalmode()
-    }
-    
-    
-    hidebabydraw()  
-    
-    if ($('body').hasClass("drum")) {
-      $('body').removeClass('drum')
-    }
-    if ($('body').hasClass("draw")) {
-      $('body').removeClass('draw')
-    }
-    $('body').toggleClass("image")
-    $('#binbutton').toggleClass("locked")
-    
-    $('noscript.pausecache').each(function(){
-      $(this).after($(this).text())
-      $(this).remove()
-    })
+  if ($('body').hasClass("terminal")) {
+    toggleterminalmode()
+  }
+  
+  hidebabydraw()  
+  
+  if ($('body').hasClass("drum")) {
+    $('body').removeClass('drum')
+  }
+  if ($('body').hasClass("draw")) {
+    $('body').removeClass('draw')
+  }
+  $('body').toggleClass("image")
+  $('#binbutton').toggleClass("locked")
+  
+  $('noscript.pausecache').each(function(){
+    $(this).after($(this).text())
+    $(this).remove()
+  })
     
 }
 
 function togglemute() {
-  if ($('#mutebutton').hasClass("muted")) {
-    $('#mutebutton').removeClass("muted")
-    localStorage.setItem("muted", "0")
-    muted = false
-  } else {
-    muted = true
-    $('#mutebutton').addClass("muted")
-    localStorage.setItem("muted", "1")
+  
+  if ($('#mutebutton').hasClass("frogmute") && $('#mutebutton').hasClass("doommute") ) {
+    $('#mutebutton').removeClass("frogmute")
+    $('#mutebutton').removeClass("doommute")
+    localStorage.setItem("neuemute", 1)
   }
+  else if ( $('#mutebutton').hasClass("doommute")) {
+    $('#mutebutton').addClass("frogmute")
+    localStorage.setItem("neuemute", 4)    
+  }
+  else if ( $('#mutebutton').hasClass("frogmute")) {
+    $('#mutebutton').removeClass("frogmute")
+    $('#mutebutton').addClass("doommute")
+    localStorage.setItem("neuemute", 3)    
+  }
+  else {
+    $('#mutebutton').addClass("frogmute")
+    localStorage.setItem("neuemute", 2)    
+  }
+  
+
 }
 
 function storedtoggle() {
@@ -310,6 +335,19 @@ function favpost(id) {
     type: "fav",
     data: id
   }))
+}
+
+var chimecount = 0
+var chimereset
+
+function favchime() {
+  clearTimeout(chimereset)
+  chimecount++
+  chimecount = (chimecount >= 15) ? 15 : chimecount
+  new Audio('https://bog.jollo.org/au/favchime/'+chimecount+'.wav').play()
+  chimereset = setTimeout(function(){
+    chimecount = 0
+  },400)
 }
 
 function pushfile() {
@@ -533,9 +571,11 @@ $(document).on("click", '.favbubble', function() {
     $('#msg #input').val(i + $(this).attr("data-src"))
   })
   // button events
+  
 $('#mutebutton').click(function() {
   togglemute()
 })
+
 $('#lockbutton').click(function() {
   if ($(this).hasClass("locked")) {
     $('#lockbutton').removeClass("locked")

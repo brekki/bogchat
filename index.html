@@ -1,25 +1,36 @@
 <!DOCTYPE html>
 <html class="seq-ui">
 <head>
+
+<script>
+let bogversion = 5
+</script>
+
 <meta charset="utf-8">
 <title id="title">bogchat</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/> 
-
+<meta name="description" content="rothschilds bow to bogdanoffs" />
+<meta name="author" content="the jollo irc network" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
-<script src="./js/mode.js"></script>  
-<link rel='stylesheet' href='./css/bogchat.css' type='text/css'>
-<link rel='stylesheet' href='./css/bin.css' type='text/css'>
-<link rel='stylesheet' href='./css/bubbles.css' type='text/css'>
-<link rel='stylesheet' href='./css/draw.css' type='text/css'>
-<link rel='stylesheet' href='./css/drums.css' type='text/css'>
+<script>document.write('<script src="./js/mode.js?'+bogversion+'"><\/script>')</script>
+<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+
+<script>
+  var bogstyles = ["bogchat","bin","bubbles","draw","drums","radio"]
+  
+  for (var f=0;f<bogstyles.length;f++) {
+   document.write('<link rel="stylesheet" href="./css/'+bogstyles[f]+'.css?'+bogversion+'" type="text/css">')
+  }
+</script>
 
 </head>
 <body>
-
+  <img src="https://bog.jollo.org/djpromo.png" style="position:fixed; bottom:100px; right:20px; z-index:999999999999">
   <div id="logo"></div>
   <div class="line"></div>
   <div id="space"></div>
-  
   <div id="container">
     <div id="content"></div>
     <div id="whatshot"></div>
@@ -32,69 +43,59 @@
       <div id="exhibit"></div>
     </div>
   </div>
-  
   <div id="videobox" class="hidden">
     <div id="videoclose"></div>
     <video id="video" width="400" height="300" autoplay></video>
   </div>
-  
   <canvas id="canvas" width="400" height="300" style="display:none"></canvas>
   <div id="bin">
-  <!--
-  hi.. this area is currently being developed.. <br>
-  for now.. you can create storage bins (using an icon to organize which bin is which) <br>
-    and each chat iamge will have a little icon on hover which lets you store images in a storage bin..<br>
-    there will be more to this soon but wanted to roll it out now-->
     <div id="newbinbutton"></div>
     <div id="backupbutton"></div>
     <div id="togglefavedbogchatitemsbutton"></div>
     <div id="togglefavedradioplaylistbutton"></div>
     <div id="deletebinbutton"></div>
     <div id="biggerbinbutton"></div>
-    <div id="binarea">
-
-    </div>
-
+    <div id="binarea"></div>
   </div>
-    <div id="msg">
-      
-      <div id="drawingboard"></div>
-      <div id="drummachineboard">
-        <div id="app" class="">
-          <div id="fullstop"></div>
-          <div id="pikpak" >
-            <input checked="checked" type="radio" id="line1" name="line-style" value="default"  /><label for="line1"></label>
-            <input type="radio" id="line2" name="line-style" value="ffog"  /><label for="line2"></label>
-            <input type="radio" id="line3" name="line-style" value="tj-e"  /><label for="line3"></label>
-          </div>
-
-          <div class="app-region" id="r-top"></div>
-          <div class="app-region" id="r-mid"></div>
-          <div class="app-region" id="r-bottom"></div>
-          <div class="app-region" id="r-footer"></div>
+  <div id="msg">
+    <div id="drawingboard"></div>
+    <div id="drummachineboard">
+      <div id="app" class="">
+        <div id="fullstop"></div>
+        <div id="pikpak" >
+          <input checked="checked" type="radio" id="line1" name="line-style" value="default"  /><label for="line1"></label>
+          <input type="radio" id="line2" name="line-style" value="ffog"  /><label for="line2"></label>
+          <input type="radio" id="line3" name="line-style" value="tj-e"  /><label for="line3"></label>
         </div>
+        <div class="app-region" id="r-top"></div>
+        <div class="app-region" id="r-mid"></div>
+        <div class="app-region" id="r-bottom"></div>
+        <div class="app-region" id="r-footer"></div>
       </div>
-      <span id="status">connecting...</span>
-      <input type="text" id="input" disabled="disabled" />
-      <div id="storedbutton" ondragenter="dragpopup()"></div>
-      <div id="trashlock"></div>
-      <div id="storedarea">
-        <div id="storedcontainer"></div>
-        <input id="storedinput" type="text">
-      </div>
-    
-      <div id="uploadbutton"></div>
-      <div id="camerabutton"></div>
-      <div id="lockbutton"></div>
-      <div id="binbutton"></div>
-      <div id="mutebutton"></div>
-      <div id="favcurrenttrackbutton"></div>
-      <div id="radiobutton"></div>
-    
     </div>
-
+    <span id="status">connecting...</span>
+    <input type="text" id="input" disabled="disabled" />
+    <div id="storedbutton" ondragenter="dragpopup()"></div>
+    <div id="trashlock"></div>
+    <div id="storedarea">
+      <div id="storedcontainer"></div>
+      <input id="storedinput" type="text">
+    </div>
+    <div id="uploadbutton"></div>
+    <div id="camerabutton"></div>
+    <div id="lockbutton"></div>
+    <div id="binbutton"></div>
+    <div id="mutebutton"></div>
+    <div id="favcurrenttrackbutton"></div>
+    <div id="radiobutton"></div>
+    <div id="radiohud">
+      <div id="radioled">188:88</div>
+      <div id="radiotext">XXXXXXXXXXXXXXXXXXXXXXXX</div>
+      <div id="radiocontrols">_ _ _ _ _</div>
+      <div id="radiominremain">x999</div>
+    </div>
+  </div>
   <input id="fileinput" accept="image/*" type="file" onchange="pushfile()">
-  
   <script src="./js/lib/handlebars/handlebars.min.js"></script>
   <script src="./js/lib/lodash/lodash.min.js"></script>
   <script src="./js/lib/backbone/backbone-min.js"></script>
@@ -112,21 +113,13 @@
   <script src="./js/lib/microevent/microevent.js"></script>
   <script src="./js/shared/util.js"></script>
 
-
-  
-  <script src="./js/bin.js"></script>
-  <script src="./js/chat.js"></script>
-  <script src="./js/radio.js"></script>
-  <script src="./js/connect.js"></script>
-  <script src="./js/actions.js"></script>
-  <script src="./js/camera.js"></script>
-  <script src="./js/images.js"></script>
-  <script src="./js/breakapart.js"></script>
-  <script src="./js/draw.js"></script>
-  <script src="./js/bubbles.js"></script>
-  <script src="./js/drums.js"></script>
-  <script src="./js/pak.js"></script>
-
+  <script>
+    var bogmods = ["bin","chat","radio","connect","actions","camera","images","breakapart","draw","bubbles","drums","pak"]
+    
+    for (var f=0;f<bogmods.length;f++) {
+     document.write('<script src="./js/'+bogmods[f]+'.js?'+bogversion+'"><\/script>')
+    }
+  </script>
 
 </body>
 </html>

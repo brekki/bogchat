@@ -1,36 +1,93 @@
 var radiostateuser
 var radiostateurl
 
-function activeradiotest() {
+// function activeradiotest() {
+// 
+//   $.ajax({
+//     url: 'https://bog.jollo.org/audio',
+//     type: "GET",
+//     dataType: "json",
+//     success: function (data) {
+//       if ( data.playstate == "playing" ) {
+//         $('html').addClass("radioready")
+//         radiostateuser = data.current_track.user
+//         radiostateurl = data.current_track.url
+//       }
+//       else {
+//         if ( !$('html').hasClass("radioplaying") ) {
+//           $('html').removeClass("radioready")
+//         }
+//       }
+//     }
+//   })
+// }
+// 
+// 
+// 
+// activeradiotest()
+// 
+// var radiostatus = setInterval(function(){
+//   activeradiotest() 
+//   }, 30000)
+// 
+// function stopradiostatus() {
+//   clearInterval(radiostatus)
+// }
 
-  $.ajax({
-    url: 'https://bog.jollo.org/audio',
-    type: "GET",
-    dataType: "json",
-    success: function (data) {
-      if ( data.playstate == "playing" ) {
-        $('html').addClass("radioready")
-        radiostateuser = data.current_track.user
-        radiostateurl = data.current_track.url
-      }
-      else {
-        if ( !$('html').hasClass("radioplaying") ) {
-          $('html').removeClass("radioready")
-        }
-      }
+var marqueepower
+var radiohudmarquee = {
+  
+  data: {
+    text: "",
+    count: 0,
+    target: 0
+  },
+  init: () => {
+    marqueepower = setInterval(
+      () => { 
+        radiohudmarquee.scroll()
+      }, 400
+    );
+  },
+  reset: () => {
+    clearInterval(marqueepower)
+    radiohudmarquee.init()
+  },
+  stop: () => {
+    clearInterval(marqueepower)
+    radiohudmarquee.data.text = ""
+    radiohudmarquee.data.count = 0
+    radiohudmarquee.data.target = 0
+  },
+  feed: (xx) => {
+    radiohudmarquee.reset()
+    radiohudmarquee.data.text = xx.substring(0,100).toUpperCase().replace(/ /g,"_")
+    radiohudmarquee.data.count = 0
+    radiohudmarquee.data.target = radiohudmarquee.data.text.length
+  },
+  scroll: () => {
+    if (radiohudmarquee.data.target <= 24) {
+      $('#radiotext').html(radiohudmarquee.data.text)
     }
-  })
+    else {
+      var n = radiohudmarquee.data.text
+      var k = radiohudmarquee.data.target
+      var marqueedisplay = n + "_***_" + n + "_***_"
+      var activedisplay = marqueedisplay.substring(radiohudmarquee.data.count,radiohudmarquee.data.count + 24)
+      radiohudmarquee.data.count++
+      if ((radiohudmarquee.data.count - 5) >= radiohudmarquee.data.target) {
+        console.log("jumpback")
+        radiohudmarquee.data.count = 0
+      }
+      $('#radiotext').html(activedisplay.replace(/\_/g,"&nbsp;").replace(/\'/,"&apos;").replace(/\"/,"&quot;").replace(/\>/,"&gt;").replace(/\</,"&lt;"))
+    }
+    
+  }
 }
 
-activeradiotest()
+radiohudmarquee.init()
 
-var radiostatus = setInterval(function(){
-  activeradiotest() 
-  }, 30000)
 
-function stopradiostatus() {
-  clearInterval(radiostatus)
-}
 
 var updatestylesheetinterval = setInterval(function(){
   updatestylesheet()

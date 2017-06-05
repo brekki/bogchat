@@ -214,7 +214,7 @@ html.night body.draw #msg::after {
   left: 81px;
   width: 389px;
   height: 195px;
-  top: 8px;
+  top: 5px;
 }
 
 #drawingboard input[type="range"] {

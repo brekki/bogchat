@@ -2,12 +2,154 @@
 require('dotenv').config()
 process.title = 'node-chat-staging';
 
+// mysql
+
 var mysql = require('mysql');
 var pool  = mysql.createPool({
   host     : 'localhost',
   user     : 'admin',
   password : process.env.sql,
   database : 'bogchat'
+});
+
+// jollo radio
+
+var WebSocket = require('ws')
+  , ws = new WebSocket('ws://radio.jollo.org/socket/websocket?token=undefined&vsn=1.0.0')
+  , wsref = 1
+  , wsheartbeat
+  , wsplaystate = "stopped"
+  , wsplaylisttitle = null
+  , wsplaylisturl = null
+  , wsplaylistuser = null
+  , wsplaylistduration = 0
+  
+var wsplaylistfilename = null
+
+ws.on('open', function() {
+  console.log("connected")
+  clearInterval(wsheartbeat)
+  wssend(0)
+  setTimeout(function(){
+    //console.log("wssend1")
+    wssend(1)
+  },500)
+  wsheartbeat = setInterval(function(){
+    //console.log("wssend2")
+    wssend(2)
+  },20000)
+})
+
+function broadcast(json) {
+  for ( var i=0; i<clients.length; i++ ) {
+    clients[i].sendUTF(JSON.stringify(json))
+  }  
+}
+
+function wstrackchange(e) {
+  if (!e) {
+    console.log("stopped")
+    wsplaystate = "stopped"
+    wsplaylistfilename = null
+    broadcast({
+      type: 'radio',
+      payload: 'power',
+      power: 'stopped'
+    })
+    return
+  }
+  // send signal to open everyones audio player if its not already open
+  console.log("new track")
+  console.log(e)
+  wsplaystate = "playing"
+  wsplaylistfilename = e.filename
+  
+  broadcast({
+    type: 'radio',
+    payload: 'power',
+    power: 'playing'
+  })
+  
+  wsplaylisttitle = e.title
+  wsplaylisturl = e.url
+  wsplaylistuser = e.user
+  wsplaylistduration = 0
+  
+  broadcast({
+    type: 'radio',
+    payload: 'track',
+    track: {
+      title: e.title,
+      url: e.url,
+      user: e.user,
+      duration: 0,
+    }
+  })
+  
+}
+
+function wssend(i) {
+  var wsevents = ["phx_join","sync","heartbeat"]
+  ws.send(JSON.stringify(
+    {
+      "topic":(i==2) ? "phoenix" : "playlist:lobby",
+      "event":wsevents[i],
+      "payload":{},
+      "ref":wsref
+    }
+  ))
+  wsref++
+}
+
+ws.on('message', function(message) {
+  var message = JSON.parse(message)
+  if (message && message.payload) {
+    if (message.payload.playlist) {
+      if (message.payload.playlist.playstate) {
+        wsplaystate = message.payload.playlist.playstate
+        if (wsplaystate == "playing") {
+          if (message.payload.playlist.current_track && message.payload.playlist.current_track.filename) {
+            if (wsplaylistfilename != message.payload.playlist.current_track.filename) {
+              wsplaylistfilename = message.payload.playlist.current_track.filename
+              wstrackchange(message.payload.playlist.current_track)
+            }
+          }
+          else {
+            console.log("server error")
+            
+              wsplaylisttitle = null
+              wsplaylisturl = null
+              wsplaylistuser = null
+              wsplaylistduration = null
+              
+              broadcast({
+                type: 'radio',
+                payload: 'track',
+                track: {
+                  title: null,
+                  url: null,
+                  user: null,
+                  duration: 0,
+                }
+              })
+            //ghost track
+          }
+        }
+        else {
+          wstrackchange(false)
+        }
+      }
+      else {
+        // console.log("server error")
+      }
+    }
+    else {
+      // console.log("heartbeat")
+    }
+  }
+  else {
+    console.log("nothing")
+  }
 });
 
 var webSocketsServerPort = 1337;
@@ -17,6 +159,8 @@ var http = require('http');
 const xrequest = require('request');
 var SHA256 = require("crypto-js/sha256");
 var CryptoJS = require("crypto-js");
+
+// jollo irc
 
 var irc = require('irc')
 
@@ -146,7 +290,7 @@ function isJSON(str) {
 
 function htmlEntities(str) {
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;').replace(/"/g, '&quot;').substring(0,30000)
+            .replace(/>/g, '&gt;').replace(/'/g, '&apos;').replace(/"/g, '&quot;').substring(0,30000)
 }
 
 var server = http.createServer(function(request, response) {
@@ -191,17 +335,17 @@ wsServer.on('request', function(request) {
     return array;
   }
   
-  
-  var colors = [ 'red', 'blue', 'magenta', 'purple', 'coral', 'orangered' ];
+  //var colors = [ 'red', '#2f8aff', 'blue', 'purple', 'magenta', 'coral', 'blue', 'purple', 'coral', 'orangered', '#ffa2b2', 'magenta', 'purple', 'coral', 'orangered', '#ce2cff', '#a30077', '#85cb00', '#9c8bc6' ];
+  var colors = [ 'red', 'blue', 'purple', 'magenta', 'coral', 'blue', 'orangered'];
   colors = shuffle(colors)
 
   var connection = request.accept(null, request.origin); 
   
   // // disabling sound.. revive in legacy
-  // var json = JSON.stringify({ type:'hi' });
-  // for (var i=0; i < clients.length; i++) {
-  //   clients[i].sendUTF(json);
-  // }
+  var json = JSON.stringify({ type:'hi' });
+  for (var i=0; i < clients.length; i++) {
+   clients[i].sendUTF(json);
+  }
   
   var index = clients.push(connection) - 1;
   var userName = false;
@@ -356,6 +500,8 @@ wsServer.on('request', function(request) {
             },
             radioqueue: () => {
               if (parsed.data) {
+                connection.sendUTF(JSON.stringify({ type:'status', data: ".." }));
+                client.say('fanfare', `api ${process.env.plinkoapi} msg #radio <${userName.substr(0,10)}> parsed.data`);
                 // if its one word and starts with http send just this word
                 // else if its multiple words do a query on it using youtube search..
                 // send the reply to plinko
@@ -375,7 +521,6 @@ wsServer.on('request', function(request) {
                       connection.sendUTF(JSON.stringify({ type:'status', data: "OK" }))
                     }
                     else {
-                      console.log("no results found")
                       connection.sendUTF(JSON.stringify({ type:'status', data: "no results" }))
                     }
                   })
@@ -388,6 +533,21 @@ wsServer.on('request', function(request) {
                 if (error) throw error;
                 connection.sendUTF(JSON.stringify({ type:'whatshot', data: results }))
               });
+            },
+            radio: () => {
+              connection.sendUTF(JSON.stringify({ type:'radio', payload: "power", power: wsplaystate }))
+              if (wsplaystate == "playing") {
+                  connection.sendUTF(JSON.stringify({
+                    type: 'radio',
+                    payload: 'track',
+                    track: {
+                      title: wsplaylisttitle,
+                      url: wsplaylisturl,
+                      user: wsplaylistuser,
+                      duration: wsplaylistduration,
+                    }
+                  }));
+              }
             },
             oper: () => {
               if (parsed.data.login) {
@@ -491,10 +651,10 @@ wsServer.on('request', function(request) {
       };
     };
     //colors.push(userColor);
-    // // disabling sound.. revive in legacy
-    // var json = JSON.stringify({ type:'byebye' })
-    // for (var i=0; i < clients.length; i++) {
-    //   clients[i].sendUTF(json)
-    // }
+     // disabling sound.. revive in legacy
+     var json = JSON.stringify({ type:'byebye' })
+     for (var i=0; i < clients.length; i++) {
+       clients[i].sendUTF(json)
+     }
   })
 })

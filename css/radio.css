@@ -1,0 +1,311 @@
+@font-face {
+  font-family: "D7MBI";
+  src: url("./fonts/DSEG7Modern-BoldItalic.woff2") format('woff');
+}
+
+
+#radiohud {
+  position:absolute;
+  bottom:38px;
+  right:0;
+  width:305px;
+  height:64px;
+  transform: rotate(3deg) translate(115px,22px);
+  opacity: 0;
+  font-family: 'Inconsolata', monospace;
+  font-size:12px;
+  transition: all .3s ease-in-out;
+  pointer-events:none
+}
+
+html.day #radiohud {
+  color: #194880;
+}
+
+html.night #radiohud {
+    color: #00f9ff;
+    text-shadow: 0px 0px 5px #00b6ff;
+}
+
+#radiohud > div {
+  position: absolute;
+  opacity:.61
+}
+
+html.night #radiohud > div {
+  opacity:1
+}
+
+#radiotext {
+  top: 26px;
+  font-family: 'Inconsolata';
+  left: 105px;
+  height: 12px;
+  width: 148px;
+  text-align: left;
+  font-size: 11.5px;
+}
+
+#radiocontrols {
+  top: 38px;
+  left: 104px;
+  height: 12px;
+  width: 50px;
+  font-size: 9px;
+}
+
+#radiominremain {
+  top: 39px;
+  right: 27px;
+  height: 12px;
+  width: 25px;
+  font-size: 8pt;
+  text-align: left;
+}
+
+
+
+#radioled {
+  top: 30px;
+  left: 27px;
+  height: 20px;
+  opacity:.09!important;
+  width: 70px;
+  font-family: 'D7MBI';
+  font-size: 16px;
+}
+
+html.night #radioled {
+  opacity:0.24!important
+}
+
+html.radioplaying #radiohud {
+  opacity:1;
+  transform: rotate(0deg) translate(0px,0px);
+  pointer-events:all
+}
+
+html.radioplaying body.drum #radiohud {
+  transform: rotate(0deg) translate(60px,0px);
+}
+
+html.day #radiohud {
+  background:url(./image/wii-hud-a.png);
+}
+
+html.night #radiohud {
+  background:url(./image/night-hud-a.png)
+}
+
+/* */
+
+#radiobutton.favedtrack {
+  animation:favrainbow .3s infinite linear
+}
+
+@keyframes favrainbow {
+  0% { border: 4px inset #fff; }
+  25% { border: 4px inset #f0f; }
+  50% { border: 4px inset #ff0; }
+  75% { border: 4px inset #0ff; }
+  100% { border: 4px inset #fff; }
+}
+
+
+#radiobutton {
+  width: 30px;
+  height: 0px;
+  border: 4px outset #63ffcf;
+  background: #0eff00;
+  position: absolute;
+  right: 0px;
+  bottom: 28px;
+  transition:all .12s ease-in-out;
+}
+
+html.radioready #radiobutton:active, html.radioready #radiobutton.active {
+  background: #0eff00;
+  border: 4px inset #fff;
+}
+
+html.day.radioplaying #radiobutton:active, html.day.radioplaying #radiobutton.active {
+  background:#e5e5e5;
+  background-image: linear-gradient(#e5e5e5,#e0e0e0);
+  height: 7px;
+  border-right: 4px solid white;
+  width: 33px;
+  border: none;
+  border-right: 5px solid white;
+  border-bottom: 3px inset #aeabb1;
+  z-index: 999999999;
+}
+
+html.night.radioplaying #radiobutton:active, html.night.radioplaying #radiobutton.active {
+  background:#000;
+  background-image: url(./image/night-hud-b.png);
+  height: 7px;
+  border-right: 4px solid black;
+  width: 33px;
+  border: none;
+  border-right: 5px solid black;
+  border-bottom: 3px inset black;
+  z-index: 999999999;
+}
+
+html.radioready #radiobutton {
+  height:0px;
+}
+
+.pointereventsnone {
+  pointer-events:none!important
+}
+
+
+/* radio is active */
+
+html.radioready #mutebutton {
+  width: 30px;
+  display: inline;
+  position: relative;
+  z-index: 999999999999;
+  right: 0px;
+  background-color: #1d00ff;
+  background-image: url(./image/mute.gif);
+  background-size: 30px 21px;
+  image-rendering: pixelated;
+  height: 22px;
+  bottom: -2px;
+  position: absolute;
+  border: 4px outset #ff9def;
+  transition: all .3s ease-in-out;
+}
+
+html.radioready #mutebutton:active {
+  border: 4px inset #ff9def;
+}
+
+#mutebutton {
+  width: 30px;
+  display: inline;
+  position: relative;
+  z-index: 999999999999;
+  right: 0px;
+  background-color: #1d00ff;
+  background-image: url(./image/mute.gif);
+  background-size: 30px 30px;
+  height: 30px;
+  bottom: -2px;
+  position: absolute;
+  border: 4px outset #ff9def;
+  transition: all .3s ease-in-out
+}
+
+#mutebutton:active {
+  border: 4px inset #ff9def;
+}
+
+
+
+
+
+
+#favcurrenttrackbutton {
+  width: 30px;
+  display: inline;
+  position: relative;
+  z-index: 99;
+  right: 0px;
+  background-color: #ffcbf9;
+  background-image: url(https://bog.jollo.org/css/image/favtrack.png);
+  background-size: cover;
+  /* image-rendering: pixelated; */
+  height: 22px;
+  bottom: -2px;
+  position: absolute;
+  border: 4px outset #ffb8e1;
+  transition: all .3s ease-in-out;
+}
+
+#favcurrenttrackbutton:active {
+  border: 4px inset #ffb8e1;
+}
+
+html.radioplaying #mutebutton {
+  bottom:-42px;
+}
+
+
+#mutebutton.doommute::before {
+  content: '\\';
+  font-family: arial;
+  font-size: 36px;
+  position: absolute;
+  color: maroon;
+  left: 2px;
+  top: -5px;
+  z-index: 9999999999999999;
+  transform: scaleX(2) translateX(3px)
+}
+
+html.radioready #mutebutton.doommute::before {
+  content: '\\';
+  font-family: arial;
+  font-size: 36px;
+  position: absolute;
+  color: maroon;
+  left: 2px;
+  transform: scaleY(0.8);
+  top: -10px;
+  z-index: 9999999999999999;
+  transform: scaleX(2) translateX(3px)
+}
+
+#mutebutton.frogmute::before {
+  content: '\/';
+  font-family: arial;
+  font-size: 36px;
+  position: absolute;
+  color: maroon;
+  left: 2px;
+  top: -5px;
+  z-index: 9999999999999999;
+  transform: scaleX(2) translateX(3px)
+
+}
+
+html.radioready #mutebutton.frogmute::before {
+  content: '\/';
+  font-family: arial;
+  font-size: 36px;
+  position: absolute;
+  color: maroon;
+  left: 2px;
+  transform: scaleY(0.8);
+  top: -10px;
+  z-index: 9999999999999999;
+  transform: scaleX(2) translateX(3px)
+}
+
+#mutebutton.frogmute.doommute::before {
+  content: 'X';
+  font-family: arial;
+  font-size: 36px;
+  position: absolute;
+  color: maroon;
+  left: 2px;
+  top: -5px;
+  z-index: 9999999999999999;
+  transform: scaleX(1) translateX(0)
+}
+
+html.radioready #mutebutton.frogmute.doommute::before {
+  content: 'X';
+  font-family: arial;
+  font-size: 36px;
+  position: absolute;
+  color: maroon;
+  left: 2px;
+  transform: scaleY(0.8) scaleX(1) translateX(0);
+  top: -10px;
+  z-index: 9999999999999999;
+}

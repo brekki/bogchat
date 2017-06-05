@@ -47,6 +47,12 @@ function startwebsocket() {
         data: myname
       }))
     }
+    setTimeout(function() {
+      console.log("radio request")
+      connection.send(JSON.stringify({
+        type: "radio"
+      }))      
+    },1500)
   }
   connection.onerror = function(error) {
     content.html($('<p>', {
@@ -130,12 +136,12 @@ function startwebsocket() {
         );
       },
       hi: () => {
-        if (!muted) {
+        if (!$('#mutebutton').hasClass("doommute")) {
           new Audio('https://bog.jollo.org/au/enter.mp3').play()
         }
       },
       byebye: () => {
-        if (!muted) {
+        if (!$('#mutebutton').hasClass("doommute")) {
           new Audio('https://bog.jollo.org/au/exit.mp3').play()
         }
       },
@@ -185,6 +191,11 @@ function startwebsocket() {
             $('#title').html(`${mentionstar}(${unseenfavbundle}${unread}) bogchat`)
           }
         } else {
+          if ($('p[data-id="' + json.data + '"] span').html() == myname) {
+            if (!$('#mutebutton').hasClass("frogmute")) {
+              favchime()
+            }
+          }
           $('p[data-id="' + json.data + '"] span').addClass("jiggle")
           setTimeout(function() {
             $('p[data-id="' + json.data + '"] span').removeClass("jiggle")
@@ -223,6 +234,26 @@ function startwebsocket() {
             
             },3800);
         }
+      },
+      radio: () => {
+        (({
+          power: () => {
+            if (json.power) {
+              if (json.power == "playing") {
+                $('html').addClass("radioready")
+              }
+              else {
+                $('html').removeClass("radioready")
+              }
+            }
+          },
+          track: () => {
+            radiohudmarquee.feed(json.track.title)
+          },
+          playlist: () => {
+            console.log(json.playlist)
+          }
+        })[json.payload] || (() => { console.log("bad json") } ))()
       },
       status: () => {
         $('#input').val(json.data)

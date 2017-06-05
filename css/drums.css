@@ -71,7 +71,8 @@ body.drum #status, body.draw #status {
 #r-mid {
   position: absolute;
   left: 90px;
-  top: 0px;
+    top: -1px;
+    border: 1px solid #bdc2ff;
 }
 
 #r-footer {
@@ -304,7 +305,7 @@ html.day.seq-ui .seq-row span {
   border: 1px solid #bdc2ff;
   transition: width .5s ease-out;
   height: 27px;
-  width: calc((100vw - 466px) / 64);
+  width: calc((100vw - 465px) / 64);
   max-width: 66px;
   display: inline-block;
 }

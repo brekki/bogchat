@@ -99,9 +99,11 @@ function bogscript(a,b) {
     radio: () => {
       if (!b) {
         // toggleradio
+        console.log("x")
         return
       }
       connection.send(JSON.stringify({type:"radioqueue", data: b}))
+      console.log("y")
     },
     trim: () => {
       $('p img').remove()
@@ -114,6 +116,9 @@ function bogscript(a,b) {
     },
     crawl: () => {
       $('html').toggleClass("crawl")
+    },
+    chime: () => {
+      $('html').toggleClass("chime")
     },
     quiet: () => {
       $('span.nick').each(function(){

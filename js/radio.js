@@ -1,42 +1,8 @@
 var radiostateuser
 var radiostateurl
-
-// function activeradiotest() {
-// 
-//   $.ajax({
-//     url: 'https://bog.jollo.org/audio',
-//     type: "GET",
-//     dataType: "json",
-//     success: function (data) {
-//       if ( data.playstate == "playing" ) {
-//         $('html').addClass("radioready")
-//         radiostateuser = data.current_track.user
-//         radiostateurl = data.current_track.url
-//       }
-//       else {
-//         if ( !$('html').hasClass("radioplaying") ) {
-//           $('html').removeClass("radioready")
-//         }
-//       }
-//     }
-//   })
-// }
-// 
-// 
-// 
-// activeradiotest()
-// 
-// var radiostatus = setInterval(function(){
-//   activeradiotest() 
-//   }, 30000)
-// 
-// function stopradiostatus() {
-//   clearInterval(radiostatus)
-// }
-
 var marqueepower
+
 var radiohudmarquee = {
-  
   data: {
     text: "",
     count: 0,
@@ -59,9 +25,12 @@ var radiohudmarquee = {
     radiohudmarquee.data.count = 0
     radiohudmarquee.data.target = 0
   },
-  feed: (xx) => {
+  feed: (x) => {
     radiohudmarquee.reset()
-    radiohudmarquee.data.text = xx.substring(0,100).toUpperCase().replace(/ /g,"_")
+    if (!x) {
+      x = "?????"
+    }
+    radiohudmarquee.data.text = x.substring(0,100).toUpperCase().replace(/ /g,"_")
     radiohudmarquee.data.count = 0
     radiohudmarquee.data.target = radiohudmarquee.data.text.length
   },
@@ -76,18 +45,13 @@ var radiohudmarquee = {
       var activedisplay = marqueedisplay.substring(radiohudmarquee.data.count,radiohudmarquee.data.count + 24)
       radiohudmarquee.data.count++
       if ((radiohudmarquee.data.count - 5) >= radiohudmarquee.data.target) {
-        console.log("jumpback")
         radiohudmarquee.data.count = 0
       }
       $('#radiotext').html(activedisplay.replace(/\_/g,"&nbsp;").replace(/\'/,"&apos;").replace(/\"/,"&quot;").replace(/\>/,"&gt;").replace(/\</,"&lt;"))
     }
-    
   }
 }
-
 radiohudmarquee.init()
-
-
 
 var updatestylesheetinterval = setInterval(function(){
   updatestylesheet()
@@ -132,3 +96,22 @@ $('#favcurrenttrackbutton').click(function() {
   },300)
   addcurrenttracktoplaylist()
 })
+
+var radiohudmode
+if (!localStorage.getItem("radiohudmode")) {
+  radiohudmode = 1
+  localStorage.setItem("radiohudmode", 1)
+} else {
+  radiohudmode = JSON.parse(localStorage.getItem("radiohudmode"))
+  toggleradiohudmode(radiohudmode)
+}
+
+
+function toggleradiohudmode(i) {
+  
+}
+
+// $('.radiocontrol').on("click",function(){
+//   $('.radiocontrol').html("_")
+//   $(this).html("x")
+// })

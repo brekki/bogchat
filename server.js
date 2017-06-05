@@ -15,14 +15,32 @@ var pool  = mysql.createPool({
 // jollo radio
 
 var WebSocket = require('ws')
-  , ws = new WebSocket('ws://radio.jollo.org/socket/websocket?token=undefined&vsn=1.0.0')
-  , wsref = 1
+  , ws
+  
+function wsradioconnect() {
+  ws = new WebSocket('ws://radio.jollo.org/socket/websocket?token=undefined&vsn=1.0.0')
+}
+
+wsradioconnect()
+  
+function wsradioreconnect() {
+  clearInterval(wsheartbeat)
+  ws.close()
+  setTimeout(function() {
+    // reconnect in 3 minutes
+    wsradioconnect()
+  },180000)
+}
+
+var wsref = 1
   , wsheartbeat
   , wsplaystate = "stopped"
   , wsplaylisttitle = null
   , wsplaylisturl = null
   , wsplaylistuser = null
   , wsplaylistduration = 0
+  , wsplaylist = {}
+  , wsplaylistremain = 0
   
 var wsplaylistfilename = null
 
@@ -38,6 +56,11 @@ ws.on('open', function() {
     //console.log("wssend2")
     wssend(2)
   },20000)
+})
+
+ws.on('error', function() {
+  wsradioreconnect()
+  
 })
 
 function broadcast(json) {
@@ -56,6 +79,11 @@ function wstrackchange(e) {
       payload: 'power',
       power: 'stopped'
     })
+    broadcast({
+      type: 'radio',
+      payload: 'remain',
+      remain: 0
+    })
     return
   }
   // send signal to open everyones audio player if its not already open
@@ -70,6 +98,8 @@ function wstrackchange(e) {
     power: 'playing'
   })
   
+  // find the remainder
+
   wsplaylisttitle = e.title
   wsplaylisturl = e.url
   wsplaylistuser = e.user
@@ -101,10 +131,19 @@ function wssend(i) {
   wsref++
 }
 
+var wstimeout
+
 ws.on('message', function(message) {
+  clearTimeout(wstimeout)
+  wstimeout = setTimeout(function() {
+    wsradioreconnect()
+  },60000)
   var message = JSON.parse(message)
   if (message && message.payload) {
     if (message.payload.playlist) {
+      if (message.payload.playlist.tracks) {
+        wsplaylist = message.payload.playlist.tracks
+      }
       if (message.payload.playlist.playstate) {
         wsplaystate = message.payload.playlist.playstate
         if (wsplaystate == "playing") {
@@ -113,26 +152,34 @@ ws.on('message', function(message) {
               wsplaylistfilename = message.payload.playlist.current_track.filename
               wstrackchange(message.payload.playlist.current_track)
             }
+              
+            var remain = wsplaylist.map((x) => { return x.filename }).indexOf(wsplaylistfilename)
+            wsplaylistremain = remain
+            
+            broadcast({
+              type: 'radio',
+              payload: 'remain',
+              remain: remain
+            })
+            
           }
           else {
             console.log("server error")
-            
-              wsplaylisttitle = null
-              wsplaylisturl = null
-              wsplaylistuser = null
-              wsplaylistduration = null
-              
-              broadcast({
-                type: 'radio',
-                payload: 'track',
-                track: {
-                  title: null,
-                  url: null,
-                  user: null,
-                  duration: 0,
-                }
-              })
             //ghost track
+            wsplaylisttitle = null
+            wsplaylisturl = null
+            wsplaylistuser = null
+            wsplaylistduration = null
+            broadcast({
+              type: 'radio',
+              payload: 'track',
+              track: {
+                title: null,
+                url: null,
+                user: null,
+                duration: 0,
+              }
+            })
           }
         }
         else {
@@ -546,6 +593,11 @@ wsServer.on('request', function(request) {
                       user: wsplaylistuser,
                       duration: wsplaylistduration,
                     }
+                  }));
+                  connection.sendUTF(JSON.stringify({
+                    type: 'radio',
+                    payload: 'remain',
+                    remain: wsplaylistremain
                   }));
               }
             },

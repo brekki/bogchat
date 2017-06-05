@@ -238,20 +238,29 @@ function startwebsocket() {
       radio: () => {
         (({
           power: () => {
+            //console.log("power")
             if (json.power) {
               if (json.power == "playing") {
                 $('html').addClass("radioready")
               }
               else {
                 $('html').removeClass("radioready")
+                radiohudmarquee.feed(" ")
+                $('#radioremain').html("x0")
               }
             }
           },
           track: () => {
+            //console.log("track")
             radiohudmarquee.feed(json.track.title)
           },
           playlist: () => {
-            console.log(json.playlist)
+            //console.log(json.playlist)
+          },
+          remain: () => {
+            //console.log("remain")
+            //console.log(json)
+            $('#radiominremain').html("x" + json.remain)
           }
         })[json.payload] || (() => { console.log("bad json") } ))()
       },

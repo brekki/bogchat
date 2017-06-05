@@ -3,7 +3,7 @@
 <head>
 
 <script>
-let bogversion = 5
+let bogversion = 6
 </script>
 
 <meta charset="utf-8">
@@ -27,7 +27,6 @@ let bogversion = 5
 
 </head>
 <body>
-  <img src="https://bog.jollo.org/djpromo.png" style="position:fixed; bottom:100px; right:20px; z-index:999999999999">
   <div id="logo"></div>
   <div class="line"></div>
   <div id="space"></div>
@@ -91,8 +90,14 @@ let bogversion = 5
     <div id="radiohud">
       <div id="radioled">188:88</div>
       <div id="radiotext">XXXXXXXXXXXXXXXXXXXXXXXX</div>
-      <div id="radiocontrols">_ _ _ _ _</div>
-      <div id="radiominremain">x999</div>
+      <div id="radiocontrols">
+        <span data-id="1" class="radiocontrol">_</span> 
+        <span data-id="2" class="radiocontrol">_</span> 
+        <span data-id="3" class="radiocontrol">_</span> 
+        <span data-id="4" class="radiocontrol">_</span> 
+        <span data-id="5" class="radiocontrol">_</span> 
+      </div>
+      <div id="radiominremain">x?</div>
     </div>
   </div>
   <input id="fileinput" accept="image/*" type="file" onchange="pushfile()">

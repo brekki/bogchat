@@ -3,6 +3,9 @@
   src: url("./fonts/DSEG7Modern-BoldItalic.woff2") format('woff');
 }
 
+#radiocontrols {
+  cursor:pointer
+}
 
 #radiohud {
   position:absolute;

@@ -66,6 +66,25 @@ html.night #radiohud > div {
   text-align: left;
 }
 
+html #radiohud div#radioqueueloading {
+  top: 39px;
+  right: 43px;
+  height: 12px;
+  width: 15px;
+  font-size: 8pt;
+  text-align: left;
+  opacity:0
+}
+
+#radioqueueloading.viz {
+  animation:.3s radioqueue ease-in-out alternate infinite
+}
+
+@keyframes radioqueue {
+  0% {opacity:0}
+  100% {opacity:1}
+}
+
 
 
 #radioled {

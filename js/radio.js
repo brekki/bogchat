@@ -36,7 +36,7 @@ var radiohudmarquee = {
   },
   scroll: () => {
     if (radiohudmarquee.data.target <= 24) {
-      $('#radiotext').html(radiohudmarquee.data.text)
+      $('#radiotext').html(radiohudmarquee.data.text.replace(/\_/g,"&nbsp;").replace(/\'/,"&apos;").replace(/\"/,"&quot;").replace(/\>/,"&gt;").replace(/\</,"&lt;"))
     }
     else {
       var n = radiohudmarquee.data.text

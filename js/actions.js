@@ -102,6 +102,7 @@ function bogscript(a,b) {
         console.log("x")
         return
       }
+      $('#radioqueueloading').addClass("viz")
       connection.send(JSON.stringify({type:"radioqueue", data: b}))
       console.log("y")
     },

@@ -2,7 +2,6 @@ var connection, myname
 var quiet
 
 
-
 function startwebsocket() {
   "use strict"
   var content = $('#content')
@@ -260,6 +259,7 @@ function startwebsocket() {
           remain: () => {
             //console.log("remain")
             //console.log(json)
+            $('#radioqueueloading').removeClass("viz")
             $('#radiominremain').html("x" + json.remain)
           }
         })[json.payload] || (() => { console.log("bad json") } ))()

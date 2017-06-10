@@ -12,6 +12,50 @@ else {
   countdownmode = JSON.parse(localStorage.getItem("countdownmode"))
 }
 
+var ejectplayer = {
+  data: {
+    tracks: [],
+    currenttrackfilename: null,
+  },
+  build: () => {
+    for (var q = 0; q < ejectplayer.data.tracks.length ; q++ ) {
+      if (ejectplayer.data.tracks[q] && ejectplayer.data.tracks[q].title ) {
+        var title = ejectplayer.data.tracks[q].title.substring(0,100)
+        
+        $('#radioejectdisplaycontent').append('              \
+          <div class="radioplaylistrow">                      \
+            <div class="radioplaylisttrack">'+title+'</div>   \
+            <div class="radioplaylistduration"> xxxx</div>    \
+          </div>                                              \
+        ')       
+        
+      }
+    }
+
+  },
+  clear: () => {
+    $('#radioejectdisplaycontent').html("")
+  },
+  close: () => {
+    $('#radioejectdisplay').removeClass("undim")
+    ejectplayer.clear()
+    $('#radioejection').removeClass("open")
+    $('#radioeject').addClass("closed")
+  },
+  open: () => {
+    ejectplayer.clear()
+    setTimeout(function(){
+      ejectplayer.build()
+      setTimeout(function(){
+        $('#radioejectdisplay').addClass("undim")
+      },100)
+    },500)
+    $('#radioejection').addClass("open")
+    $('#radioeject').removeClass("closed")    
+  }
+  
+}
+
 var radiohudtimer = {
   
   data: {
@@ -129,19 +173,31 @@ var updatestylesheetinterval = setInterval(function(){
   }, 30000)
 
 $('#radiobutton').click(function() {
-  if ($(this).hasClass("active")) {
-    $(this).removeClass("active")
-    $(this).addClass("pointereventsnone")
-    $('html').removeClass("radioplaying")
-    stop()
+  function radiobuttontoggle(){
+    if ($('#radiobutton').hasClass("active")) {
+      $('#radiobutton').removeClass("active")
+      $('#radiobutton').addClass("pointereventsnone")
+      $('html').removeClass("radioplaying")
+      stop()
+      setTimeout(function() {
+        $('#radiobutton').removeClass("pointereventsnone")
+      },3000)
+      
+    } else {
+      $('#radiobutton').addClass("active")
+      $('html').addClass("radioplaying")
+      new Audio('http://radio.jollo.org:8000/radio.mp3?cachebuster='+Math.random()).play()
+    }
+  }
+  
+  if ($('#radioejection').hasClass("open")) {
+    ejectplayer.close()
     setTimeout(function() {
-      $('#radiobutton').removeClass("pointereventsnone")
-    },3000)
-    
-  } else {
-    $(this).addClass("active")
-    $('html').addClass("radioplaying")
-    new Audio('http://radio.jollo.org:8000/radio.mp3?cachebuster='+Math.random()).play()
+      radiobuttontoggle()
+    },600)
+  }
+  else {
+    radiobuttontoggle()
   }
 })
 
@@ -180,6 +236,19 @@ $('#radiosource').click(function() {
 })
 
 
+
+$('#radioejection').click(function() {
+  
+  $('#radioejection').css('pointer-events',"none")
+  setTimeout(function() {$('#radioejection').css('pointer-events',"all")},1000) 
+  
+  if ($('#radioejection').hasClass("open")){
+    ejectplayer.close()
+  }
+  else {
+    ejectplayer.open()
+  }
+})
 
 var radiohudmode
 if (!localStorage.getItem("radiohudmode")) {

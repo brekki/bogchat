@@ -309,7 +309,21 @@ function startwebsocket() {
             radiohudmarquee.feed(json.track.title)
           },
           playlist: () => {
-            //console.log(json.playlist)
+            // received payload && possible current track
+            console.log(json)
+            if (json.playlist 
+            && json.playlist.playlist 
+            && json.playlist.playlist.tracks) {
+              ejectplayer.data.tracks = json.playlist.playlist.tracks
+            }
+            if (json.playlist 
+            && json.playlist.playlist 
+            && json.playlist.playlist.current_track 
+            && json.playlist.playlist.current_track.filename) {
+              ejectplayer.data.currenttrackfilename = json.playlist.playlist.current_track.filename
+            }
+            ejectplayer.clear()
+            ejectplayer.build()
           },
           remain: () => {
             //console.log("remain")

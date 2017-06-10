@@ -28,22 +28,7 @@
   content:'';
   cursor:pointer;
 }
-/*
-html.night #fidgetholder {
-    background-image:url(https://bog.jollo.org/xn.png)!important;
-}
-*/
 
 #fidgetholder:active {
   cursor:pointer
 }
-/*
-html.night #fidgetspinner {
-  background:none!important;
-  animation:1s fidgetnight linear infinite
-}
-
-@keyframes fidgetnight {
-  0%{box-shadow: inset 60px 0px 230px 0px #00e6ff;}
-  100%{box-shadow: inset 0px 0px 0px 0px #00e6ff;}
-}*/

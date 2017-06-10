@@ -50,6 +50,7 @@ var wsref = 1
   , wsplaylist = {}
   , wsplaylistremain = 0
   , wsradioctimeinit = 0
+  , wspayload = {}
   
 var wsplaylistfilename = null
 
@@ -116,7 +117,7 @@ function wstrackchange(e) {
   
     
   console.log("new track")
-  console.log(e)
+
   wsplaystate = "playing"
   wsplaylistfilename = e.filename
   wsradioctimeinit = + new Date();
@@ -211,6 +212,14 @@ ws.on('message', function(message) {
         wsplaystate = message.payload.playlist.playstate
         if (wsplaystate == "playing") {
           if (message.payload.playlist.current_track && message.payload.playlist.current_track.filename) {
+            
+            wspayload = message.payload
+            broadcast({
+              type: 'radio',
+              payload: 'playlist',
+              playlist: message.payload
+            })
+            
             if (wsplaylistfilename != message.payload.playlist.current_track.filename) {
               wsplaylistfilename = message.payload.playlist.current_track.filename
               wstrackchange(message.payload.playlist.current_track)
@@ -661,6 +670,11 @@ wsServer.on('request', function(request) {
                     type: 'radio',
                     payload: 'remain',
                     remain: wsplaylistremain
+                  }));
+                  connection.sendUTF(JSON.stringify({
+                    type: 'radio',
+                    payload: 'playlist',
+                    playlist: wspayload
                   }));
               }
             },

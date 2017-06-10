@@ -127,11 +127,11 @@ html.night #radiohud > div {
   opacity:1
 }
 
-#radiosource {
+#radiosource, #radioejection {
   top: 24px;
   transform: rotate(90deg);
   font-family: 'Inconsolata';
-  right: 21px;
+  right: 33px;
   height: 12px;
   opacity: 0.3!important;
   width: 10px;
@@ -141,19 +141,77 @@ html.night #radiohud > div {
   transition:opacity .2s ease-in-out;
 }
 
-#radiosource:hover {
+#radiosource:hover, #radioejection:hover {
   opacity:.95!important
+}
+
+#radioejection {
+  transform: rotate(0deg);
+  right: 19px;
+  font-size: 7pt;
+  top: 23px;
+}
+
+#radioejection.open {
+  opacity:.85!important
+}
+
+#radioejectdisplay {
+  position: absolute;
+  width: 231px;
+  height: 99px;
+  left: 36px;
+  top: 26px;
+  overflow:hidden;
+  font-family: inconsolata;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  color:rgba(0,0,0,0);
+  text-shadow: 0px 0px 0px rgba(0,0,0,0);
+  transition: color .2s ease-in-out;
+}
+
+#radioejectdisplay.undim {
+  color: rgb(101, 122, 195)!important;
+  text-shadow: 1px 1px 1px rgba(1, 26, 139, 0.09)!important
+}
+
+html.night #radioejectdisplay.undim {
+  color: rgba(0, 220, 255, 0.84)!important;
+  text-shadow: 0px 0px 4px rgb(16, 60, 255)!important
+}
+
+#radioejectdisplaycontent {
+  overflow-x:hidden;
+  overflow-y:scroll;
+  width:250px;
+  height:99px;
 }
 
 #radiotext {
   top: 26px;
   font-family: 'Inconsolata';
   left: 105px;
-  height: 12px;
+  height: 19px;
   width: 148px;
   text-align: left;
   font-size: 11.5px;
   overflow:hidden;
+}
+
+.radioplaylisttrack {
+  width:200px;
+  overflow:hidden;
+  height:10px;
+}
+
+.radioplaylistrow {
+  display:flex
+}
+
+.radioplaylistrow > div {
+    display: inline-block;
 }
 
 html body #radiohud div#radiosubtext {

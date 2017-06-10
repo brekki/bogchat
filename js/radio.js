@@ -1,6 +1,77 @@
 var radiostateuser
 var radiostateurl
 var marqueepower
+var timerpower
+var countdownmode = true
+var youtubetrackready = true
+
+if ( !localStorage.getItem("countdownmode") ) {
+  localStorage.setItem("countdownmode", JSON.stringify(countdownmode))
+}
+else {
+  countdownmode = JSON.parse(localStorage.getItem("countdownmode"))
+}
+
+var radiohudtimer = {
+  
+  data: {
+    remain:0,
+    uptick:0
+  },
+  init: () => {
+    timerpower = setInterval(
+      () => { 
+        radiohudtimer.update()
+      }, 1000
+    );
+  },
+  reset: () => {
+    clearInterval(timerpower)
+    radiohudtimer.init()
+  },  
+  feed: (x) => {
+    if (!x) {
+      x = 0
+    }
+    radiohudtimer.reset()
+    radiohudtimer.data.remain = x
+  },
+  stop: () => {
+    clearInterval(timerpower)
+  },
+  update: () => {
+    if (youtubetrackready) {
+      var q = radiohudtimer.data.remain
+      if (q <= 0) {
+        q = 0
+        radiohudtimer.stop()
+      }
+      var t = radiohudtimer.data.uptick
+      function parsehms(e) {
+        var sec_num = parseInt(e, 10)
+        var minutes = Math.floor((sec_num / 60))
+        var seconds = sec_num - (minutes * 60)
+        if (seconds < 10) {
+          seconds = "0"+seconds
+        }
+        return (minutes+':'+seconds)
+      }
+      if (countdownmode) {
+        $('#radioledactive').html("-" + parsehms(q))
+      }
+      else {
+        $('#radioledactive').html(parsehms(t))
+      }
+      radiohudtimer.data.remain--
+      radiohudtimer.data.uptick++
+    }
+    else {
+      $('#radioledactive').html("")
+    }
+    
+  }
+  
+}
 
 var radiohudmarquee = {
   data: {
@@ -83,19 +154,32 @@ if ( !localStorage.getItem("radiofavplaylist") ) {
 
 radiofavplaylist = JSON.parse(localStorage.getItem("radiofavplaylist"))
 
-
 function addcurrenttracktoplaylist() {
   radiofavplaylist = uniquepush(radiostateurl, radiofavplaylist)
   localStorage.setItem("radiofavplaylist", JSON.stringify(radiofavplaylist))
 }
 
+$('#radioledactive').click(function() {
+  countdownmode = !countdownmode
+  localStorage.setItem("countdownmode", JSON.stringify(countdownmode))
+  radiohudtimer.update()
+})
+
 $('#favcurrenttrackbutton').click(function() {
-  $('#radiobutton').addClass("favedtrack")
+  $('#radiosubtext').html("FAVED")
+  $('#radiosubtext').addClass("viz")
+  
   setTimeout(function(){
-    $('#radiobutton').removeClass("favedtrack")
+    $('#radiosubtext').removeClass("viz")
   },300)
   addcurrenttracktoplaylist()
 })
+
+$('#radiosource').click(function() {
+  window.open(radiostateurl);
+})
+
+
 
 var radiohudmode
 if (!localStorage.getItem("radiohudmode")) {

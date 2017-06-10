@@ -3,7 +3,7 @@
 <head>
 
 <script>
-let bogversion = 7
+let bogversion = 12
 </script>
 
 <meta charset="utf-8">
@@ -18,7 +18,7 @@ let bogversion = 7
 <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
 
 <script>
-  var bogstyles = ["bogchat","bin","bubbles","draw","drums","radio"]
+  var bogstyles = ["fidget","bogchat","bin","bubbles","draw","drums","radio"]
   
   for (var f=0;f<bogstyles.length;f++) {
    document.write('<link rel="stylesheet" href="./css/'+bogstyles[f]+'.css?'+bogversion+'" type="text/css">')
@@ -87,9 +87,13 @@ let bogversion = 7
     <div id="mutebutton"></div>
     <div id="favcurrenttrackbutton"></div>
     <div id="radiobutton"></div>
+    <div id="radioeject" class="ejected closed"></div>
     <div id="radiohud">
-      <div id="radioled">188:88</div>
+      <div id="radioled">888:88</div>
+      <div id="radioledactive"></div>
       <div id="radiotext">XXXXXXXXXXXXXXXXXXXXXXXX</div>
+      <div id="radiosubtext"></div>
+      <div id="radiosource">&#9911;</div>
       <div id="radiocontrols">
         <span data-id="1" class="radiocontrol">_</span> 
         <span data-id="2" class="radiocontrol">_</span> 
@@ -100,6 +104,10 @@ let bogversion = 7
       <div id="radioqueueloading">Q</div>
       <div id="radiominremain">x?</div>
     </div>
+  </div>
+  <div id="fidgetspinbox">
+    <div id="fidgetholder"></div>
+    <div id="fidgetspinner"></div>
   </div>
   <input id="fileinput" accept="image/*" type="file" onchange="pushfile()">
   <script src="./js/lib/handlebars/handlebars.min.js"></script>
@@ -120,7 +128,7 @@ let bogversion = 7
   <script src="./js/shared/util.js"></script>
 
   <script>
-    var bogmods = ["bin","chat","radio","connect","actions","camera","images","breakapart","draw","bubbles","drums","pak"]
+    var bogmods = ["fidget","bin","chat","radio","connect","actions","camera","images","breakapart","draw","bubbles","drums","pak"]
     
     for (var f=0;f<bogmods.length;f++) {
      document.write('<script src="./js/'+bogmods[f]+'.js?'+bogversion+'"><\/script>')

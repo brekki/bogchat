@@ -1,6 +1,35 @@
 var connection, myname
 var quiet
 
+function isotoseconds(s) {
+  var n = s.replace("PT","")
+  var sec = 0
+
+  if ( (n.indexOf("H") > -1) && (n.indexOf("S") > -1) && (n.indexOf("M") > -1) ) {
+    n = n.split("H").join("x").split("M").join("x").split("S").join("x").split("x")
+    sec = parseInt((n[0] * 3600)) + parseInt((n[1] * 60)) + parseInt((n[2]))
+  } else if ((n.indexOf("H") > -1) && (n.indexOf("M") > -1)) {
+    n = n.split("H").join("x").split("M").join("x").split("x")
+    sec = parseInt((n[0] * 3600)) + parseInt((n[1] * 60))
+  } else if ((n.indexOf("H") > -1) && (n.indexOf("S") > -1)) {
+    n = n.split("H").join("x").split("S").join("x").split("x")
+    sec = parseInt((n[0] * 3600)) + parseInt(n[1])
+  } else if ((n.indexOf("M") > -1) && (n.indexOf("S") > -1)) {
+    n = n.split("M").join("x").split("S").join("x").split("x")
+    sec = parseInt((n[0] * 60),10) + parseInt(n[1])
+  } else if ((n.indexOf("H") > -1)) {
+    n = n.split("H").join("x").split("x")
+    sec = parseInt(n[0] * 3600)
+  } else if ((n.indexOf("M") > -1)) {
+    n = n.split("M").join("x").split("x")
+    sec = parseInt(n[0] * 60)
+  } else if ((n.indexOf("S") > -1)) {
+    n = n.split("S").join("x").split("x")
+    sec = parseInt(n[0])
+  }
+  return sec
+}
+
 
 function startwebsocket() {
   "use strict"
@@ -251,6 +280,31 @@ function startwebsocket() {
           },
           track: () => {
             //console.log("track")
+            if (json.track.ctime) {
+              var radioserverctime = json.track.ctime
+              console.log("ctimeserver " + radioserverctime)
+              if (json.track.duration) {
+                youtubetrackready = true
+                var duration = json.track.duration
+                var trackinseconds = isotoseconds(duration)
+                console.log("duration " + duration)
+                console.log("trackinseconds " + trackinseconds)
+                var radiolocalctime = + new Date();
+                var offset = ((radioserverctime - radiolocalctime) / 1000)
+                var remaining = trackinseconds + offset
+                radiohudtimer.feed(remaining)
+                radiohudtimer.data.uptick = (parseInt(offset,10) * -1)
+              }
+              else {
+                youtubetrackready = false
+                $('#radioledactive').html("")
+              }
+            }
+            else {
+              youtubetrackready = false
+              $('#radioledactive').html("")
+            }
+            radiostateurl = json.track.url
             radiohudmarquee.feed(json.track.title)
           },
           playlist: () => {

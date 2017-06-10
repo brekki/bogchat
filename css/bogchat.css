@@ -83,7 +83,7 @@ html.night img {
 }
 
 span.nick {
-  cursor: pointer
+  cursor: pointer;
 }
 
 html.day span.jiggle {
@@ -189,15 +189,15 @@ html.day #container {
 }
 
 #crawl {
-  overflow-y: hidden;
-  height: calc(100% + 0px);
-  overflow-x: hidden;
-  width: calc(100vw - 10px);
-  position: absolute;
-  left:100vw;
-  bottom: 0px;
-  transition: all .5s ease-in-out;
-  border:5px solid lime;
+    overflow-y: hidden;
+    height: calc(100% + 10px);
+    overflow-x: hidden;
+    width: calc(100vw - 10px);
+    position: absolute;
+    left: 100vw;
+    bottom: -10px;
+    transition: all .5s ease-in-out;
+    border: 5px solid lime;
 }
 
 html.day #content {
@@ -1043,9 +1043,14 @@ html.night.broken #whatshot {
 }
 
 
+
+
 /* mobile */
 
 @media screen and (max-width: 599px) {
+  #fidgetspinbox {
+    display:none!important
+  }
   #status {
     display: none!important
   }

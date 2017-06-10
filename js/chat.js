@@ -341,6 +341,7 @@ var chimecount = 0
 var chimereset
 
 function favchime() {
+  inctone()
   clearTimeout(chimereset)
   chimecount++
   chimecount = (chimecount >= 15) ? 15 : chimecount
@@ -370,6 +371,12 @@ var matchedword = null
 
 
 $('body').keydown(function(e) {
+  if (e.keyCode === 32 ) {
+    if (document.activeElement.id != "input") {
+      e.preventDefault()
+      return
+    }
+  }
   if (e.keyCode === 27) {
     
     $('#input').focus()

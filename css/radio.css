@@ -7,6 +7,94 @@
   cursor:pointer
 }
 
+#radioeject {
+  width:295px;
+  height:134px;
+  position:absolute;
+  background-image:url(https://bog.jollo.org/css/image/radioeject/wii/wiiejectsprite.png);
+  background-repeat:no-repeat;
+  background-position: -885px -268px;
+  z-index:999;
+  right:0;
+  bottom:90px;
+}
+
+html.night #radioeject {
+  background-image:url(https://bog.jollo.org/css/image/radioeject/night/nightejectsprite.png);
+  background-repeat:no-repeat;
+  background-position: -885px -268px;
+}
+
+#radioeject.ejected {
+  animation:.4s eject linear forwards 1
+}
+
+html.night #radioeject.ejected {
+  animation:.4s eject linear forwards 1
+}
+
+#radioeject.ejected.closed {
+  animation:.4s ejectclose linear forwards 1
+}
+
+html.night #radioeject.ejected.closed {
+  animation:.4s ejectclose linear forwards 1
+}
+
+@keyframes eject {
+
+  0%        { background-position: -590px -268px }
+  9.99999%  { background-position: -590px -268px }
+  10%       { background-position: -295px -268px }
+  19.99999% { background-position: -295px -268px }
+  20%       { background-position: 0px    -268px }
+  29.99999% { background-position: 0px    -268px }
+  30%       { background-position: -885px -134px }
+  39.99999% { background-position: -885px -134px }
+  40%       { background-position: -590px -134px }
+  49.99999% { background-position: -590px -134px }
+  50%       { background-position: -295px -134px }
+  59.99999% { background-position: -295px -134px }
+  60%       { background-position: -0px   -134px }
+  69.99999% { background-position: -0px   -134px }
+  70%       { background-position: -885px    0px }
+  79.99999% { background-position: -885px    0px }
+  80%       { background-position: -590px    0px }
+  89.99999% { background-position: -590px    0px }
+  90%       { background-position: -295px    0px }
+  99.99999% { background-position: -295px    0px }
+  100%      { background-position: 0px       0px }
+
+}
+
+@keyframes ejectclose {
+
+  0%        { background-position: 0px       0px }
+  8.99999%  { background-position: 0px       0px }
+  9%        { background-position: -295px    0px }
+  17.99999% { background-position: -295px    0px }
+  18%       { background-position: -590px    0px }
+  26.99999% { background-position: -590px    0px }
+  27%       { background-position: -885px    0px }
+  35.99999% { background-position: -885px    0px }
+  36%       { background-position: -0px   -134px }
+  44.99999% { background-position: -0px   -134px }
+  45%       { background-position: -295px -134px }
+  53.99999% { background-position: -295px -134px }
+  54%       { background-position: -590px -134px }
+  62.99999% { background-position: -590px -134px }
+  63%       { background-position: -885px -134px }
+  71.99999% { background-position: -885px -134px }
+  72%       { background-position: 0px    -268px }
+  80.99999% { background-position: 0px    -268px }
+  81%       { background-position: -295px -268px }
+  89.99999% { background-position: -295px -268px }
+  90%       { background-position: -590px -268px }
+  99.99999% { background-position: -590px -268px }
+  100%      { background-position: -885px -268px }
+
+}
+
 #radiohud {
   position:absolute;
   bottom:38px;
@@ -32,11 +120,29 @@ html.night #radiohud {
 
 #radiohud > div {
   position: absolute;
-  opacity:.61
+  opacity:.68
 }
 
 html.night #radiohud > div {
   opacity:1
+}
+
+#radiosource {
+  top: 24px;
+  transform: rotate(90deg);
+  font-family: 'Inconsolata';
+  right: 21px;
+  height: 12px;
+  opacity: 0.3!important;
+  width: 10px;
+  text-align: left;
+  font-size: 11.5px;
+  cursor: pointer;
+  transition:opacity .2s ease-in-out;
+}
+
+#radiosource:hover {
+  opacity:.95!important
 }
 
 #radiotext {
@@ -47,6 +153,23 @@ html.night #radiohud > div {
   width: 148px;
   text-align: left;
   font-size: 11.5px;
+  overflow:hidden;
+}
+
+html body #radiohud div#radiosubtext {
+  top: 38px;
+  font-family: 'Inconsolata';
+  left: 157px;
+  height: 12px;
+  width: 88px;
+  text-align: left;
+  font-size: 11.5px;
+  opacity:0;
+  transition:opacity .2s ease-in-out
+}
+
+html body #radiohud div#radiosubtext.viz {
+  opacity:.68
 }
 
 #radiocontrols {
@@ -85,20 +208,35 @@ html #radiohud div#radioqueueloading {
   100% {opacity:1}
 }
 
-
-
 #radioled {
   top: 30px;
-  left: 27px;
+  left: 25px;
   height: 20px;
-  opacity:.09!important;
+  opacity:.075!important;
   width: 70px;
   font-family: 'D7MBI';
   font-size: 16px;
+  text-align:right
 }
 
 html.night #radioled {
   opacity:0.24!important
+}
+
+#radioledactive {
+  top: 30px;
+  left: 25px;
+  cursor:pointer;
+  height: 20px;
+  opacity:.48!important;
+  width: 70px;
+  font-family: 'D7MBI';
+  font-size: 16px;
+  text-align:right
+}
+
+html.night #radioledactive {
+  opacity:0.9!important
 }
 
 html.radioplaying #radiohud {
@@ -266,7 +404,7 @@ html.radioplaying #mutebutton {
   left: 2px;
   top: -5px;
   z-index: 9999999999999999;
-  transform: scaleX(2) translateX(3px)
+  transform: scaleX(2) scaleY(0.8) translateX(3px)
 }
 
 html.radioready #mutebutton.doommute::before {
@@ -279,7 +417,7 @@ html.radioready #mutebutton.doommute::before {
   transform: scaleY(0.8);
   top: -10px;
   z-index: 9999999999999999;
-  transform: scaleX(2) translateX(3px)
+  transform: scaleX(2) scaleY(0.8) translateX(3px)
 }
 
 #mutebutton.frogmute::before {
@@ -291,7 +429,7 @@ html.radioready #mutebutton.doommute::before {
   left: 2px;
   top: -5px;
   z-index: 9999999999999999;
-  transform: scaleX(2) translateX(3px)
+  transform: scaleX(2) scaleY(0.8) translateX(3px)
 
 }
 
@@ -305,7 +443,7 @@ html.radioready #mutebutton.frogmute::before {
   transform: scaleY(0.8);
   top: -10px;
   z-index: 9999999999999999;
-  transform: scaleX(2) translateX(3px)
+  transform: scaleX(2) scaleY(0.8) translateX(3px)
 }
 
 #mutebutton.frogmute.doommute::before {

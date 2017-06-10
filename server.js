@@ -2,6 +2,9 @@
 require('dotenv').config()
 process.title = 'node-chat-staging';
 
+var http = require('http');
+const xrequest = require('request');
+
 // mysql
 
 var mysql = require('mysql');
@@ -17,7 +20,12 @@ var pool  = mysql.createPool({
 var WebSocket = require('ws')
   , ws
   
+var wsradioreconnectretry
+
 function wsradioconnect() {
+  wsradioreconnectretry = setTimeout(function() {
+    wsradioreconnect()
+  },60000)
   ws = new WebSocket('ws://radio.jollo.org/socket/websocket?token=undefined&vsn=1.0.0')
 }
 
@@ -41,6 +49,7 @@ var wsref = 1
   , wsplaylistduration = 0
   , wsplaylist = {}
   , wsplaylistremain = 0
+  , wsradioctimeinit = 0
   
 var wsplaylistfilename = null
 
@@ -87,10 +96,30 @@ function wstrackchange(e) {
     return
   }
   // send signal to open everyones audio player if its not already open
+  
+  function validateyoutubeurl(url) {
+    if (url != undefined || url != '') {
+      var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+      var match = url.match(regExp);
+      if (match && match[2].length == 11) {
+      // Do anything for being valid
+      // if need to change the url to embed url then use below line
+        return [true,match[2]]
+      // $('#ytplayerSide').attr('src', 'https://www.youtube.com/embed/' + match[2] + '?autoplay=0');
+      }
+      else {
+        return [false,null]
+      // Do anything for not being valid
+      }
+    }
+  }
+  
+    
   console.log("new track")
   console.log(e)
   wsplaystate = "playing"
   wsplaylistfilename = e.filename
+  wsradioctimeinit = + new Date();
   
   broadcast({
     type: 'radio',
@@ -98,24 +127,54 @@ function wstrackchange(e) {
     power: 'playing'
   })
   
-  // find the remainder
-
   wsplaylisttitle = e.title
   wsplaylisturl = e.url
   wsplaylistuser = e.user
   wsplaylistduration = 0
   
-  broadcast({
-    type: 'radio',
-    payload: 'track',
-    track: {
-      title: e.title,
-      url: e.url,
-      user: e.user,
-      duration: 0,
-    }
-  })
-  
+  function nonyoutubebroadcast() {
+    broadcast({
+      type: 'radio',
+      payload: 'track',
+      track: {
+        title: e.title,
+        url: e.url,
+        user: e.user,
+        duration: 0,
+        ctime: wsradioctimeinit
+      }
+    })
+  }
+  if (validateyoutubeurl(e.url)) {
+    var yturl = validateyoutubeurl(e.url)[1]
+    xrequest('https://www.googleapis.com/youtube/v3/videos?id='+yturl+'&part=contentDetails&key='+process.env.ytapi, (err,res,body) => {
+      var json = JSON.parse(body)
+      if ( json
+        && json.items
+        && json.items[0]
+        && json.items[0].contentDetails
+        && json.items[0].contentDetails.duration ) {
+        wsplaylistduration = json.items[0].contentDetails.duration
+        broadcast({
+          type: 'radio',
+          payload: 'track',
+          track: {
+            title: e.title,
+            url: e.url,
+            user: e.user,
+            duration: wsplaylistduration,
+            ctime: wsradioctimeinit
+          }
+        })          
+      }
+      else {
+        nonyoutubebroadcast()
+      }
+    })    
+  }
+  else {
+    nonyoutubebroadcast()
+  }
 }
 
 function wssend(i) {
@@ -134,10 +193,14 @@ function wssend(i) {
 var wstimeout
 
 ws.on('message', function(message) {
+  
+  clearTimeout(wsradioreconnectretry)
+  
   clearTimeout(wstimeout)
   wstimeout = setTimeout(function() {
     wsradioreconnect()
   },60000)
+  
   var message = JSON.parse(message)
   if (message && message.payload) {
     if (message.payload.playlist) {
@@ -178,6 +241,7 @@ ws.on('message', function(message) {
                 url: null,
                 user: null,
                 duration: 0,
+                ctime: wsradioctimeinit
               }
             })
           }
@@ -202,8 +266,6 @@ ws.on('message', function(message) {
 var webSocketsServerPort = 1337;
 
 var webSocketServer = require('websocket').server;
-var http = require('http');
-const xrequest = require('request');
 var SHA256 = require("crypto-js/sha256");
 var CryptoJS = require("crypto-js");
 
@@ -592,6 +654,7 @@ wsServer.on('request', function(request) {
                       url: wsplaylisturl,
                       user: wsplaylistuser,
                       duration: wsplaylistduration,
+                      ctime: wsradioctimeinit
                     }
                   }));
                   connection.sendUTF(JSON.stringify({

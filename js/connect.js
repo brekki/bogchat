@@ -183,7 +183,8 @@ function startwebsocket() {
         }
         if ( $('#whatshot').html().length == 0 ) {
           // propagate whatshot with images
-          for (key in json.data) {
+          console.log(json.data)
+          for (var key in json.data) {
             console.log(json.data[key].context)
             if ( $('#whatshot .whatshot'+json.data[key].postid).length == 0 ) {
               $('#whatshot').append('<div class="whatshot'+json.data[key].postid+'"><span>'+whatshotescape(json.data[key].username)+'</span></div>')

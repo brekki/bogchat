@@ -150,29 +150,6 @@ function hidebabydraw() {
   } 
 }
 
-function bintoggle() {
-  if ($('body').hasClass("terminal")) {
-    toggleterminalmode()
-  }
-  
-  hidebabydraw()  
-  
-  if ($('body').hasClass("drum")) {
-    $('body').removeClass('drum')
-  }
-  if ($('body').hasClass("draw")) {
-    $('body').removeClass('draw')
-  }
-  $('body').toggleClass("image")
-  $('#binbutton').toggleClass("locked")
-  
-  $('noscript.pausecache').each(function(){
-    $(this).after($(this).text())
-    $(this).remove()
-  })
-    
-}
-
 function togglemute() {
   
   if ($('#mutebutton').hasClass("frogmute") && $('#mutebutton').hasClass("doommute") ) {
@@ -193,8 +170,6 @@ function togglemute() {
     $('#mutebutton').addClass("frogmute")
     localStorage.setItem("neuemute", 2)    
   }
-  
-
 }
 
 function storedtoggle() {
@@ -352,8 +327,11 @@ function favpost(id) {
 var chimecount = 0
 var chimereset
 
+var fidget = false
 function favchime() {
-  inctone()
+  if (fidget) {
+    inctone()
+  }
   clearTimeout(chimereset)
   chimecount++
   chimecount = (chimecount >= 15) ? 15 : chimecount

@@ -3,7 +3,7 @@
 <head>
 
 <script>
-let bogversion = 13
+let bogversion = 14
 </script>
 
 <meta charset="utf-8">
@@ -18,10 +18,10 @@ let bogversion = 13
 <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
 
 <script>
-  var bogstyles = ["crawl","zoo","modem","fidget","bogchat","bin","bubbles","draw","drums","radio"]
+  var bogstyles = ["crawl","zoo","modem","bogchat","bin","bubbles","draw","drums","radio"]
   
   for (var f=0;f<bogstyles.length;f++) {
-   document.write('<link rel="stylesheet" href="./css/'+bogstyles[f]+'.css?'+bogversion+'" type="text/css">')
+    document.write('<link rel="stylesheet" href="./css/'+bogstyles[f]+'.css?'+bogversion+'" type="text/css">')
   }
 </script>
 
@@ -53,8 +53,14 @@ let bogversion = 13
     <div id="togglefavedbogchatitemsbutton"></div>
     <div id="togglefavedradioplaylistbutton"></div>
     <div id="deletebinbutton"></div>
+    <div id="favbintogglebutton"></div>
     <div id="biggerbinbutton"></div>
     <div id="binarea"></div>
+    <div id="favarea">
+      <div id="favareacontainer"><img style="position:absolute;left:38px;bottom:0;" src="https://upload.wikimedia.org/wikipedia/commons/1/19/Under_construction_graphic.gif"></div>
+      <div id="shufflefavarea" title="shuffle fav area"></div>
+      <div id="togglerapidtosave" title="toggle rapid-fav-to-save"></div>
+    </div>
   </div>
   <div id="msg">
     <div id="modem"></div>
@@ -91,7 +97,6 @@ let bogversion = 13
     <div id="radioeject" class="ejected closed">
       <div id="radioejectdisplay">
         <div id="radioejectdisplaycontent">
-
         </div>
       </div>
     </div>
@@ -136,10 +141,10 @@ let bogversion = 13
   <script src="./js/shared/util.js"></script>
 
   <script>
-    var bogmods = ["crawl","zoo","fidget","bin","modem","chat","radio","connect","actions","camera","images","breakapart","draw","bubbles","drums","pak"]
+    var bogmods = ["crawl","zoo","bin","modem","chat","radio","connect","actions","camera","images","breakapart","draw","bubbles","drums","pak"]
     
     for (var f=0;f<bogmods.length;f++) {
-     document.write('<script src="./js/'+bogmods[f]+'.js?'+bogversion+'"><\/script>')
+      document.write('<script src="./js/'+bogmods[f]+'.js?'+bogversion+'"><\/script>')
     }
   </script>
 

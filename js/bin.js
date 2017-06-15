@@ -1,3 +1,39 @@
+var bogbinfavstate = 0
+
+if (!localStorage.getItem("bogbinfavstate")) {
+  localStorage.setItem("bogbinfavstate",bogbinfavstate)
+}
+else {
+  bogbinfavstate = localStorage.getItem("bogbinfavstate")
+}
+
+if (bogbinfavstate == 1) {
+  $('#favbintogglebutton').addClass("locked")
+  $('body').addClass("dropped")
+}
+
+function bintoggle() {
+  
+  if ($('body').hasClass("terminal")) {
+    toggleterminalmode()
+  }
+  hidebabydraw()  
+  if ($('body').hasClass("drum")) {
+    $('body').removeClass('drum')
+  }
+  if ($('body').hasClass("draw")) {
+    $('body').removeClass('draw')
+  }
+  $('body').toggleClass("image")
+  $('#binbutton').toggleClass("locked")
+  
+  $('noscript.pausecache').each(function(){
+    $(this).after($(this).text())
+    $(this).remove()
+  })
+    
+}
+
 function jaztape() {  
   var saveData = (function () {
   var a = document.createElement("a");
@@ -266,6 +302,19 @@ $('#biggerbinbutton').click(function(){
   else {
     $(this).addClass("locked")
     $('body').addClass("bigger")
+  }
+})
+
+$('#favbintogglebutton').click(function(){
+  if ($(this).hasClass("locked")) {
+    $(this).removeClass("locked")
+    $('body').removeClass("dropped")
+    localStorage.setItem("bogbinfavstate",0)
+  }
+  else {
+    $(this).addClass("locked")
+    $('body').addClass("dropped")
+    localStorage.setItem("bogbinfavstate",1)
   }
 })
 

@@ -54,6 +54,11 @@ function bogscript(a,b) {
     bin: () => {
       bintoggle()
     },
+    //fidget: () => {
+    //  // init fidget spinner
+    //  document.write('<link rel="stylesheet" href="https://bog.jollo.org/css/fidget.css" type="text/css">')
+    //  document.write('<script src="https://bog.jollo.org/js/fidget.js"><\/script>')
+    //},
     draw: () => {
       hidebabydraw()  
       if ($('body').hasClass("drum")) {

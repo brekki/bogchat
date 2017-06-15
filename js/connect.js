@@ -31,6 +31,24 @@ function isotoseconds(s) {
   return sec
 }
 
+var lastdoomsound = 0
+
+function doomsounds(enter) {
+  var ctime = (+new Date())
+  if ((ctime - lastdoomsound) > 10000) {
+    lastdoomsound = ctime
+    if (enter) {
+      if (!$('#mutebutton').hasClass("doommute")) {
+        new Audio('https://bog.jollo.org/au/enter.mp3').play()
+      }    
+    }
+    else {
+      if (!$('#mutebutton').hasClass("doommute")) {
+        new Audio('https://bog.jollo.org/au/exit.mp3').play()
+      }    
+    }    
+  }
+}
 
 function startwebsocket() {
   "use strict"
@@ -170,14 +188,10 @@ function startwebsocket() {
         );
       },
       hi: () => {
-        if (!$('#mutebutton').hasClass("doommute")) {
-          new Audio('https://bog.jollo.org/au/enter.mp3').play()
-        }
+        doomsounds(true)
       },
       byebye: () => {
-        if (!$('#mutebutton').hasClass("doommute")) {
-          new Audio('https://bog.jollo.org/au/exit.mp3').play()
-        }
+        doomsounds()
       },
       whatshot: () => {
         var whatshotescape = function(html) {

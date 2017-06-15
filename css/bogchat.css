@@ -188,18 +188,6 @@ html.day #container {
   transition: all .5s ease-in-out;
 }
 
-#crawl {
-    overflow-y: hidden;
-    height: calc(100% + 10px);
-    overflow-x: hidden;
-    width: calc(100vw - 10px);
-    position: absolute;
-    left: 100vw;
-    bottom: -10px;
-    transition: all .5s ease-in-out;
-    border: 5px solid lime;
-}
-
 html.day #content {
   background: white;
   border: 5px solid yellow;
@@ -209,14 +197,7 @@ html.night #content {
   border: 5px solid #7600ff;
 }
 
-html.crawl #content {
-  width:calc(40vw - 10px);
-}
 
-html.crawl #crawl {
-  width:calc(60vw - 10px);
-  left:40vw
-}
 
 #content.starfox {
   transform: translateZ(-45px) rotateX(-4deg);
@@ -932,116 +913,10 @@ html.broken #whatshot {
     transform: scale(.88) rotateY(-2deg) rotateX(-1deg) translateX(50px) translateY(51px) rotateZ(1deg);
 }
 
-#zoo.empty {
-  display:none;
-}
 
 html.night.broken #whatshot {
       border: 10px inset #ff00ff;
 }
-
-#zoo {
-  width:360px;
-  height:280px;
-  border:12px groove goldenrod;
-  border-radius:200px 200px 0 0;
-  position:absolute;
-  top:10px;
-  right:20px;
-  font-family:arial;
-  z-index:999999;
-}
-
-#zoo::before {
-  content:'';
-  background:url(http://i.imgur.com/3gJSdia.gif);
-  width:460px;
-  height:380px;
-  background-repeat:no-repeat;
-  pointer-events:none;
-  position:absolute;
-  left:-50px;
-  top:80px;
-  z-index:999999
-}
-
-#exhibit {
-  overflow:hidden;
-  height:280px;
-  width:360px;
-  position:absolute;
-  top:0;
-  left:0;
-  border:0px solid red;
-  border-radius:200px 200px 0 0;
-}
-
-#zoo #listen {
-        position: absolute;
-    right: 30px;
-    bottom: 31px;
-    z-index: 99999999999;
-}
-
-#zoo #listen::after {
-  content: 'listen';
-    font-size: 8px;
-    font-family: georgia;
-    letter-spacing: 1px;
-    padding-top: 3px;
-    text-align: center;
-    pointer-events: none;
-    /* font-weight: bold; */
-    width: 30px;
-    color: #55ff44;
-    height: 15px;
-    z-index: 99999999999999999999999999;
-    background: black;
-    position: absolute;
-    left: 0;
-    top: 0;
-}
-
-
-#zoo iframe {
-      position: absolute;
-    right: 0;
-    left:0;
-    z-index: 99999999999;
-}
-
-
-#zoo::after {
-    content: '';
-    z-index: 99999999999;
-    border-radius: 0px 10px 0 0;
-    right: -43px;
-    bottom: 0px;
-    text-align: right;
-    image-rendering: auto;
-    width: 145px;
-    height: 171px;
-    image-rendering: pixelated;
-    text-shadow: 0px 0px 3px lime;
-    /* background: rgba(255,255,255,.8); */
-    background-image: url(http://i.imgur.com/Ng794JA.png);
-    z-index: 9999999;
-    background-repeat: no-repeat;
-    position: absolute;
-    background-size: contain;
-    font-size: 10px;
-    font-family: georgia;
-}
-
-#zoo button {
-  position:absolute;
-  right:0;
-  bottom:0;
-  font-family:georgia;
-  font-size:9px;
-  z-index:99999999999;
-}
-
 
 
 

@@ -7,8 +7,6 @@ function learnpak(e) {
 
 function pakmenu(pak) {
   
-
-  
   if (pak == livepak) {
     return
   }

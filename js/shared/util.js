@@ -20,6 +20,15 @@ function checkimgurl(url) {
   return (url.match(/https?:\/\/.+\.(jpeg|jpg|gif|png|bmp|ico|JPEG|JPG|GIF|PNG|BMP|ICO)$/) != null)
 }
 
+function ytvidid(url) {
+  var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/
+  return (url.match(p)) ? RegExp.$1 : false
+}
+
+function checklinkurl(url) {
+  return (url.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/) != null)
+}
+
 function isJSON(str) {
   try {
     JSON.parse(str);

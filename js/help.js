@@ -18,7 +18,5 @@ var help =
 [tab]      :: autocompletes nicks in the input box
 [up/down]  :: scroll input history in the input box`
 
-$(function(){
-  $("#help").html(help)
-});
+
 

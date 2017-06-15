@@ -59,10 +59,10 @@ function uploadtrackfull(data) {
   }
   var bundlestring = btoa(JSON.stringify(bundle))
   console.log(bundlestring)
-  connection.send(JSON.stringify({
+  send({
     type: "drum",
     data: bundlestring
-  }))
+  })
 }
 
 function dicepattern(object) {

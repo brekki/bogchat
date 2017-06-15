@@ -39,7 +39,7 @@ function bogscript(a,b) {
     },
     msg: () => {
       if (b) {
-        connection.send(JSON.stringify({type: "message", data: b}))
+        send({type: "message", data: b})
       }
     },
     starfox: () => {
@@ -93,6 +93,9 @@ function bogscript(a,b) {
     mute: () => {
       togglemute()
     },
+    modem: () => {
+      $('body').toggleClass("modem")
+    },
     scrap: () => {
       storedtoggle()
     },
@@ -103,7 +106,7 @@ function bogscript(a,b) {
         return
       }
       $('#radioqueueloading').addClass("viz")
-      connection.send(JSON.stringify({type:"radioqueue", data: b}))
+      send({type:"radioqueue", data: b})
       console.log("y")
     },
     trim: () => {
@@ -116,7 +119,10 @@ function bogscript(a,b) {
       $('body').css('background','url("http://i.imgur.com/wkmQwuq.png")')
     },
     crawl: () => {
-      $('html').toggleClass("crawl")
+      live.clear()
+    },
+    live: () => {
+      live.create()
     },
     chime: () => {
       $('html').toggleClass("chime")
@@ -156,7 +162,7 @@ function bogscript(a,b) {
           setTimeout(function(){$('#input').val("")},1650)
         }
         else {
-          connection.send(JSON.stringify({type: "oper", data:{login:n[1]}}))
+          send({type: "oper", data:{login:n[1]}})
         }
       }
       else {
@@ -165,15 +171,14 @@ function bogscript(a,b) {
           $('#content span.nick').each(function() {
             var line = $(this).parent().attr("data-id")
             var locale = $(this).attr("data-locale")
-            connection.send(JSON.stringify({type: "oper", data:{
+            send({type: "oper", data:{
               id: atob(localStorage.getItem("oper")), 
               command:"dec "+line+" "+locale
-            }}))          
-            
+            }})        
           })
         }
         else {
-          connection.send(JSON.stringify({type: "oper", data:{id: atob(localStorage.getItem("oper")), command:b}}))
+          send({type:"oper", data:{id: atob(localStorage.getItem("oper")), command:b}})
         }
       }
     },

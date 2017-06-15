@@ -61,11 +61,11 @@ var feedback = function (res) {
       $('#input').val(oldval)       
      }
      else {
-       connection.send(JSON.stringify({type: "message", data: res.data.link}))
+       send({type: "message", data: res.data.link})
      }
   }
 }
 
 function fdone(data) {
-  connection.send(JSON.stringify({type: "message", data: data.data.link}))
+  send({type: "message", data: data.data.link})
 }

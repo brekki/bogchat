@@ -152,7 +152,21 @@ html.night #radiohud > div {
   top: 23px;
 }
 
+.undim .radioplaylistrow.currenttrack {
+  color: rgb(205, 246, 255)!important;
+  background: rgba(109, 132, 200, 0.72);
+}
+
+html.night .undim .radioplaylistrow.currenttrack {
+  color: rgb(133, 227, 255)!important;
+    background: rgba(0, 91, 255, 0.67);
+}
+
 #radioejection.open {
+  opacity:.61!important
+}
+
+html.night #radioejection.open {
   opacity:.85!important
 }
 
@@ -170,11 +184,13 @@ html.night #radiohud > div {
   color:rgba(0,0,0,0);
   text-shadow: 0px 0px 0px rgba(0,0,0,0);
   transition: color .2s ease-in-out;
+  pointer-events:none
 }
 
 #radioejectdisplay.undim {
   color: rgb(101, 122, 195)!important;
-  text-shadow: 1px 1px 1px rgba(1, 26, 139, 0.09)!important
+  text-shadow: 1px 1px 1px rgba(1, 26, 139, 0.09)!important;
+  pointer-events:all!important;
 }
 
 html.night #radioejectdisplay.undim {
@@ -187,6 +203,7 @@ html.night #radioejectdisplay.undim {
   overflow-y:scroll;
   width:250px;
   height:99px;
+  cursor: default;
 }
 
 #radiotext {
@@ -305,6 +322,10 @@ html.radioplaying #radiohud {
 
 html.radioplaying body.drum #radiohud {
   transform: rotate(0deg) translate(60px,0px);
+}
+
+html.radioplaying body.drum #radioeject {
+  transform: rotate(0deg) translate(50px,0px);
 }
 
 html.day #radiohud {

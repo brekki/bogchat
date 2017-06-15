@@ -1,4 +1,4 @@
-var radiostateuser
+var radiostatetitle
 var radiostateurl
 var marqueepower
 var timerpower
@@ -18,17 +18,21 @@ var ejectplayer = {
     currenttrackfilename: null,
   },
   build: () => {
+    var currenttrackfilename
+    if (ejectplayer.data.currenttrackfilename) {
+      currenttrackfilename = ejectplayer.data.currenttrackfilename
+    }
     for (var q = 0; q < ejectplayer.data.tracks.length ; q++ ) {
       if (ejectplayer.data.tracks[q] && ejectplayer.data.tracks[q].title ) {
+        var currenttrack = (ejectplayer.data.tracks[q].filename == currenttrackfilename) ? "currenttrack" : ""
         var title = ejectplayer.data.tracks[q].title.substring(0,100)
-        
-        $('#radioejectdisplaycontent').append('              \
-          <div class="radioplaylistrow">                      \
-            <div class="radioplaylisttrack">'+title+'</div>   \
-            <div class="radioplaylistduration"> xxxx</div>    \
-          </div>                                              \
+        var filename = ejectplayer.data.tracks[q].filename
+        $('#radioejectdisplaycontent').append('                                  \
+          <div data-id="'+filename+'" class="radioplaylistrow '+currenttrack+'"> \
+            <div class="radioplaylisttrack">'+title+'</div>                      \
+            <div class="radioplaylistduration"> xxxx</div>                       \
+          </div>                                                                 \
         ')       
-        
       }
     }
 
@@ -208,11 +212,21 @@ if ( !localStorage.getItem("radiofavplaylist") ) {
   localStorage.setItem("radiofavplaylist", JSON.stringify(playlist))
 }
 
+var radiofavplaylistdatabase
+
+if ( !localStorage.getItem("radiofavplaylistdatabase") ) {
+  var playlistdatabase = {}
+  localStorage.setItem("radiofavplaylistdatabase", JSON.stringify(playlistdatabase))
+}
+
 radiofavplaylist = JSON.parse(localStorage.getItem("radiofavplaylist"))
+radiofavplaylistdatabase = JSON.parse(localStorage.getItem("radiofavplaylistdatabase"))
 
 function addcurrenttracktoplaylist() {
   radiofavplaylist = uniquepush(radiostateurl, radiofavplaylist)
+  radiofavplaylistdatabase[btoa(radiostateurl)] = btoa(radiostatetitle)
   localStorage.setItem("radiofavplaylist", JSON.stringify(radiofavplaylist))
+  localStorage.setItem("radiofavplaylistdatabase", JSON.stringify(radiofavplaylistdatabase))
 }
 
 $('#radioledactive').click(function() {

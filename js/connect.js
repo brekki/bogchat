@@ -1,5 +1,6 @@
 var connection, myname
 var quiet
+var radiostatetitle
 
 function isotoseconds(s) {
   var n = s.replace("PT","")
@@ -52,9 +53,11 @@ function startwebsocket() {
   //connection = new WebSocket('ws://104.236.50.22:2338')
   
   connection.onclose = function() {
+    modem.poweroff()
     console.log("close event received")
   }
   connection.onopen = function() {
+    modem.poweron()
     $('#input').removeClass("weaksignal")
     signal = []
     setTimeout(function() {
@@ -70,16 +73,16 @@ function startwebsocket() {
       $('body').addClass("setnick")
     } else {
       myname = localStorage.getItem("nick")
-      connection.send(JSON.stringify({
+      send({
         type: "nick",
         data: myname
-      }))
+      })
     }
     setTimeout(function() {
       console.log("radio request")
-      connection.send(JSON.stringify({
+      send({
         type: "radio"
-      }))      
+      })     
     },1500)
   }
   connection.onerror = function(error) {
@@ -88,6 +91,9 @@ function startwebsocket() {
     }))
   }
   connection.onmessage = function(message) {
+    if (modem) {
+      modem.blink("receive")
+    }
     try {
       var json = JSON.parse(message.data)
     } catch (e) {
@@ -245,7 +251,9 @@ function startwebsocket() {
           $('p[data-id="'+id+'"]').addClass("ok")
           $('p[data-id="'+id+'"] span').html("<span>("+req+") </span>" + $('p[data-id="'+id+'"] span').html())
         }
-        
+      },
+      live: () => {
+        live.create()
       },
       list: () => {
         console.log(json.data)
@@ -260,8 +268,7 @@ function startwebsocket() {
           setTimeout(function(){
             $('#input').val("")
             $('#input').removeAttr("disabled")
-            
-            },3800);
+          },3800)
         }
       },
       radio: () => {
@@ -306,6 +313,8 @@ function startwebsocket() {
               $('#radioledactive').html("")
             }
             radiostateurl = json.track.url
+            radiostatetitle = json.track.title
+            console.log("radiostatetitle " + radiostatetitle)
             radiohudmarquee.feed(json.track.title)
           },
           playlist: () => {
@@ -333,17 +342,17 @@ function startwebsocket() {
           }
         })[json.payload] || (() => { console.log("bad json") } ))()
       },
-      status: () => {
-        $('#input').val(json.data)
-        localStorage.setItem("oper",btoa(json.data.content))
-        //localStorage.setItem("key",btoa(json.data.aes))
-        $('#input').attr("disabled","disabled")
-        setTimeout(function(){
-          $('#input').val("")
-          $('#input').removeAttr("disabled").focus()
-          
-          },400);
-      },
+      //status: () => {
+      //  $('#input').val(json.data)
+      //  localStorage.setItem("oper",btoa(json.data.content))
+      //  //localStorage.setItem("key",btoa(json.data.aes))
+      //  $('#input').attr("disabled","disabled")
+      //  setTimeout(function(){
+      //    $('#input').val("")
+      //    $('#input').removeAttr("disabled").focus()
+      //    
+      //    },400);
+      //},
     })[json.type] || (() => { console.log("bad json") } ))();
     
   }
@@ -352,6 +361,7 @@ function startwebsocket() {
       status.text('error..')
       input.attr('disabled', 'disabled').val('badcomm')
       connection.close()
+      modem.poweroff()
       reconnectbadcomm()
     }
   }, 4000)
@@ -367,14 +377,14 @@ function startwebsocket() {
 startwebsocket()
 
 var whatshot = function() {
-  connection.send(JSON.stringify({type: "whatshot", data: 0}))
+  send({type: "whatshot", data: 0})
 }
 
 var testsignalstrength = setInterval(function() {
   if (connection.readyState == 1) {
     if (signal.length < 8) { 
       signal.push("ping")
-      connection.send(JSON.stringify({type: "ping", data: 0}))
+      send({type: "ping", data: 0})
     } 
   }
   if (signal.length > 3 ) {

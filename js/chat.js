@@ -36,7 +36,7 @@ if (!localStorage.getItem("quiet")) {
 // X => muted
 
 if (!localStorage.getItem("neuemute")) {
-  localStorage.setItem("neuemute", "0")
+  localStorage.setItem("neuemute", "1")
 } 
 else {
   ;(({
@@ -61,7 +61,9 @@ function addMessage(locale, author, message, color, id, zoo) {
   userlist = uniquepush(author, userlist)
   if (quiet.indexOf(author) == -1) {
     if (zoo && author != myname) {
-      $('#zoo').removeClass("empty")
+      if ($('#zoo').hasClass("empty")) {
+        bogzoo.ropes()
+      }
       $('#zoo #exhibit').append(`<p><span class="nick" style="color:${color}">${author.substr(0,16)}</span>: ${message}</p>`)
       setTimeout(function() {
         $('#exhibit').scrollTop(200000)
@@ -100,13 +102,14 @@ function storefavitems(id) {
 }
 
 function richtext(input) {
+  
+  // en progress
+  // \`\`([^\`]+)\`\`
+  
   var ytparse = 0
-  function ytvidid(url) {
-    var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/
-    return (url.match(p)) ? RegExp.$1 : false
-  }
-  function checklinkurl(url) {
-    return (url.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/) != null)
+  function checkbacktick(word) {
+    var p = /\`\`([^\`]+)\`\`/
+    return (url.match(p)) ? RegExp.$0 : false    
   }
   var string = input.split(" ")
   for (i = 0; i < string.length; i++) {
@@ -123,6 +126,7 @@ function richtext(input) {
     }
     string[i] = word
   }
+  // check string for probable fancytext
   string = string.join(" ")
   var nospaceregex = /\"\>(\s+)\<img\s/g
   var nsstring = string.replace(nospaceregex, '"><ns></ns><img ')
@@ -329,12 +333,20 @@ function propagatestored(e) {
   }
 }
 
+function send(json) {
+  connection.send(JSON.stringify(json))
+  if (modem) {
+    modem.blink("send")
+  }
+  
+}
+
 function favpost(id) {
   storefavitems(id)
-  connection.send(JSON.stringify({
+  send({
     type: "fav",
     data: id
-  }))
+  })
 }
 
 var chimecount = 0
@@ -446,10 +458,10 @@ $('#input').keydown(function(e) {
       myname = msg
       localStorage.setItem("nick", msg)
       $('body').removeClass("setnick")
-      connection.send(JSON.stringify({
+      send({
         type: "nick",
         data: msg
-      }))
+      })
     } else {
       ibtemp = ""
       ibhistory.push(msg)
@@ -472,10 +484,10 @@ $('#input').keydown(function(e) {
           b = b.join(" ")
           bogscript(g, b)
         } else {
-          connection.send(JSON.stringify({
+          send({
             type: "message",
             data: x
-          }))
+          })
         }
       }
     }

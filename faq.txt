@@ -23,6 +23,7 @@
 /close           :: minimizes the search
 /live            :: opens whatever live video is available on live.jollo.org
 /crawl           :: closes the live video stream
+
 [esc]            :: focuses the input box || exits the bubble room
 [tab]            :: autocompletes and cycles through usernames in the input box
 [up/down]        :: scroll through input history in the input box

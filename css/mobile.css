@@ -1,0 +1,129 @@
+/* mobile */
+
+#sendbutton,#popbutton {
+  display:none
+}
+
+#sendbutton {
+    width: 30px;
+    z-index: 9999999999999;
+    right: 38px;
+    background-color: rgb(182, 206, 255);
+    background-image: url(https://bog.jollo.org/css/image/send.png);
+    background-size: 31px 31px;
+    background-repeat: no-repeat;
+    height: 30px;
+    bottom: -2px;
+    position: absolute;
+    border: 4px outset #dcf0ff;
+    transition: all .4s ease-in-out;
+}
+
+#popbutton {
+    width: 30px;
+    position: absolute;
+
+    right: 1px;
+    background: #fff;
+    background-image: url(https://bog.jollo.org/css/image/tree.gif);
+    background-size: 32px 32px;
+    image-rendering: pixelated;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 30px;
+    bottom: -2px;
+    z-index:9999999999999999;
+    position: absolute;
+    border: 4px outset #e2e2d4;
+    transition:all .3s ease-in-out
+}
+
+#sendbutton:active {
+  border: 4px inset #dcf0ff;
+}
+
+#popbutton:active {
+  border: 4px inset #e2e2d4;
+}
+
+@media screen and (max-width: 599px) {
+  #fidgetspinbox {
+    display:none!important
+  }
+  #status {
+    display: none!important
+  }
+
+  #videobox {
+    right: -50px
+  }
+  p img {
+    max-width:75vw
+  }
+  html.day #msg::after, html.night #msg::after {
+    content:''!important;
+    opacity:0!important;
+    pointer-events:none!important
+  }
+  #input {
+    width:calc(100vw - 88px)!important
+  }
+  
+  #storedbutton,#trashlock,#storedarea,#uploadbutton,#camerabutton,#binbutton,#mutebutton,#lockbutton,#binbutton,#mutebutton,#favcurrenttrackbutton,#radiobutton,#radioeject,#radiohud {
+    transform:translateX(288px)
+  }
+  
+  #zoo {
+    display:none!important
+  }
+  
+  #hamstercage {
+    display:none!important
+  }
+  
+  #storedbutton {
+    display:none!important
+  }
+  
+  html.unpopped #popbutton {
+    transform:translateX(0);
+    background-image: url(https://bog.jollo.org/css/image/treefire.gif);
+    background-size: 32px 32px;
+    image-rendering: pixelated;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+  }
+  html.unpopped #sendbutton {
+    transform:translateX(-189px);
+  }
+  
+  html.unpopped #mutebutton {
+    z-index:9999!important
+  }
+  
+
+  html.unpopped #trashlock,
+  html.unpopped #storedarea,
+  html.unpopped #uploadbutton,
+  html.unpopped #camerabutton,
+  html.unpopped #binbutton,
+  html.unpopped #mutebutton,
+  html.unpopped #lockbutton,
+  html.unpopped #binbutton,
+  html.unpopped #mutebutton,
+  html.unpopped #favcurrenttrackbutton,
+  html.unpopped #radiobutton,
+  html.unpopped #radioeject,
+  html.unpopped #radiohud {
+    transform:translateX(-38px)
+  }
+  
+  html.unpopped #input {
+    width: calc(100vw - 277px)!important
+  }
+
+  #sendbutton,#popbutton {
+    display:inline-block
+  }
+
+}

@@ -58,24 +58,59 @@ function favrequest(e) {
 }
 
 function addMessage(locale, author, message, color, id, zoo) {
+  var author = decodeURIComponent(author)
+  var message = decodeURIComponent(message)
   userlist = uniquepush(author, userlist)
   if (quiet.indexOf(author) == -1) {
     if (zoo && author != myname) {
       if ($('#zoo').hasClass("empty")) {
         bogzoo.ropes()
       }
-      $('#zoo #exhibit').append(`<p><span class="nick" style="color:${color}">${author.substr(0,16)}</span>: ${message}</p>`)
+      $('#zoo #exhibit').append(`<p style="transform:rotate(${randint(-125,125)}deg) translateX(${randint(-70,90)}px)"><span class="nick" style="color:${color}">${author.substr(0,16)}</span>: ${message}</p>`)
       setTimeout(function() {
         $('#exhibit').scrollTop(200000)
       },300)
     }
     else {
-      $('#content').append(`<p data-nick="${btoa(author.substr(0,16))}" data-id="${id}"><span data-locale="${locale}" class="nick" style="color:${color}">${author.substr(0,16)}</span>: ${richtext(message)}</p>`)
+      
+      var author = ( {
+      
+        "yvonnie" : author + '<img src="https://bog.jollo.org/tiny/yvonne.gif">',
+        "jayefkay" : author + '<img src="https://bog.jollo.org/tiny/jfk.gif">',
+        "kiptok" : author + '<img src="https://bog.jollo.org/tiny/kiptok.png">',
+        "kiptijek" : author + '<img src="https://bog.jollo.org/tiny/kiptok.png">',
+        "yvonne" : author + '<img src="https://bog.jollo.org/tiny/yvonne.gif">',
+        "dvvidw" : author + '<img src="https://bog.jollo.org/tiny/dvvid.gif">',
+        "cheseball" : author + '<img src="https://bog.jollo.org/tiny/cheseball.gif">',
+        "hali" : author + '<img src="https://bog.jollo.org/tiny/hali.gif">',
+        "mthw" : author + '<img src="https://bog.jollo.org/tiny/mthw.gif">',
+        "png01" : author + '<img src="https://bog.jollo.org/tiny/png01.gif">',
+        "GifPolice" : author + '<img src="https://bog.jollo.org/tiny/cheseball.gif">',
+        "taehyung" : author + '<img src="https://bog.jollo.org/tiny/taehyung.gif">',
+        "Hello" : author + '<img src="https://bog.jollo.org/tiny/hello.gif">',
+        "girlafraid" : author + '<img src="https://bog.jollo.org/tiny/girlafraid.gif">',
+        "fruitfly" : author + '<img src="https://bog.jollo.org/tiny/fruitfly.png">',
+        "Surferrosa" : author + '<img src="https://bog.jollo.org/tiny/surferrosa.png">',
+        "JustinArias" : author + '<img src="https://bog.jollo.org/tiny/justinarias.gif">',
+        "peef" : author + '<img src="https://bog.jollo.org/tiny/peef.gif">',
+        "illalli" : author + '<img src="https://bog.jollo.org/tiny/illalli.gif">',
+        "whocares1" : author + '<img src="https://bog.jollo.org/tiny/whocares.gif">',
+        "mt. woe" : author + '<img src="https://bog.jollo.org/tiny/mtwoe.gif">',
+        "winkyface" : author + '<img src="https://bog.jollo.org/tiny/winkyface.gif">',
+        "redguts" : author + '<img src="https://bog.jollo.org/tiny/redguts.gif">',
+        "Samantha" : author + '<img src="https://bog.jollo.org/tiny/samantha.gif">',
+        "frederick" : author + '<img src="https://bog.jollo.org/tiny/frederick.png">'
+        
+      } )[author] || author.substr(0,16)
+      
+      
+      $('#content').append(`<p data-nick="${btoa(author.substr(0,16))}" data-id="${id}"><span data-locale="${locale}" class="nick" style="color:${color}">${author}</span>: ${richtext(message)}</p>`)
     }
   }
 }
 
 function addDrumtrack(locale, author, data, image, backgroundcolor, color, id) {
+  author = decodeURIComponent(author)
   userlist = uniquepush(author, userlist)
   $('#content').append(`<p data-nick="${btoa(author.substr(0,16))}" data-id="${id}"><span data-locale="${locale}" class="nick" style="color:${color}">${author.substr(0,16)}</span>: <span class="pgx" style="background:${color}; background-image:url(${image}); background-size:350px 130px; display:inline-block; border: 8px groove #eaeaea; height:130px; width:350px" data-warble="${data}"><span class="inlineplay"></span><span class="inlinepush"></span></span> </p>`)
 }
@@ -106,6 +141,19 @@ function richtext(input) {
   // en progress
   // \`\`([^\`]+)\`\`
   
+  function checkimgurl(url) {
+    return (url.match(/https?:\/\/.+\.(jpeg|jpg|gif|png|bmp|ico|JPEG|JPG|GIF|PNG|BMP|ICO)$/) != null)
+  }
+
+  function ytvidid(url) {
+    var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/
+    return (url.match(p)) ? RegExp.$1 : false
+  }
+
+  function checklinkurl(url) {
+    return (url.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/) != null)
+  }
+  
   var ytparse = 0
   function checkbacktick(word) {
     var p = /\`\`([^\`]+)\`\`/
@@ -123,6 +171,9 @@ function richtext(input) {
     } 
     else if (checklinkurl(word)) {
       word = `<a target="_blank" href="${word}">${word}</a>`
+    }
+    else {
+      word = word.replace(/pepper/gi, '<img src="https://bog.jollo.org/css/image/pepper.gif">')
     }
     string[i] = word
   }
@@ -313,7 +364,6 @@ function send(json) {
   if (modem) {
     modem.blink("send")
   }
-  
 }
 
 function favpost(id) {
@@ -379,15 +429,78 @@ $('body').keydown(function(e) {
   }
 });
 
+var messageinputbox = {
+  
+  enter: () => {
+ 
+    var msg = $('#input').val()
+    
+    if (!msg) {
+      return
+    }
+    $('#input').val('')
+    
+    ibtemp = ""
+    ibhistory.push(msg)
+    ibstate = ibhistory.length
+    var x = msg
+    var b = msg.trim()
+    // if (joelmode) {
+    //   if (b.substr(0, 1) == "/") {
+    //     b = b.substr(1, b.length - 1)
+    //   }
+    //   b = b.split(" ")
+    //   var g = b.shift()
+    //   b = b.join(" ")
+    //   bogscript(g, b)
+    // } 
+    if (b.substr(0, 1) == "/") {
+      b = b.substr(1, b.length - 1)
+      b = b.split(" ")
+      var g = b.shift()
+      b = b.join(" ")
+      bogscript(g, b)
+    } else {
+      send({
+        type: "message",
+        data: x
+      })
+    }
+  },
+  
+  exit: () => {
+    
+    setTimeout(function() {
+      if ( ($('#content p:last-of-type').offset().top - $('#content').height()) > 100 ) {
+        // console.log("avoid scrolldown")
+      } 
+      else {
+        $('#content').scrollTop(200000)
+        setTimeout(function() {
+          $('#content').scrollTop(200000)
+        }, 300)
+        setTimeout(function() {
+          $('#content').scrollTop(200000)
+        }, 1000)
+      }
+    },100)
+    
+  }
+  
+}
+
+
+
 $('#input').keydown(function(e) {
+  
   var msg = $(this).val()
+  
   if (e.keyCode != 9) {
     tabready = false
   }
+  
   if (e.keyCode === 9) {
     e.preventDefault()
-    
-    
     if (!tabready) {
       messagessplitspaces = msg.split(" ")
       lastword = messagessplitspaces[messagessplitspaces.length - 1]
@@ -418,21 +531,16 @@ $('#input').keydown(function(e) {
           lastuserlistarraymatch=0
         }
       }
-      
     }
-
-
-    
-    console.log("> " + matchedword + " " + lastword + " " + lastuserlistarraymatch + " " + userlist.length)
-
+    //console.log("> " + matchedword + " " + lastword + " " + lastuserlistarraymatch + " " + userlist.length)
   }
   
   if (e.keyCode === 13) {
     if (!msg) {
       return
     }
-    $(this).val('')
     if (myname === false) {
+      $(this).val('')
       myname = msg
       localStorage.setItem("nick", msg)
       $('body').removeClass("setnick")
@@ -440,71 +548,39 @@ $('#input').keydown(function(e) {
         type: "nick",
         data: msg
       })
-    } else {
-      ibtemp = ""
-      ibhistory.push(msg)
-      ibstate = ibhistory.length
-      var x = msg
-      var b = msg.trim()
-      if (joelmode) {
-        if (b.substr(0, 1) == "/") {
-          b = b.substr(1, b.length - 1)
-        }
-        b = b.split(" ")
-        var g = b.shift()
-        b = b.join(" ")
-        bogscript(g, b)
-      } else {
-        if (b.substr(0, 1) == "/") {
-          b = b.substr(1, b.length - 1)
-          b = b.split(" ")
-          var g = b.shift()
-          b = b.join(" ")
-          bogscript(g, b)
-        } else {
-          send({
-            type: "message",
-            data: x
-          })
-        }
-      }
+    } 
+    else {
+      messageinputbox.enter()
     }
-    setTimeout(function() {
-      if ( ($('#content p:last-of-type').offset().top - $('#content').height()) > 100 ) {
-        // console.log("avoid scrolldown")
-      } 
-      else {
-        $('#content').scrollTop(200000)
-        setTimeout(function() {
-          $('#content').scrollTop(200000)
-        }, 300)
-        setTimeout(function() {
-          $('#content').scrollTop(200000)
-        }, 1000)
-      }
-    },100)
-  } else if (e.keyCode === 38) {
+    messageinputbox.exit()
+  } 
+  else if (e.keyCode === 38) {
     if (ibstate <= 0) {
       $('#msg #input').val("")
-    } else if (ibstate == (ibhistory.length)) {
+    } 
+    else if (ibstate == (ibhistory.length)) {
       if (msg == undefined) {
         msg = ""
       }
       ibtemp = msg //value thats in the input box now
       ibstate--
       $('#msg #input').val(ibhistory[ibstate])
-    } else {
+    } 
+    else {
       ibstate--
       $('#msg #input').val(ibhistory[ibstate])
     }
-  } else if (e.keyCode === 40) {
+  } 
+  else if (e.keyCode === 40) {
     if (ibstate >= (ibhistory.length)) {
       return // value already in box
-    } else {
+    } 
+    else {
       ibstate++
       if (ibstate == (ibhistory.length)) {
         $('#msg #input').val(ibtemp)
-      } else {
+      } 
+      else {
         $('#msg #input').val(ibhistory[ibstate])
       }
     }
@@ -602,6 +678,7 @@ function scrollhorizontally(e) {
   document.getElementById('storedcontainer').scrollLeft -= (delta * 40)
   e.preventDefault()
 }
+
 if (document.getElementById('storedcontainer').addEventListener) {
   document.getElementById('storedcontainer').addEventListener("mousewheel", scrollhorizontally, false)
   document.getElementById('storedcontainer').addEventListener("DOMMouseScroll", scrollhorizontally, false)
@@ -614,8 +691,18 @@ window.onload = function() {
     $('#content').scrollTop(200000)
   }, 3000)
   $(document).ready(function() {
-  setTimeout(function() {
-    bin.qwikbin.appendall()
-  },2000)
-})
+    setTimeout(function() {
+      bin.qwikbin.appendall()
+    },2000)
+  })
 }
+
+document.addEventListener("drop", function( event ) {
+  if (event.target.id == "input") {
+    setTimeout(()=>{
+      var n = $('#input').val()
+      var n = $('#input').val(n + " ")
+    },30)
+  }
+
+}, false);

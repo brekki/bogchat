@@ -35,6 +35,7 @@ function wsradioreconnect() {
   clearInterval(wsheartbeat)
   ws.close()
   setTimeout(function() {
+    // uncomment
     // reconnect in 3 minutes
     wsradioconnect()
   },180000)
@@ -327,6 +328,16 @@ function uniquepush(item, oldarray) {
   var localStorage = new LocalStorage('./scratch');
 //}
 
+// var feedpeach = 0
+// var feedpepper = 0
+// 
+// if (localStorage.getItem('xfeedpeach') ) {
+//   feedpeach = localStorage.getItem('xfeedpeach')
+// }
+// if (localStorage.getItem('xxfeedpepper') ) {
+//   feedpepper = localStorage.getItem('xxfeedpepper')
+// }
+
 var bannedips = [ ]
 
 if (localStorage.getItem('xbannedips') ) {
@@ -500,7 +511,7 @@ wsServer.on('request', function(request) {
         if ( isJSON(message.utf8Data)) {
           var parsed = JSON.parse(message.utf8Data)
           if (parsed.type == "nick" ) {
-            userName = htmlEntities(parsed.data)
+            userName = htmlEntities(encodeURIComponent(parsed.data))
             userName = userName.substring(0,100)
             userColor = colors[0];
 
@@ -521,7 +532,7 @@ wsServer.on('request', function(request) {
               increment++
 
               var thistime = (new Date()).getTime()
-              var thismessage = htmlEntities(parsed.data)
+              var thismessage = htmlEntities(encodeURIComponent(parsed.data))
               var thislocale = CryptoJS.AES.encrypt(connection.remoteAddress, process.env.aes).toString()
               var obj = {
                 time: thistime,
@@ -533,9 +544,11 @@ wsServer.on('request', function(request) {
                 id: increment
               }
               
-              history.push(obj);
-              history = history.slice(-100);
-              localStorage.setItem('history', JSON.stringify(history))
+              if (!zooflag && !shadowflag) {
+                history.push(obj);
+                history = history.slice(-100);
+                localStorage.setItem('history', JSON.stringify(history))
+              }
               localStorage.setItem('increment', increment)
 
               var ctime = parseInt((+ new Date()).toString().slice(0,-3))
@@ -562,10 +575,9 @@ wsServer.on('request', function(request) {
               }
             },
             drum: () => {
-
               increment++
               var thistime = (new Date()).getTime()
-              var thismessage = htmlEntities(parsed.data)
+              var thismessage = htmlEntities(encodeURIComponent(parsed.data))
               var thislocale = CryptoJS.AES.encrypt(connection.remoteAddress, process.env.aes).toString()
               var obj = {
                 time: thistime,
@@ -597,7 +609,7 @@ wsServer.on('request', function(request) {
               }
             },
             fav: () => {
-              if ( !isNaN(parsed.data) ) {
+              if ( parsed.data && !isNaN(parsed.data) ) {
                 if (parsed.data <= increment && parsed.data > 0 ) {
                    pool.query('UPDATE bogchat SET favd = (CASE WHEN favd IS NULL THEN 0 ELSE favd END) + 1 WHERE postid = '+mysql_real_escape_string(parsed.data)+';', function (error, results, fields) {
                      if (error) throw error;
@@ -617,6 +629,19 @@ wsServer.on('request', function(request) {
               connection.sendUTF(JSON.stringify({ type:'pong', data: parsed.data }))
             },
             radioqueue: () => {
+              
+              // prevent zoo users from using radio
+              if (bannedips.indexOf(connection.remoteAddress) > -1) {
+                return
+              }
+              if (zooips.indexOf(connection.remoteAddress) > -1) {
+                return
+              }
+              if (shadowips.indexOf(connection.remoteAddress) > -1) {
+                return
+              }
+              
+              
               if (parsed.data) {
                 connection.sendUTF(JSON.stringify({ type:'status', data: ".." }));
                 client.say('fanfare', `api ${process.env.plinkoapi} msg #radio <${userName.substr(0,10)}> parsed.data`);
@@ -645,12 +670,41 @@ wsServer.on('request', function(request) {
                 }
               }
             },
+            // feedpeach: () => {
+            //   localStorage.setItem('xfeedpeach',++feedpeach)
+            //   broadcast({
+            //     type: 'feedpeach',
+            //     data: feedpeach
+            //   })              
+            // },
+            // feedpepper: () => {
+            //   localStorage.setItem('xxfeedpepper',--feedpepper)
+            //   broadcast({
+            //     type: 'feedpepper',
+            //     data: feedpepper
+            //   })                
+            // },
+            // getfood: () => {
+            //   connection.sendUTF(JSON.stringify({ type:'feedpeach', data: feedpeach }))
+            //   connection.sendUTF(JSON.stringify({ type:'feedpepper', data: feedpepper }))
+            // },
             whatshot: () => {
               var yctime = (parseInt((+ new Date()).toString().slice(0,-3)) - 86400)
               pool.query('select * from bogchat where ctime > '+yctime+' and favd > 4', function (error, results, fields) {
                 if (error) throw error;
                 connection.sendUTF(JSON.stringify({ type:'whatshot', data: results }))
               });
+            },
+            queryuser: () => {
+              if (parsed.data) {
+                
+                var query = mysql_real_escape_string(parsed.data.substring(0,100))
+                pool.query('select * from bogchat where username = "'+query+'" order by rand() limit 10;', function (error, results, fields) {
+                  if (error) throw error;
+                  connection.sendUTF(JSON.stringify({ type:'queryuser', data: results }))
+                });            
+              }
+              // var yctime = (parseInt((+ new Date()).toString().slice(0,-3)) - 86400)
             },
             radio: () => {
               connection.sendUTF(JSON.stringify({ type:'radio', payload: "power", power: wsplaystate }))
@@ -679,7 +733,7 @@ wsServer.on('request', function(request) {
               }
             },
             oper: () => {
-              if (parsed.data.login) {
+              if (parsed.data && parsed.data.login) {
                 if ( hashstringify(SHA256(parsed.data.login)) == process.env.sha ) {
                   connection.sendUTF(JSON.stringify(
                     { 
@@ -694,7 +748,7 @@ wsServer.on('request', function(request) {
                 }
               }
               else {
-                if (parsed.data.id) {
+                if (parsed.data && parsed.data.id) {
                   // verify id is correct
                   if ( hashstringify(SHA256(parsed.data.id)) == process.env.sha ) {
                     if (parsed.data.command) {
@@ -707,6 +761,11 @@ wsServer.on('request', function(request) {
                           //console.log("lookup " + n)
                           uniquepush(n,bannedips)
                           localStorage.setItem("xbannedips",JSON.stringify(bannedips))
+                        },
+                        live: () => {
+                          broadcast({
+                            type: 'live'
+                          })
                         },
                         zoo: () => {
                           n.splice(0,1)
@@ -746,8 +805,6 @@ wsServer.on('request', function(request) {
                           ));                    
                         },
                         dec: () => {
-                          //console.log(n[1])
-                          //console.log(n[2])
                           var bytes  = CryptoJS.AES.decrypt(n[2], process.env.aes)
                           var plaintext = bytes.toString(CryptoJS.enc.Utf8)
                           connection.sendUTF(JSON.stringify( {

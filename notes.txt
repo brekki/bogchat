@@ -1,1 +1,23 @@
 select * from bogchat where username = "redguts" order by rand() limit 10;
+
+
+NSL8 THER MI TECH
+
+
+html.radioready #hamstercage {
+  bottom:180px
+}
+
+#hamstercage {
+  position: absolute;
+  bottom: 0px;
+  right: 30px;
+  border: 3px solid red;
+  background:(./image/hamsterday.png)
+  width: 260px;
+  height: 268px;
+  z-index: 9999;
+  transition:all .5s ease-in-out
+}
+    
+    

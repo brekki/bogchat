@@ -1,0 +1,73 @@
+html.radioready #hamstercage {
+  bottom:180px
+}
+
+#hamstercage {
+  position: absolute;
+  bottom: 0px;
+  right: 30px;
+  background:url(./image/hamsterday.png);
+  background-repeat:no-repeat;
+  background-position:50% 50%;
+  width: 260px;
+  height: 268px;
+  z-index: 9999;
+  transition:all .5s ease-in-out
+}
+
+html.night #hamstercage {
+  background:url(./image/hamsternight.png);
+  background-repeat:no-repeat;
+  background-position:50% 50%;
+}
+
+#feedpeach {
+    position: absolute;
+    left: 85px;
+    top: 25px;
+    width: 46px;
+    height: 41px;
+}
+
+#feedpepper {
+    position: absolute;
+    left: 203px;
+    top: 34px;
+    width: 46px;
+    height: 41px;
+    transform: rotate(9deg)!important;
+}
+
+#leavecage {
+    position: absolute;
+    left: 160px;
+    top: 225px;
+    background: yellow;
+    width: 46px;
+    height: 41px;
+    background:none;
+    border:none;
+}
+
+#feedpeach, #feedpepper {
+    font-size: 18px;
+    font-weight: bold;
+    font-family: arial;
+    text-shadow: 1px 1px 16px rgb(0, 255, 213), 1px 1px 16px rgb(158, 255, 249), 1px 1px 6px rgb(255, 0, 246), 1px 1px 2px black;
+    color: #00fff7;
+    transform: rotate(-7deg);
+    border-radius: 6px;
+    /* border: 2px dashed lime; */
+    border: 3px outset white;
+    background: rgba(255, 255, 255, 0.41);
+}
+
+#feedpeach:active, #feedpepper:active {
+  border: 3px inset white;
+}
+
+#hamstercage img {
+  top: 193px;
+    position: absolute;
+    left: 85px;
+}

@@ -34,11 +34,13 @@ html.night #radioeject.ejected {
 }
 
 #radioeject.ejected.closed {
-  animation:.4s ejectclose linear forwards 1
+  animation:.4s ejectclose linear forwards 1;
+  pointer-events:none
 }
 
 html.night #radioeject.ejected.closed {
-  animation:.4s ejectclose linear forwards 1
+  animation:.4s ejectclose linear forwards 1;
+  pointer-events:none
 }
 
 @keyframes eject {

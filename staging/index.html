@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+
+<link rel="stylesheet" href="style.css?2" type="text/css">
+</head>
+<body class="basic">
+<div id="msg">
+  <div id="boundbox">
+    <div id="bogbox" contenteditable spellcheck="false"></div>
+  </div>
+</div>
+<img src="http://i.imgur.com/uQKJCti.png">
+
+
+<script>
+var undohistory = []
+var undoactive = false;
+
+
+
+(function() {
+
+
+
+  $('[contenteditable]').keypress(function (e) {
+    if (e.keyCode == 10 || e.keyCode == 13) {
+      e.preventDefault();
+      // Submit the form, etc.
+    }
+  })
+  .keydown((e)=>{
+    if (e.keyCode == 90 && e.ctrlKey ) {
+      e.preventDefault()
+      undohistory.pop()
+      if (undohistory[undohistory.length - 1] !== undefined) {
+        $('#bogbox').text(undohistory[undohistory.length - 1].text)
+        var el = document.getElementById("bogbox")
+        var range = document.createRange()
+        var sel = window.getSelection()
+        var offset = undohistory[undohistory.length - 1].offset
+        var childnode = el.childNodes[0]
+        range.setStart(el.childNodes[0],(offset))
+        range.collapse(true)
+        sel.removeAllRanges()
+        sel.addRange(range)
+        el.focus()     
+      }
+      else {
+        $('#bogbox').text("")
+      }
+      undoactive = true
+    }
+  })
+  .keyup((e)=>{
+    if (!undoactive && (e.keyCode == 8 || e.keyCode == 32 || (e.keyCode >= 46 && e.keyCode <= 90))) {
+      if ((undohistory.length == 0 ) || 
+        (undohistory[undohistory.length - 1] 
+        && (undohistory[undohistory.length - 1].text != $('#bogbox').text()))) {
+        undohistory.push({
+          text:$('#bogbox').text(),
+          offset:window.getSelection().anchorOffset
+        })
+      }
+    }
+    if (!undoactive && (e.keyCode == 37 || e.keyCode == 39 || e.keyCode == 35 || e.keyCode == 36)) {
+      if ((undohistory.length == 0 ) || 
+        (undohistory[undohistory.length - 1] 
+        && (undohistory[undohistory.length - 1].text == $('#bogbox').text()))) {
+        undohistory[undohistory.length - 1].offset = window.getSelection().anchorOffset
+        console.log(window.getSelection().anchorOffset)
+      }
+    }
+    if (e.keyCode == 8 || (e.keyCode >= 46 && e.keyCode <= 90)) {
+      undoactive = false
+    }
+    console.log(undohistory)
+  })
+  .on('paste', function (e) {
+    e.preventDefault()
+    var data = e.originalEvent.clipboardData.getData('Text').replace(/(\r\n|\n|\r)/gm,"")
+    var _this = this
+    $(_this).css("height","0")
+    setTimeout(function () {
+      $(_this).css("height","calc(100% + 30px)")
+      var el = document.getElementById("bogbox")
+      var range = document.createRange()
+      var sel = window.getSelection()
+      var offset = window.getSelection().anchorOffset
+      var childnode = el.childNodes[0]
+      var datalength = data.length
+      var rangelength = (childnode) ? childnode.length : 0
+      var tempval = $(_this).text()
+      var prefix = tempval.substring(0,offset).toString()
+      var suffix = tempval.substring(offset,tempval.length).toString()
+      $('#bogbox').text(prefix + data + suffix)
+      range.setStart(el.childNodes[0],(offset + datalength));
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      el.focus();      
+    }, 30);
+  });
+
+})()
+
+</script>
+</body>
+
+<script>
+// livereloadx ~ localhost
+if (window.location.origin == "http://localhost:8080") {
+  document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=2"></' + 'script>')
+}
+</script>
+</html>

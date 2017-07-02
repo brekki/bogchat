@@ -340,8 +340,16 @@ html.night #input {
   height: 28px!important
 }
 
+.modem #input {
+  width: calc(100vw - 250px);
+}
+
 #input.makeroom {
   width: calc(100vw - 522px);
+}
+
+.modem #input.makeroom {
+  width: calc(100vw - 532px)
 }
 
 
@@ -367,6 +375,7 @@ html.night #input {
   bottom: -2px;
   position: absolute;
   border: 4px outset #f8efff;
+  transition:all .4s ease-in-out;
 }
 
 #binbutton:active {
@@ -394,6 +403,7 @@ html.night #input {
   bottom: -2px;
   position: absolute;
   border: 4px outset #cefff2;
+  transition:all .3s ease-in-out
 }
 
 #lockbutton:active {
@@ -918,30 +928,21 @@ html.night.broken #whatshot {
       border: 10px inset #ff00ff;
 }
 
+/* redguts request - alt night colors */
 
-
-/* mobile */
-
-@media screen and (max-width: 599px) {
-  #fidgetspinbox {
-    display:none!important
-  }
-  #status {
-    display: none!important
-  }
-
-  #videobox {
-    right: -50px
-  }
-  p img {
-    max-width:75vw
-  }
-  html.day #msg::after, html.night #msg::after {
-    content:''!important;
-    opacity:0!important;
-    pointer-events:none!important
-  }
-  #zoo {
-    display:none!important
-  }
+html.night body div p span.nick[style="color:blue"],
+html.night body div p span.nick[style="color:blue;"] {
+  color:#3685ff !important
 }
+
+html.night body div p span.nick[style="color:orangered"],
+html.night body div p span.nick[style="color:orangered;"] {
+  color:#ba51ff !important
+}
+
+html.night body div p span.nick[style="color:red"],
+html.night body div p span.nick[style="color:red;"] {
+  color:#ff4961 !important
+}
+
+

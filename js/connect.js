@@ -109,14 +109,24 @@ function startwebsocket() {
     }))
   }
   connection.onmessage = function(message) {
-    if (modem) {
-      modem.blink("receive")
-    }
+
     try {
       var json = JSON.parse(message.data)
     } catch (e) {
       console.log('badjson: ', message.data)
       return
+    }
+    
+    
+    if (json.type == "pong") {
+      if (modem) {
+        modem.halfblink("receive")
+      }
+    }
+    else {
+      if (modem) {
+        modem.blink("receive")
+      }      
     }
     
     ;(({
@@ -158,7 +168,8 @@ function startwebsocket() {
         $('#content').scrollTop(200000)
       },
       message: () => {
-        if (visible === false) {
+        var zoo = (json.data.zoo ) ? json.data.zoo : ""
+        if (visible === false  && !zoo) {
           unread++
           if (json.data.text.includes(myname)) {
             mentionstar = "*"
@@ -167,7 +178,7 @@ function startwebsocket() {
         }
         input.removeAttr('disabled')
         var locale = (json.data.locale ) ? json.data.locale : ""
-        var zoo = (json.data.zoo ) ? json.data.zoo : ""
+        
         addMessage(locale, json.data.author, json.data.text, json.data.color, json.data.id, json.data.zoo)
         setTimeout(function() {
           if ( ($('#content p:last-of-type').offset().top - $('#content').height()) > 100 ) {
@@ -207,7 +218,7 @@ function startwebsocket() {
           for (var key in json.data) {
             console.log(json.data[key].context)
             if ( $('#whatshot .whatshot'+json.data[key].postid).length == 0 ) {
-              $('#whatshot').append('<div class="whatshot'+json.data[key].postid+'"><span>'+whatshotescape(json.data[key].username)+'</span></div>')
+              $('#whatshot').append('<div class="whatshot'+json.data[key].postid+'"><span>'+whatshotescape(decodeURIComponent(json.data[key].username))+'</span></div>')
             }
             $('#whatshot .whatshot'+json.data[key].postid).append('<img src="'+json.data[key].context+'"></img>')
           }
@@ -231,7 +242,7 @@ function startwebsocket() {
       },
       fav: () => {
         if (visible === false) {
-          if ($('p[data-id="' + json.data + '"] span').html() == myname) {
+          if ($('p[data-id="' + json.data + '"] span').text() == myname) {
             unseenfav++
             unseenfavbundle = ""
             if (unseenfav > 0) {
@@ -240,7 +251,7 @@ function startwebsocket() {
             $('#title').html(`${mentionstar}(${unseenfavbundle}${unread}) bogchat`)
           }
         } else {
-          if ($('p[data-id="' + json.data + '"] span').html() == myname) {
+          if ($('p[data-id="' + json.data + '"] span').text() == myname) {
             if (!$('#mutebutton').hasClass("frogmute")) {
               favchime()
             }
@@ -271,6 +282,15 @@ function startwebsocket() {
       },
       list: () => {
         console.log(json.data)
+      },
+      // feedpeach: () => {
+      //   hamster.fedpeach(json.data)
+      // },
+      // feedpepper: () => {
+      //   hamster.fedpepper(json.data)
+      // },
+      queryuser: () => {
+        search.prependall(json.data)
       },
       oper: () => {
         if (json.data.type == "login") {
@@ -398,15 +418,20 @@ var testsignalstrength = setInterval(function() {
   if (connection.readyState == 1) {
     if (signal.length < 8) { 
       signal.push("ping")
-      send({type: "ping", data: 0})
-    } 
+      connection.send(JSON.stringify({type: "ping", data: 0}))
+      if (modem) {
+        modem.halfblink("send")
+      }
+    }
   }
   if (signal.length > 3 ) {
     $('#input').addClass("weaksignal")
+    $('body').addClass("weaksignal")
   }
   else {
     if ($('#input').hasClass("weaksignal")) {
       $('#input').removeClass("weaksignal")
+      $('body').removeClass("weaksignal")
     }
   }
 }, 2000)

@@ -1,0 +1,136 @@
+html body.modem #input {
+  margin-left: 10px;
+}
+
+
+html body.modem #modem {
+  left:0px;
+}
+
+/* day */
+
+html.day #modem {
+  position:absolute;
+  background: #e4c6ff;  
+  left:-15px;
+  width:10px;
+  height: 36px;
+  top:0;
+  box-shadow:inset 1px 1px 6px rgba(119, 0, 116, 0.73);
+  transition:all .3s ease-in
+}
+
+
+html.day .led {
+  position:absolute;
+  left: 0;
+  width: 10px;
+}
+
+html.day .led::before {
+  position:absolute;
+  content:'';
+  width:9px;
+  height:9px;
+  border-radius:10px;
+  box-shadow:inset 1px 2px 2px rgba(255, 255, 255, 0.53), 1px 1px 1px rgba(0, 0, 0, 0.35), inset -2px -1px 2px rgba(255, 255, 255, 0.32);
+  top:0;
+  left:0
+}
+
+html.day .send .led.send::before,
+html.day .receive .led.receive::before,
+html.day .power .led.power::before {
+  background:rgb(24, 255, 161)
+}
+
+html.day .halfsend .led.send::before,
+html.day .halfreceive .led.receive::before,
+html.day .halfpower .led.power::before {
+  background:rgba(24, 255, 161, 0.8);
+}
+
+html.day .send.halfsend .led.send::before,
+html.day .send.halfreceive .led.receive::before,
+html.day .send.halfpower .led.power::before {
+  background:rgb(78, 255, 183);
+}
+
+html.day .led.send {
+  top: 1px;
+  height: 12px;
+
+}
+
+html.day .led.receive {
+  top: 13px;
+  height: 12px;
+
+}
+
+html.day .led.power {
+  top: 25px;
+  height: 12px;
+}
+
+html.day .weaksignal .power.led.power::before {
+  background:rgb(255, 192, 146)
+}
+
+/* night */
+
+html.night #modem {
+  height:36px;
+  left:-15px;
+  width:10px;
+  position:absolute;
+  mix-blend-mode: screen;
+  top:0px;
+  background:rgba(0,55,0,1);
+}
+
+html.night #modem > div {
+  height:12px;
+  width:10px;
+  background:rgba(0,20,0,1);
+  position:relative;
+  mix-blend-mode:screen;
+  box-shadow:0px 0px 7px 2px rgba(0,255,0,0);
+}
+
+html.night #modem.halfsend .led.send,
+html.night #modem.halfreceive .led.receive {
+  animation:.01s halfledpower infinite linear alternate;
+  mix-blend-mode:screen;
+  box-shadow:0px 0px 7px 2px rgba(0,255,0,.2);
+  z-index:99999;
+}
+
+html.night #modem.send .led.send,
+html.night #modem.receive .led.receive {
+  animation:.01s ledpower infinite linear alternate;
+  mix-blend-mode:screen;
+  box-shadow:0px 0px 7px 2px rgba(0,255,0,1);
+  z-index:99999;
+}
+
+html.night #modem.power .power {
+  animation:.01s ledpower infinite linear alternate;
+  mix-blend-mode:screen;
+  box-shadow:0px 0px 7px 2px rgba(0,255,0,1);
+  z-index:99999;
+}
+
+@keyframes ledpower {
+  0% {background:rgba(255,255,0,.96);}
+  1% {background:rgba(255,255,0,1);}
+  100% {background:rgba(255,255,0,1);}
+}
+
+@keyframes halfledpower {
+  0% {background:rgba(105,255,0,.40);}
+  1% {background:rgba(105,255,0,.45);}
+  100% {background:rgba(105,255,0,.45);}
+}
+
+

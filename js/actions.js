@@ -35,7 +35,13 @@ function bogscript(a,b) {
       $('html').addClass('day')
     },
     clear: () => {
-      $('#content').html('')
+      if (!b) {
+        $('#content').html('')
+        return
+      }
+      if (b == "search") {
+        search.clear()
+      }
     },
     msg: () => {
       if (b) {
@@ -99,7 +105,25 @@ function bogscript(a,b) {
       togglemute()
     },
     modem: () => {
-      $('body').toggleClass("modem")
+      if (b) {
+        $('body').addClass("modem")
+        localStorage.setItem("modempower",JSON.stringify(true))
+        var n = b.split(" ")
+        if (n[0] == "color") {
+          if (n[1] == "random") {
+            modem.randcolor()
+          }
+          else if (n[1] == "reset") {
+            modem.resetcolor()
+          }
+          else if (!isNaN(n[1])) {
+            modem.color(n[1])
+          }
+        }
+      }
+      else {      
+        modem.toggle()
+      }
     },
     scrap: () => {
       storedtoggle()
@@ -128,6 +152,17 @@ function bogscript(a,b) {
     },
     live: () => {
       live.create()
+    },
+    search: () => {
+      search.init(b)
+    },
+    close: () => {
+      $('html').removeClass("search")
+    },
+    more: () => {
+      if (search.lastquery) {
+        bogscript("search",search.lastquery)
+      }
     },
     chime: () => {
       $('html').toggleClass("chime")

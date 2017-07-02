@@ -1,0 +1,120 @@
+#searchbar {
+  position:fixed;
+  border-top:3px solid #00ffd8;
+  width:100vw;
+  transition:all .4s ease-in-out;
+  height:0px;
+  bottom:36px;
+  white-space: nowrap;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  margin-bottom: -15px;
+  padding-bottom: 15px;
+}
+
+html.search #searchbar {
+   height:140px;
+}
+
+html.search #content {
+   bottom: 134px;
+}
+
+html.search body.image #searchbar {
+  bottom:205px;
+}
+
+html.search body.image #content {
+  bottom: 302px;
+}
+
+html.search body.image.bigger #content {
+  bottom: 500px;
+}
+
+html.search body.image.bigger #searchbar {
+  bottom:402px;
+}
+
+#searchbar img {
+  max-height: 125px;
+  max-width: 300px;
+  padding: 5px 0px 0px 15px;
+}
+
+html.day #searchbar {
+  background:white;
+}
+
+html.night #searchbar {
+  background:black;
+}
+
+#searchbar .tool {
+  position:absolute;
+  width:10px;
+  height:15px;
+  border:3px outset white;
+  background:#ccc;
+}
+
+html.night #searchbar .tool {
+  border: 3px outset #505050;
+  background: #353535;
+}
+
+#searchbar .minimize {
+  top:0;left:0
+}
+
+#searchbar .minimize::before {
+  content:'_';
+  font-family:arial;
+  font-size:9pt;
+  color:rgba(0,0,0,.7);
+  position:absolute;
+  left:2px;
+  bottom:0;
+  
+}
+#searchbar .more::before {
+  content:'>';
+  font-family:arial;
+  font-size:9pt;
+  color:rgba(0,0,0,.7);
+  position:absolute;
+  left:2px;
+  bottom:0;
+}
+#searchbar .clear::before {
+  content:'X';
+  font-family:arial;
+  font-size:9pt;
+  color:rgba(0,0,0,.7);
+  position:absolute;
+  left:2px;
+  bottom:0;
+  
+}
+
+html.night #searchbar .minimize::before,
+html.night #searchbar .clear::before,
+html.night #searchbar .more::before {
+  color:rgba(255,255,255,.7);
+}
+
+#searchbar .clear {
+  top:0;left:16px;
+}
+
+#searchbar .more {
+  top:0;left:32px;
+}
+
+html.day #searchbar .tool:active {
+  border:3px inset white;
+}
+
+html.night #searchbar .tool:active {
+  border:3px inset black;
+}

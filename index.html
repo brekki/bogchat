@@ -3,22 +3,23 @@
 <head>
 
 <script>
-let bogversion = 14
+let bogversion = 150
 </script>
 
 <meta charset="utf-8">
-<title id="title">bogchat</title>
+<title id="title">shaolinchat</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/> 
 <meta name="description" content="rothschilds bow to bogdanoffs" />
 <meta name="author" content="the jollo irc network" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-capable" content="yes">
+
 <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
 <script>document.write('<script src="./js/mode.js?'+bogversion+'"><\/script>')</script>
 <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
 
 <script>
-  var bogstyles = ["crawl","zoo","modem","bogchat","bin","bubbles","draw","drums","radio"]
+  var bogstyles = ["search","mobile","crawl","zoo","modem","bogchat","bin","bubbles","draw","drums","radio"]
   
   for (var f=0;f<bogstyles.length;f++) {
     document.write('<link rel="stylesheet" href="./css/'+bogstyles[f]+'.css?'+bogversion+'" type="text/css">')
@@ -31,9 +32,11 @@ let bogversion = 14
   <div class="line"></div>
   <div id="space"></div>
   <div id="container">
+    <!--<div id="hamstercage"></div>-->
     <div id="content"></div>
     <div id="whatshot"></div>
     <div id="crawl"></div>
+    
     <div id="zoo" class="empty">
       <div id="listen">
         <iframe width="30" height="15" src="https://www.youtube.com/embed/8myYyMg1fFE?&amp;rel=0&amp;loop=1&amp;showinfo=0&amp;disablekb=1&amp;modestbranding=1&amp;hd=1&amp;autohide=1&amp;color=white&amp;playlist=8myYyMg1fFE" frameborder="0" allowfullscreen=""></iframe>
@@ -42,6 +45,7 @@ let bogversion = 14
       <div id="exhibit"></div>
     </div>
   </div>
+  <div id="searchbar"></div>
   <div id="videobox" class="hidden">
     <div id="videoclose"></div>
     <video id="video" width="400" height="300" autoplay></video>
@@ -63,7 +67,11 @@ let bogversion = 14
     </div>
   </div>
   <div id="msg">
-    <div id="modem"></div>
+    <div id="modem">
+      <div class="led send">     </div>
+      <div class="led receive">  </div>
+      <div class="led power">    </div>
+    </div>
     <div id="drawingboard"></div>
     <div id="drummachineboard">
       <div id="app" class="">
@@ -80,13 +88,15 @@ let bogversion = 14
       </div>
     </div>
     <span id="status">connecting...</span>
-    <input type="text" id="input" disabled="disabled" />
+    <input type="text" spellcheck=false id="input" disabled="disabled" />
     <div id="storedbutton" ondragenter="dragpopup()"></div>
     <div id="trashlock"></div>
     <div id="storedarea">
       <div id="storedcontainer"></div>
       <input id="storedinput" type="text">
     </div>
+    <div id="popbutton"></div>
+    <div id="sendbutton"></div>
     <div id="uploadbutton"></div>
     <div id="camerabutton"></div>
     <div id="lockbutton"></div>
@@ -118,10 +128,12 @@ let bogversion = 14
       <div id="radiominremain">x?</div>
     </div>
   </div>
+  <!--
   <div id="fidgetspinbox">
     <div id="fidgetholder"></div>
     <div id="fidgetspinner"></div>
   </div>
+  -->
   <input id="fileinput" accept="image/*" type="file" onchange="pushfile()">
   <script src="./js/lib/handlebars/handlebars.min.js"></script>
   <script src="./js/lib/lodash/lodash.min.js"></script>
@@ -129,7 +141,7 @@ let bogversion = 14
   <script src="./js/lib/jcanvas/jcanvas.js"></script>
   
   <script src="./js/lib/drawingboard/simpleundo.js"></script>
-  <script src="./js/lib/drawingboard/util.js"></script>
+  <script src="./js/lib/drawingboard/util.js?0000"></script>
   <script src="./js/lib/drawingboard/board.js"></script>
   <script src="./js/lib/drawingboard/controls/control.js"></script>
   <script src="./js/lib/drawingboard/controls/color.js"></script>
@@ -141,7 +153,7 @@ let bogversion = 14
   <script src="./js/shared/util.js"></script>
 
   <script>
-    var bogmods = ["crawl","zoo","bin","modem","chat","radio","connect","actions","camera","images","breakapart","draw","bubbles","drums","pak"]
+    var bogmods = ["search","crawl","zoo","bin","modem","chat","radio","connect","actions","camera","images","breakapart","draw","bubbles","drums","pak","mobile"]
     
     for (var f=0;f<bogmods.length;f++) {
       document.write('<script src="./js/'+bogmods[f]+'.js?'+bogversion+'"><\/script>')

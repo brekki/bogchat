@@ -1,21 +1,32 @@
-//         :: enter/exit bubble room
-/img       :: opens bogbins
-/draw      :: opens the drawing canvas
-/drum      :: opens the drum machine
-/send      :: sends an drawn image to the chat
-/fav       :: favs last image posted to the chat
-/fav nick  :: favs nick's last text in the chat
-/term      :: toggle terminal mode
-/mute      :: toggles enter/exit sounds
-/scrap     :: opens/closes the scrap drawer
-/upload    :: upload an image to the chat
-/nightmode :: change theme to nightmode (defaults nightmode at 10pm)
-/restart   :: reloads chat window
-/clear     :: clears the chat window
-/help      :: opens/closes this help menu
-[esc]      :: focuses the input box || exits the bubble room
-[tab]      :: autocompletes and cycles through usernames in the input box
-[up/down]  :: scroll through input history in the input box
+//               :: enter/exit bubble room
+/img             :: opens bogbins
+/draw            :: opens the drawing canvas
+/drum            :: opens the drum machine
+/send            :: sends an drawn image to the chat
+/fav             :: favs last image posted to the chat
+/fav nick        :: favs nick's last text in the chat
+/term            :: toggle terminal mode
+/mute            :: toggles enter/exit sounds
+/scrap           :: opens/closes the scrap drawer
+/upload          :: upload an image to the chat
+/nightmode       :: change theme to nightmode (defaults nightmode at 10pm)
+/daymode         :: changes theme to daymode (defaults daymode at 6am)
+/restart         :: reloads chat window
+/clear           :: clears the chat window
+/trim            :: removes all images from the window (helpful if someone posts a huge GIF)
+/modem           :: opens a mini modem to see websocket activity (send/receive/power)
+/modem color 180 :: change the modem color hue where 180 is a number between 0-360
+/radio url       :: adds a youtube/soundcloud/bandcamp url to jollo radio
+/radio query     :: e.g. /radio search smashing pumpkins today
+/search username :: searches for images posted by 'username' 
+/more            :: finds more images from the last searched item
+/close           :: minimizes the search
+/live            :: opens whatever live video is available on live.jollo.org
+/crawl           :: closes the live video stream
 
-fjdksla;   :: typed real fast opens the HOT posts from past 24 hours area
-a;sldkfj   :: typed real fast closes the HOT posts area
+[esc]            :: focuses the input box || exits the bubble room
+[tab]            :: autocompletes and cycles through usernames in the input box
+[up/down]        :: scroll through input history in the input box
+      
+fjdksla;         :: typed real fast opens the HOT posts from past 24 hours area
+a;sldkfj         :: typed real fast closes the HOT posts area
